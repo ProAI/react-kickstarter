@@ -1,0 +1,81 @@
+{
+  "name": "react-kickstarter",
+  "version": "0.1.0",
+  "main": "index.js",
+  "description": "Create isomorphic/universal React apps extremely simple with no configuration (until you need it)",
+  "author": "Markus Wetzel <markuswetzel@gmx.net>",
+  "license": "MIT",
+  "keywords": [
+    "react",
+    "redux",
+    "isomorphic",
+    "universal",
+    "webpack",
+    "hot reloading",
+    "react-hot-reloader",
+    "starter",
+    "babel"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ProAI/react-kickstarter.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ProAI/react-kickstarter/issues"
+  },
+  "scripts": {},
+  "dependencies": {
+    "babel-core": "6.14.0",
+    "babel-loader": "6.2.5",
+    "babel-plugin-add-module-exports": "0.2.1",
+    "babel-plugin-transform-decorators-legacy": "1.3.4",
+    "babel-plugin-transform-runtime": "6.15.0",
+    "babel-polyfill": "6.13.0",
+    "babel-preset-es2015": "6.14.0",
+    "babel-preset-react": "6.11.1",
+    "babel-preset-stage-0": "6.5.0",
+    "babel-register": "6.14.0",
+    "babel-runtime": "6.11.6",
+    "better-npm-run": "0.0.11",
+    "clean-webpack-plugin": "0.1.10",
+    "compression": "1.6.2",
+    "concurrently": "2.2.0",
+    "cookie-parser": "1.4.3",
+    "css-loader": "0.25.0",
+    "express": "4.14.0",
+    "extract-text-webpack-plugin": "1.0.1",
+    "file-loader": "0.9.0",
+    "find-cache-dir": "0.1.1",
+    "http-proxy": "1.14.0",
+    "json-loader": "0.5.4",
+    "postcss-loader": "0.11.1",
+    "raw-loader": "0.5.1",
+    "sass-loader": "4.0.1",
+    "serve-favicon": "2.3.0",
+    "strip-loader": "0.1.2",
+    "style-loader": "0.13.1",
+    "url-loader": "0.5.7",
+    "webpack": "1.13.2",
+    "webpack-isomorphic-tools": "2.5.8"
+  },
+  "devDependencies": {
+    "babel-eslint": "6.1.2",
+    "eslint": "3.4.0",
+    "eslint-config-airbnb": "10.0.1",
+    "eslint-loader": "1.5.0",
+    "eslint-plugin-import": "1.14.0",
+    "eslint-plugin-jsx-a11y": "2.2.1",
+    "eslint-plugin-react": "6.2.0",
+    "happypack": "2.2.1",
+    "react-hot-loader": "3.0.0-beta.3",
+    "redux-devtools": "3.3.1",
+    "redux-devtools-dock-monitor": "1.1.1",
+    "redux-devtools-log-monitor": "1.0.11",
+    "webpack-dev-middleware": "1.6.1",
+    "webpack-hot-middleware": "2.12.2"
+  },
+  "peerDependencies": {},
+  "engines": {
+    "node": ">=4"
+  }
+}
