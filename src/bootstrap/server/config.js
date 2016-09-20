@@ -7,27 +7,9 @@ module.exports = {
   port: 8080,
   root: paths.root,
   static: paths.static,
-  isomorphic: {
-    serverSideRendering: true,
-    config: require('../config/webpack-isomorphic-tools');
-  },
+  serverSideRendering: true,
   proxies: [],
   compression: true,
   cookies: true,
-  favicon: path.join(paths.static, 'favicon', 'favicon.ico'),
-  app: {
-    locale: {
-      autoDetect: true,
-      default: 'en',
-      supported: ['en']
-    },
-    device: {
-      autoDetect: true
-    },
-    csrfToken: true,
-    localeUrlPrefix: true,
-    rootComponent: require('../components/Html'),
-    includeDlls: false
-  }
-  babel: require('../config/babel')
+  favicon: path.join(paths.static, 'favicon', 'favicon.ico')
 };

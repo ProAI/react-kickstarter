@@ -6,7 +6,7 @@ var bootstrapHttpServer = require('./bootstrapHttpServer');
 var defaultConfig = require('./configServer');
 var registerBabel = require('./helpers/registerBabel');
 
-module.exports = function runServer(customConfig) {
+module.exports = function runServer(serverConfig, appConfig, isomorphicConfig, babelConfig) {
   // merge config
   var config = deepmerge(defaultConfig, customConfig);
 

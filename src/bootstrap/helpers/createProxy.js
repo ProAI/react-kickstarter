@@ -1,7 +1,8 @@
 import httpProxy from 'http-proxy';
 
 function proxyError(error, req, res) {
-  // added the error handling to avoid https://github.com/nodejitsu/node-http-proxy/issues/527
+  // add the error handling
+  // https://github.com/nodejitsu/node-http-proxy/issues/527
   if (error.code !== 'ECONNRESET') {
     console.error('proxy error', error);
   }

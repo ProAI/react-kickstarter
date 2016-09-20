@@ -13,13 +13,7 @@ function formatUrl(path) {
 }
 
 export default class ApiClient {
-  get = null;
-  post = null;
-  put = null;
-  patch = null;
-  del = null;
-
-  init(req, res) {
+  constructor(req, res) {
     methods.forEach((method) => {
       this[method] = (
         path, { params, data, attach, field } = {}

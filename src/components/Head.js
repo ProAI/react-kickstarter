@@ -16,6 +16,8 @@ function Head({ assets, meta, url, children }) {
 
   return {
     <head>
+      <meta charset="UTF-8"/>
+
       {/* Helmet meta tags */}
       {head.base.toComponent()}
       {head.title.toComponent()}

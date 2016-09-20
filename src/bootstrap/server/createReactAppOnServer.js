@@ -1,100 +1,71 @@
 import React from 'react';
 import ReactDOM from 'react-dom/server';
-
 import { match, createMemoryHistory } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
 import { ReduxAsyncConnect, loadOnServer } from 'redux-connect';
 import { Provider } from 'react-redux';
 import { useBasename } from 'history';
-
-import createStore from './start/store/createStore';
-import Api from './utils/Api';
-
-import getRoutes from './routes'; // routes from config???
-
-const stripLocaleFromUrl = (url, locale) => {
-  if (locale) {
-    if (url.length === 2) {
-      return '';
-    }
-    return url.substring(3, url.length);
-  }
-  return url;
-};
+import addCookie from '../helpers/addCookie';
+import detectDevice from '../helpers/detectDevice';
+import getLocaleFromUrl from '../helpers/getLocaleFromUrl';
+import getLocaleFromHeader from '../helpers/getLocaleFromHeader';
+import getLocaleFromCookies from '../helpers/getLocaleFromCookies';
+import generateCsrfToken from '../helpers/generateCsrfToken';
 
 export default function bootstrapAppOnServer(config) {
   return (req, res) => {
-    function addCookie(name, value, options) {
-      // eslint-disable-next-line no-param-reassign
-      req.cookies[name] = value;
-      if (req.headers.cookie === undefined) {
-        // eslint-disable-next-line no-param-reassign
-        req.headers.cookie = `${name}=${value}`;
-      } else {
-        // eslint-disable-next-line no-param-reassign
-        req.headers.cookie = `${req.headers.cookie};${name}=${value}`;
-      }
-      res.cookie(name, value, options);
-    }
-
     // meta data
     const meta = {};
 
     // auto detect locale
-    if (config.locale.autoDetect) {
-      // init locale
-      /* Locale.init(req);
-      const locale = Locale.get();
-      const localeFromUrl = Locale.getUrlLocale();
-      const originalUrlWithoutLocale = (localeFromUrl)
-        ? stripLocaleFromUrl(req.originalUrl, localeFromUrl)
-        : req.originalUrl;*/
+    if (config.app.locale.autoDetect) {
+      const localeFromUrl = getLocaleFromUrl(req.originalUrl, config.app.locale.available);
+      const localeFromHeader = getLocaleFromHeader(req.headers['accept-language'], config.app.locale.available);
+      const localeFromCookies = getLocaleFromCookies(req.cookies, config.app.locale.available);
 
-      { locale, localeFromUrl, localeFromCookie } = detectLocale(req, res, config.app.locale);
-
-      /* if (!localeFromCookie) {
-        addCookie('lang', locale, { maxAge: 2628000 * 60 * 1000 }); // 5 years lifetime
-      }*/
-    }
-
-    // generate csrf token
-    if (config.csrfToken) {
-      meta.csrfToken = generateCsrfToken(req, res);
-
-      /* let csrfToken;
-      if (req.cookies.csrf === undefined) {
-        csrfToken = randomString.generate(32);
-        addCookie('csrf', csrfToken, { httpOnly: true });
+      if (localeFromUrl) {
+        meta.locale = localeFromUrl;
+      } else if (localeFromHeader) {
+        meta.locale = localeFromUrl;
+      } else if (localeFromCookies) {
+        meta.locale = localeFromUrl;
       } else {
-        csrfToken = req.cookies.csrf;
-      }*/
+        meta.locale = config.app.locale.default;
+      }
+
+      if (!localeFromCookies) {
+        addCookie(req, res, {
+          name: 'lang',
+          value: locale,
+          options: { maxAge: 2628000 * 60 * 1000 } // 5 years lifetime
+        );
+      }
     }
 
     // auto detect device
-    if (config.device.autoDetect) {
-      meta.device = detectDevice(req, res);
-
-      /* let view;
+    if (config.app.device.autoDetect) {
       if (req.cookies.view === 'mobile' || req.cookies.view === 'desktop') {
-        view = req.cookies.view;
+        meta.device = req.cookies.view;
       } else {
-        const md = new MobileDetect(req.headers['user-agent']);
-        if (md.mobile() !== null) {
-          if (md.phone() !== null) {
-            // phone
-            view = 'mobile';
-          } else {
-            // tablet
-            view = 'desktop';
-          }
-        } else {
-          // desktop
-          view = 'desktop';
-        }
-      }*/
+        meta.device = detectDevice(req.headers['user-agent']);
+      }
     }
 
-    if (__DEVELOPMENT__) {
+    // generate csrf token
+    if (config.app.csrfToken) {
+      if (req.cookies.csrf === undefined) {
+        meta.csrfToken = generateCsrfToken();
+        addCookie(req, res, {
+          name: 'csrf',
+          value: meta.csrfToken,
+          options: { httpOnly: true }
+        });
+      } else {
+        meta.csrfToken = req.cookies.csrf;
+      }
+    }
+
+    if (config.env === 'development') {
       // Do not cache webpack stats: the script file would change since
       // hot module replacement is enabled in the development env
       webpackIsomorphicTools.refresh();
@@ -104,78 +75,88 @@ export default function bootstrapAppOnServer(config) {
       // delete require.cache[require.resolve('react-kickstarter')];
     }
 
-    Api.init(req, res);
-    const basename = localeFromUrl ? `/${localeFromUrl}` : '';
-    const memoryHistory = useBasename(() => createMemoryHistory(cleanUrl))({
-      basename,
-    });
-    const store = createStore(memoryHistory, Api, {
-      info: {
-        locale: meta.locale,
-        device: meta.device,
+    /* CUSTOM CODE START */
+    (config, meta) => {
+      const FetchClass = config.app.fetch;
+      const fetch = new FetchClass(req, res);
+      const cleanUrl = (localeFromUrl)
+        ? stripLocaleFromUrl(req.originalUrl, localeFromUrl)
+        : req.originalUrl;
+      const basename = localeFromUrl ? `/${localeFromUrl}` : '';
+      const memoryHistory = useBasename(() => createMemoryHistory(cleanUrl))({
+        basename,
+      });
+      const data = {};
+      if (config.app.useInfoReducer) {
+        data.info = {
+          locale: meta.locale,
+          device: meta.device,
+        };
       }
-    });
-    const history = syncHistoryWithStore(memoryHistory, store);
+      const store = config.app.store(memoryHistory, fetch, data);
+      const history = syncHistoryWithStore(memoryHistory, store);
 
-    function hydrateOnClient() {
-      res.send(`<!doctype html>
-        ${ReactDOM.renderToString(
-          <Html
-            assets={webpackIsomorphicTools.assets()}
-            meta={meta}
-            url={cleanUrl}
-            store={store}
-          />
-        )}
-      `);
-    }
+      function hydrateOnClient() {
+        res.send(`<!doctype html>
+          ${ReactDOM.renderToString(
+            <Html
+              assets={webpackIsomorphicTools.assets()}
+              meta={meta}
+              url={cleanUrl}
+              store={store}
+            />
+          )}
+        `);
+      }
 
-    if (__DISABLE_SSR__) {
-      hydrateOnClient();
-      return;
-    }
-
-    match({
-      history,
-      routes: getRoutes(store, basename),
-      location: originalUrlWithoutLocale,
-    }, (error, redirectLocation, renderProps) => {
-      if (redirectLocation) {
-        res.redirect(redirectLocation.pathname + redirectLocation.search);
-      } else if (error) {
-        console.error('ROUTER ERROR:', error);
-        res.status(500);
+      if (!config.serverSideRendering) {
         hydrateOnClient();
-      } else if (renderProps) {
-        loadOnServer({ ...renderProps, store, helpers: { Api } }).then(() => {
-          const component = (
-            <Provider store={store} key="provider">
-              <ReduxAsyncConnect {...renderProps} />
-            </Provider>
-          );
-
-          res.status(200);
-
-          global.navigator = { userAgent: req.headers['user-agent'] };
-
-          res.send(`<!doctype html>
-            ${ReactDOM.renderToString(
-              <Html
-                assets={webpackIsomorphicTools.assets()}
-                meta={meta}
-                url={originalUrlWithoutLocale}
-                component={component}
-                store={store}
-              />
-            )}
-          `);
-        }).catch(mountError => {
-          console.error('MOUNT ERROR:', mountError);
-          res.status(500);
-        });
-      } else {
-        res.status(404).send('Not found');
+        return;
       }
-    });
+
+      match({
+        history,
+        routes: config.app.routes(store, basename),
+        location: originalUrlWithoutLocale,
+      }, (error, redirectLocation, renderProps) => {
+        if (redirectLocation) {
+          res.redirect(redirectLocation.pathname + redirectLocation.search);
+        } else if (error) {
+          console.error('ROUTER ERROR:', error);
+          res.status(500);
+          hydrateOnClient();
+        } else if (renderProps) {
+          loadOnServer({ ...renderProps, store, helpers: { fetch } }).then(() => {
+            const component = (
+              <Provider store={store} key="provider">
+                <ReduxAsyncConnect {...renderProps} />
+              </Provider>
+            );
+
+            res.status(200);
+
+            global.navigator = { userAgent: req.headers['user-agent'] };
+
+            res.send(`<!doctype html>
+              ${ReactDOM.renderToString(
+                <Html
+                  assets={webpackIsomorphicTools.assets()}
+                  meta={meta}
+                  url={originalUrlWithoutLocale}
+                  component={component}
+                  store={store}
+                />
+              )}
+            `);
+          }).catch(mountError => {
+            console.error('MOUNT ERROR:', mountError);
+            res.status(500);
+          });
+        } else {
+          res.status(404).send('Not found');
+        }
+      });
+    };
+    /* CUSTOM CODE END */
   };
 };

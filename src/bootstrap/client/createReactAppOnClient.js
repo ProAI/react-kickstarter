@@ -7,25 +7,24 @@ import { createHistory } from 'history';
 import { syncHistoryWithStore } from 'react-router-redux';
 import { ReduxAsyncConnect } from 'redux-connect';
 import { useScroll } from 'react-router-scroll';
-import createStore from './start/store/createStore';
-import Api from './utils/Api';
-import Locale from './utils/Locale';
-import getRoutes from './routes';
 
 export default function bootstrapReactAppOnClient(config) {
   return () => {
-    const localeFromUrl = Locale.getUrlLocale();
+    /* CUSTOM CODE START */
+    const localeFromUrl = Locale.getUrlLocale(); // todo
     const basename = localeFromUrl ? `/${localeFromUrl}` : '';
     const browserHistory = useRouterHistory(createHistory)({ basename });
 
     const dest = document.getElementById('content');
 
+    const FetchClass = config.app.fetch;
+    const fetch = new FetchClass(req, res);
     // eslint-disable-next-line no-underscore-dangle
-    const store = createStore(browserHistory, Api, window.__data);
+    const store = config.app.store(browserHistory, FetchClass, window.__data);
 
     const history = syncHistoryWithStore(browserHistory, store);
 
-    const currentRoutes = getRoutes(store, basename);
+    const currentRoutes = config.app.routes(config.app.store, basename);
 
     const render = routes => {
       ReactDOM.render(
@@ -35,7 +34,7 @@ export default function bootstrapReactAppOnClient(config) {
               render={(props) =>
                 <ReduxAsyncConnect
                   {...props}
-                  helpers={{ Api }}
+                  helpers={{ FetchClass }}
                   filter={item => !item.deferred}
                   render={applyRouterMiddleware(useScroll())}
                 />
@@ -75,6 +74,7 @@ export default function bootstrapReactAppOnClient(config) {
         });
       }
     });
+    /* CUSTOM CODE END */
 
     if (process.env.NODE_ENV !== 'production') {
       window.React = React; // enable debugger
