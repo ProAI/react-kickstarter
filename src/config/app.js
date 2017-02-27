@@ -1,6 +1,7 @@
 module.exports = {
-  routes: require('../redux/routes'),
+  /* routes: require('../redux/routes'),
   htmlComponent: require('../components/Html'),
+  devToolsComponent: */
   csrfToken: true,
   locale: {
     autoDetect: true,
@@ -11,12 +12,13 @@ module.exports = {
   device: {
     autoDetect: true
   },
-  redux: {
+  devTools: true,
+  /* redux: {
     enable: true,
     useInfoReducer: true,
     store: require('../redux/configureStore'),
     fetch: require('../redux/fetch'),
-  },
+  },*/
   /* build: {
     dlls: false,
     happypack: false

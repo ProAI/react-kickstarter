@@ -19,10 +19,12 @@ var eslintConfig = {
 var webpackIsomorphicToolsPlugin = new WebpackIsomorphicToolsPlugin(require('./webpack-isomorphic-tools'));
 
 // https://github.com/bertho-zero/react-redux-universal-hot-example
-var validDlls = isValidDlls(['vendor'], paths.assets);
-if (process.env.WEBPACK_DLLS === '1' && !validDlls) {
-  process.env.WEBPACK_DLLS = '0';
-  console.warn('Webpack: Dlls are disabled.');
+if (process.env.WEBPACK_DLLS === '1') {
+  var validDlls = isValidDlls(['vendor'], paths.assets);
+  if(!validDlls) {
+    process.env.WEBPACK_DLLS = '0';
+    console.warn('Webpack: Dlls are disabled.');
+  }
 }
 
 var includePaths = [
