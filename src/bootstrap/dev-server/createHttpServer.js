@@ -3,7 +3,7 @@ var webpack = require('webpack');
 var webpackDevMiddleware = require('webpack-dev-middleware');
 var webpackHotMiddleware = require('webpack-hot-middleware');
 
-module.exports = function bootstrapHttpDevServer(config) {
+module.exports = function createHttpDevServer(config) {
   // create server
   var app = new Express();
 

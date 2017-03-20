@@ -1,44 +1,44 @@
-import React from 'react';
 import ReactDOM from 'react-dom/server';
-import { match, createMemoryHistory } from 'react-router';
-import { syncHistoryWithStore } from 'react-router-redux';
-import { ReduxAsyncConnect, loadOnServer } from 'redux-connect';
-import { Provider } from 'react-redux';
-import { useBasename } from 'history';
-import addCookie from '../helpers/addCookie';
-import detectDevice from '../helpers/detectDevice';
-import getLocaleFromUrl from '../helpers/getLocaleFromUrl';
-import getLocaleFromHeader from '../helpers/getLocaleFromHeader';
-import getLocaleFromCookies from '../helpers/getLocaleFromCookies';
-import generateCsrfToken from '../helpers/generateCsrfToken';
+import addCookie from '../utils/addCookie';
+import detectDevice from '../utils/detectDevice';
+import getLocaleFromUrl from '../utils/getLocaleFromUrl';
+import getLocaleFromHeader from '../utils/getLocaleFromHeader';
+import getLocaleFromCookies from '../utils/getLocaleFromCookies';
+import stripLocaleFromUrl from '../utils/stripLocaleFromUrl';
+import generateCsrfToken from '../utils/generateCsrfToken';
+import 'isomorphic-fetch';
 
-export default function bootstrapAppOnServer(config) {
+export default function createAppOnServer(config) {
   return (req, res) => {
     // meta data
     const meta = {};
 
     // auto detect locale
     if (config.app.locale.autoDetect) {
-      const localeFromUrl = getLocaleFromUrl(req.originalUrl, config.app.locale.available);
-      const localeFromHeader = getLocaleFromHeader(req.headers['accept-language'], config.app.locale.available);
-      const localeFromCookies = getLocaleFromCookies(req.cookies, config.app.locale.available);
+      meta.localeFromUrl = getLocaleFromUrl(req.originalUrl, config.app.locale.available);
+      meta.localeFromHeader = getLocaleFromHeader(req.headers['accept-language'], config.app.locale.available);
+      meta.localeFromCookies = getLocaleFromCookies(req.cookies, config.app.locale.available);
 
-      if (localeFromUrl) {
-        meta.locale = localeFromUrl;
-      } else if (localeFromHeader) {
-        meta.locale = localeFromUrl;
-      } else if (localeFromCookies) {
-        meta.locale = localeFromUrl;
+      if (meta.localeFromUrl) {
+        meta.locale = meta.localeFromUrl;
+      } else if (meta.localeFromHeader) {
+        meta.locale = meta.localeFromHeader;
+      } else if (meta.localeFromCookies) {
+        meta.locale = meta.localeFromCookies;
       } else {
         meta.locale = config.app.locale.default;
       }
 
-      if (!localeFromCookies) {
+      meta.urlWithoutLocale = (meta.localeFromUrl)
+        ? stripLocaleFromUrl(req.originalUrl, meta.localeFromUrl)
+        : req.originalUrl;
+
+      if (!meta.localeFromCookies) {
         addCookie(req, res, {
           name: 'lang',
           value: locale,
           options: { maxAge: 2628000 * 60 * 1000 } // 5 years lifetime
-        );
+        });
       }
     }
 
@@ -76,87 +76,37 @@ export default function bootstrapAppOnServer(config) {
     }
 
     /* CUSTOM CODE START */
-    (config, meta) => {
-      const FetchClass = config.app.fetch;
-      const fetch = new FetchClass(req, res);
-      const cleanUrl = (localeFromUrl)
-        ? stripLocaleFromUrl(req.originalUrl, localeFromUrl)
-        : req.originalUrl;
-      const basename = localeFromUrl ? `/${localeFromUrl}` : '';
-      const memoryHistory = useBasename(() => createMemoryHistory(cleanUrl))({
-        basename,
-      });
-      const data = {};
-      if (config.app.useInfoReducer) {
-        data.info = {
-          locale: meta.locale,
-          device: meta.device,
-        };
-      }
-      const store = config.app.store(memoryHistory, fetch, data);
-      const history = syncHistoryWithStore(memoryHistory, store);
-
-      function hydrateOnClient() {
-        res.send(`<!doctype html>
-          ${ReactDOM.renderToString(
-            <Html
-              assets={webpackIsomorphicTools.assets()}
-              meta={meta}
-              url={cleanUrl}
-              store={store}
-            />
-          )}
-        `);
-      }
-
-      if (!config.serverSideRendering) {
-        hydrateOnClient();
-        return;
-      }
-
-      match({
-        history,
-        routes: config.app.routes(store, basename),
-        location: originalUrlWithoutLocale,
-      }, (error, redirectLocation, renderProps) => {
-        if (redirectLocation) {
-          res.redirect(redirectLocation.pathname + redirectLocation.search);
-        } else if (error) {
-          console.error('ROUTER ERROR:', error);
-          res.status(500);
-          hydrateOnClient();
-        } else if (renderProps) {
-          loadOnServer({ ...renderProps, store, helpers: { fetch } }).then(() => {
-            const component = (
-              <Provider store={store} key="provider">
-                <ReduxAsyncConnect {...renderProps} />
-              </Provider>
-            );
-
-            res.status(200);
-
-            global.navigator = { userAgent: req.headers['user-agent'] };
-
-            res.send(`<!doctype html>
-              ${ReactDOM.renderToString(
-                <Html
-                  assets={webpackIsomorphicTools.assets()}
-                  meta={meta}
-                  url={originalUrlWithoutLocale}
-                  component={component}
-                  store={store}
-                />
-              )}
-            `);
-          }).catch(mountError => {
-            console.error('MOUNT ERROR:', mountError);
-            res.status(500);
-          });
-        } else {
-          res.status(404).send('Not found');
-        }
-      });
+    const render = (component) => {
+      res.status(200).send(`<!doctype html>
+        ${ReactDOM.renderToString(
+          <Html
+            assets={webpackIsomorphicTools.assets()}
+            meta={meta}
+            url={cleanUrl}
+            store={store}
+            component={component}
+          />
+        )}
+      `);
     };
+
+    const redirect = (path) => {
+      res.redirect(path);
+    }
+
+    const error = (message, status) => {
+      res.status(404);
+      if (message) {
+        res.send(message)
+      }
+    }
+
+    // todo: import hydrate function
+    hydrate(meta, {
+      error,
+      redirect,
+      render,
+    });
     /* CUSTOM CODE END */
   };
 };

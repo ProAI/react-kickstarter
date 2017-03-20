@@ -1,6 +1,6 @@
 var path = require('path');
 var HappyPack = require('happypack');
-var paths = require('../config/paths');
+var paths = require('../paths');
 var happyThreadPool = HappyPack.ThreadPool({ size: 5 });
 
 function createHappyPlugin(id) {

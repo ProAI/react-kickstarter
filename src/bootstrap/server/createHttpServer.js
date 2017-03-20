@@ -1,21 +1,19 @@
-import Express = from 'express';
-import http = from 'http';
+import Express from 'express';
+import http from 'http';
 import compression from 'compression';
 import favicon from 'serve-favicon';
 import cookieParser from 'cookie-parser';
-import bootstrapReactAppOnServer from './bootstrapReactAppOnServer';
+import createProxy from '../utils/createProxy';
+import createReactAppOnServer from './createReactAppOnServer';
 
-export default function bootstrapHttpServer(app, server, config) {
+export default function createHttpServer(config) {
   // create server
   var app = new Express();
   var server = new http.Server(app);
 
   // proxy middleware
   config.proxies.forEach((proxy) => {
-    // split proxy path and config
-    const { proxyPath, ...proxyConfig } = proxy;
-
-    app.use(proxyPath, createProxy(proxyConfig, server));
+    app.use(proxy.path, createProxy(proxy, server));
   });
 
   // compression middleware
@@ -37,7 +35,7 @@ export default function bootstrapHttpServer(app, server, config) {
   app.use(Express.static(config.static));
 
   // initialize app middleware
-  app.use(bootstrapReactAppOnServer(config.app));
+  app.use(createReactAppOnServer(config.app));
 
   // start server
   if (config.port && config.host) {

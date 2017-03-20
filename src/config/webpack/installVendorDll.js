@@ -1,6 +1,6 @@
 var path = require('path');
 var webpack = require('webpack');
-var paths = require('../config/paths');
+var paths = require('../paths');
 
 function installVendorDll(config, dllName) {
   var manifest = loadDllManifest(path.join(paths.webpackCache, 'dlls', `${dllName}.json`));

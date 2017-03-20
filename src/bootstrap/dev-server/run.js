@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 
-var bootstrapHttpServer = require('./bootstrapHttpDevServer');
-var defaultConfig = require('./configDevServer');
+var createHttpServer = require('./createHttpServer');
+var defaultConfig = require('./defaultConfig');
+var deepmerge = require('deepmerge');
 
-module.exports = function runServer(customConfig) {
+module.exports = function runDevServer(customConfig) {
   // merge config
   var config = deepmerge(defaultConfig, customConfig);
 
@@ -12,5 +13,5 @@ module.exports = function runServer(customConfig) {
   config.server.publicPath = config.webpack.output.publicPath;
 
   // start server
-  bootstrapHttpDevServer(config);
+  createHttpServer(config);
 };

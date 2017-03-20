@@ -4,17 +4,17 @@ require('babel-polyfill');
 var path = require('path');
 var webpack = require('webpack');
 var WebpackIsomorphicToolsPlugin = require('webpack-isomorphic-tools/plugin');
-var createHappyPlugin = require('../utils/createHappyPlugin');
-var installVendorDll = require('../utils/installVendorDll');
-var isValidDlls = require('../utils/isValidDlls');
+var createHappyPlugin = require('./utils/createHappyPlugin');
+var installVendorDll = require('./utils/installVendorDll');
+var isValidDlls = require('./utils/isValidDlls');
 var paths = require('./paths');
 var babelConfig = require('./babel.js');
 var eslintConfig = {
   configFile: path.join(paths.config, 'eslint.js')
 };
 
-// var host = (process.env.DEV_HOST || 'localhost');
-// var port = Number(process.env.DEV_PORT) || 8081;
+var host = 'localhost';
+var port = 8081;
 
 var webpackIsomorphicToolsPlugin = new WebpackIsomorphicToolsPlugin(require('./webpack-isomorphic-tools'));
 
@@ -40,8 +40,8 @@ var webpackConfig = {
     'main': [
       'webpack-hot-middleware/client?path=http://' + host + ':' + port + '/__webpack_hmr',
       'react-hot-loader/patch',
-      '-!style!raw!sass!./app/theme/scss/examunity-bootstrap.dev.scss',
-      '-!style!css!sass!./app/theme/scss/examunity-fonts.scss',
+      '-!style!raw!sass!'+paths.app+'/theme/scss/examunity-bootstrap.dev.scss',
+      '-!style!css!sass!'+paths.app+'/theme/scss/examunity-fonts.scss',
       './app/client.js'
     ]
   },

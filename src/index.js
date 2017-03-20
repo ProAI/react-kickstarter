@@ -1,19 +1,24 @@
-import runServer from './runServer';
-import runWebpackDevServer = from './runWebpackDevServer';
-import makeBabelConfig = from './makeBabelConfig';
-import makeEslintConfig = from './makeEslintConfig';
-import makeWebpackConfig = from './makeWebpackConfig';
-import Html = from './components/Html';
-import Head = from './components/Head';
-import Body = from './components/Body';
+var runServer = require('./bootstrap/server/run');
+var runWebpackDevServer = require('./bootstrap/webpackDevServer/run');
+var makeBabelConfig = require('./config/babel');
+var makeEslintConfig = require('./config/eslint');
+var makeWebpackConfig = require('./config/webpack.dev');
+var registerBabel = require('./bootstrap/helpers/registerBabel');
+var babelConfig = require('./config/babel');
+// import Html from './components/Html';
+// import Head from './components/Head';
+// import Body from './components/Body';
 
-export default {
+// babel registration (runtime transpilation for node)
+registerBabel(babelConfig);
+
+module.exports = {
   runServer,
   runWebpackDevServer,
   makeBabelConfig,
-  makeBabelConfig,
-  makeBabelConfig,
-  Html,
-  Head,
-  Body,
+  makeEslintConfig,
+  makeWebpackConfig,
+  // Html,
+  // Head,
+  // Body,
 }

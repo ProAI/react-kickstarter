@@ -2,16 +2,12 @@
 
 var deepmerge = require('deepmerge');
 var WebpackIsomorphicTools = require('webpack-isomorphic-tools');
-var bootstrapHttpServer = require('./bootstrapHttpServer');
-var defaultConfig = require('./configServer');
-var registerBabel = require('./helpers/registerBabel');
+var defaultConfig = require('./defaultConfig');
+var deepmerge = require('deepmerge');
 
-module.exports = function runServer(serverConfig, appConfig, isomorphicConfig, babelConfig) {
+module.exports = function runServer(customConfig) {
   // merge config
   var config = deepmerge(defaultConfig, customConfig);
-
-  // babel registration (runtime transpilation for node)
-  registerBabel(config.babel);
 
   // define isomorphic constants
   global.__CLIENT__ = false;
@@ -19,9 +15,10 @@ module.exports = function runServer(serverConfig, appConfig, isomorphicConfig, b
   global.__DISABLE_SSR__ = config.isomorphic.enable;  // <----- DISABLES SERVER SIDE RENDERING FOR ERROR DEBUGGING
   global.__DEVELOPMENT__ = config.env !== 'production';
   global.__DLLS__ = config.app.includeDlls;
-  global.webpackIsomorphicTools = new WebpackIsomorphicTools(config.isomorphic.config)
+  global.webpackIsomorphicTools = new WebpackIsomorphicTools(require('../../config/webpack-isomorphic-tools'))
     .development(__DEVELOPMENT__)
     .server(config.root, function() {
-      bootstrapHttpServer(config);
+      var createHttpServer = require('./createHttpServer');
+      createHttpServer(config);
     });
 };
