@@ -1,3 +1,4 @@
+import React from 'react';
 import ReactDOM from 'react-dom/server';
 import addCookie from '../utils/addCookie';
 import detectDevice from '../utils/detectDevice';
@@ -6,6 +7,8 @@ import getLocaleFromHeader from '../utils/getLocaleFromHeader';
 import getLocaleFromCookies from '../utils/getLocaleFromCookies';
 import stripLocaleFromUrl from '../utils/stripLocaleFromUrl';
 import generateCsrfToken from '../utils/generateCsrfToken';
+import paths from '../../config/paths';
+import serialize from 'serialize-javascript';
 import 'isomorphic-fetch';
 
 export default function createAppOnServer(config) {
@@ -14,10 +17,10 @@ export default function createAppOnServer(config) {
     const meta = {};
 
     // auto detect locale
-    if (config.app.locale.autoDetect) {
-      meta.localeFromUrl = getLocaleFromUrl(req.originalUrl, config.app.locale.available);
-      meta.localeFromHeader = getLocaleFromHeader(req.headers['accept-language'], config.app.locale.available);
-      meta.localeFromCookies = getLocaleFromCookies(req.cookies, config.app.locale.available);
+    if (config.locale.autoDetect) {
+      meta.localeFromUrl = getLocaleFromUrl(req.originalUrl, config.locale.supported);
+      meta.localeFromHeader = getLocaleFromHeader(req.headers['accept-language'], config.locale.supported);
+      meta.localeFromCookies = getLocaleFromCookies(req.cookies, config.locale.supported);
 
       if (meta.localeFromUrl) {
         meta.locale = meta.localeFromUrl;
@@ -26,7 +29,7 @@ export default function createAppOnServer(config) {
       } else if (meta.localeFromCookies) {
         meta.locale = meta.localeFromCookies;
       } else {
-        meta.locale = config.app.locale.default;
+        meta.locale = config.locale.default;
       }
 
       meta.urlWithoutLocale = (meta.localeFromUrl)
@@ -43,7 +46,7 @@ export default function createAppOnServer(config) {
     }
 
     // auto detect device
-    if (config.app.device.autoDetect) {
+    if (config.device.autoDetect) {
       if (req.cookies.view === 'mobile' || req.cookies.view === 'desktop') {
         meta.device = req.cookies.view;
       } else {
@@ -52,7 +55,7 @@ export default function createAppOnServer(config) {
     }
 
     // generate csrf token
-    if (config.app.csrfToken) {
+    if (config.csrfToken) {
       if (req.cookies.csrf === undefined) {
         meta.csrfToken = generateCsrfToken();
         addCookie(req, res, {
@@ -65,6 +68,9 @@ export default function createAppOnServer(config) {
       }
     }
 
+    // basename
+    meta.basename = meta.localeFromUrl ? `/${meta.localeFromUrl}` : '';
+
     if (config.env === 'development') {
       // Do not cache webpack stats: the script file would change since
       // hot module replacement is enabled in the development env
@@ -76,18 +82,17 @@ export default function createAppOnServer(config) {
     }
 
     /* CUSTOM CODE START */
-    const render = (component) => {
-      res.status(200).send(`<!doctype html>
-        ${ReactDOM.renderToString(
-          <Html
-            assets={webpackIsomorphicTools.assets()}
-            meta={meta}
-            url={cleanUrl}
-            store={store}
-            component={component}
-          />
-        )}
-      `);
+    const render = (component, initialState) => {
+      const renderHtml = require(paths.htmlFile);
+
+      const html = renderHtml(
+        ReactDOM.renderToString(component),
+        webpackIsomorphicTools.assets(),
+        serialize(initialState),
+        meta,
+      );
+
+      res.status(200).send(html);
     };
 
     const redirect = (path) => {
@@ -101,7 +106,8 @@ export default function createAppOnServer(config) {
       }
     }
 
-    // todo: import hydrate function
+    const hydrate = require(paths.serverEntry);
+
     hydrate(meta, {
       error,
       redirect,

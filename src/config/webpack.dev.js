@@ -42,7 +42,7 @@ var webpackConfig = {
       'react-hot-loader/patch',
       '-!style!raw!sass!'+paths.app+'/theme/scss/examunity-bootstrap.dev.scss',
       '-!style!css!sass!'+paths.app+'/theme/scss/examunity-fonts.scss',
-      './app/client.js'
+      paths.clientEntry,
     ]
   },
   output: {

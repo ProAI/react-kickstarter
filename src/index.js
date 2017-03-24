@@ -1,9 +1,9 @@
 var runServer = require('./bootstrap/server/run');
-var runWebpackDevServer = require('./bootstrap/webpackDevServer/run');
-var makeBabelConfig = require('./config/babel');
-var makeEslintConfig = require('./config/eslint');
-var makeWebpackConfig = require('./config/webpack.dev');
-var registerBabel = require('./bootstrap/helpers/registerBabel');
+var runWebpackDevServer = require('./bootstrap/devServer/run');
+// var makeBabelConfig = require('./config/babel');
+// var makeEslintConfig = require('./config/eslint');
+// var makeWebpackConfig = require('./config/webpack.dev');
+var registerBabel = require('./bootstrap/utils/registerBabel');
 var babelConfig = require('./config/babel');
 // import Html from './components/Html';
 // import Head from './components/Head';
@@ -15,9 +15,9 @@ registerBabel(babelConfig);
 module.exports = {
   runServer,
   runWebpackDevServer,
-  makeBabelConfig,
-  makeEslintConfig,
-  makeWebpackConfig,
+  // makeBabelConfig,
+  // makeEslintConfig,
+  // makeWebpackConfig,
   // Html,
   // Head,
   // Body,

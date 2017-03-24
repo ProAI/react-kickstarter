@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 var createHttpServer = require('./createHttpServer');
 var defaultConfig = require('./defaultConfig');
 var deepmerge = require('deepmerge');

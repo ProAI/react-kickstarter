@@ -1,6 +1,3 @@
-#!/usr/bin/env node
-
-var deepmerge = require('deepmerge');
 var WebpackIsomorphicTools = require('webpack-isomorphic-tools');
 var defaultConfig = require('./defaultConfig');
 var deepmerge = require('deepmerge');

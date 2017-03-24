@@ -11,6 +11,9 @@ function resolveApp(relativePath) {
 module.exports = {
   root: resolveApp(''),
   app: resolveApp('app'),
+  clientEntry: resolveApp('app/client.js'),
+  serverEntry: resolveApp('app/server.js'),
+  htmlFile: resolveApp('app/html.js'),
   node: resolveApp('node_modules'),
   static: resolveApp('static'),
   assets: resolveApp('static/dist'),

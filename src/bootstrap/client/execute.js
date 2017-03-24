@@ -2,22 +2,26 @@ import 'babel-polyfill';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import paths from '../../config/paths';
+import getLocaleFromUrl from '../utils/getLocaleFromUrl';
 import 'isomorphic-fetch';
 
 const meta = {};
+
 // get locale
+meta.locale = document.getElementsByTagName('html')[0].getAttribute('lang');
+meta.localeFromUrl = meta.localeFromUrl = getLocaleFromUrl(window.location.pathname, ['de', 'en']); // todo
+
+// basename
+meta.basename = meta.localeFromUrl ? `/${meta.localeFromUrl}` : '';
 
 /* CUSTOM CODE START */
 const render = (component) => {
   ReactDOM.render(component, document.getElementById('content'));
 };
 
-// todo: import hydrate function
 const hydrate = require(paths.clientEntry);
 
-hydrate(meta, {
-  render
-});
+hydrate(meta, { render });
 /* CUSTOM CODE END */
 
 if (__DEVELOPMENT__) {

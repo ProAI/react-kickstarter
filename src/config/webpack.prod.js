@@ -16,7 +16,7 @@ module.exports = {
   context: paths.root,
   entry: {
     'main': [
-      './app/client.js',
+      paths.clientEntry,
       '-!' + ExtractTextPlugin.extract('style', 'css!sass!./app/theme/scss/examunity-fonts.scss')
     ],
     'mobile': [
