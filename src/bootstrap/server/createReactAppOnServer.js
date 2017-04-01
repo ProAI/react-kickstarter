@@ -13,30 +13,28 @@ import 'isomorphic-fetch';
 
 export default function createAppOnServer(config) {
   return (req, res) => {
-    // meta data
-    const meta = {};
-
     // auto detect locale
-    if (config.locale.autoDetect) {
-      meta.localeFromUrl = getLocaleFromUrl(req.originalUrl, config.locale.supported);
-      meta.localeFromHeader = getLocaleFromHeader(req.headers['accept-language'], config.locale.supported);
-      meta.localeFromCookies = getLocaleFromCookies(req.cookies, config.locale.supported);
+    let locale, localeFromUrl, localeFromHeader, localeFromCookies, urlWithoutLocale;
+    if (true || config.locale.autoDetect) {
+      localeFromUrl = getLocaleFromUrl(req.originalUrl, config.locale.supported);
+      localeFromHeader = getLocaleFromHeader(req.headers['accept-language'], config.locale.supported);
+      localeFromCookies = getLocaleFromCookies(req.cookies, config.locale.supported);
 
-      if (meta.localeFromUrl) {
-        meta.locale = meta.localeFromUrl;
-      } else if (meta.localeFromHeader) {
-        meta.locale = meta.localeFromHeader;
-      } else if (meta.localeFromCookies) {
-        meta.locale = meta.localeFromCookies;
+      if (localeFromUrl) {
+        locale = localeFromUrl;
+      } else if (localeFromHeader) {
+        locale = localeFromHeader;
+      } else if (localeFromCookies) {
+        locale = localeFromCookies;
       } else {
-        meta.locale = config.locale.default;
+        locale = config.locale.default;
       }
 
-      meta.urlWithoutLocale = (meta.localeFromUrl)
-        ? stripLocaleFromUrl(req.originalUrl, meta.localeFromUrl)
+      urlWithoutLocale = (localeFromUrl)
+        ? stripLocaleFromUrl(req.originalUrl, localeFromUrl)
         : req.originalUrl;
 
-      if (!meta.localeFromCookies) {
+      if (!localeFromCookies) {
         addCookie(req, res, {
           name: 'lang',
           value: locale,
@@ -46,31 +44,45 @@ export default function createAppOnServer(config) {
     }
 
     // auto detect device
+    let device;
     if (config.device.autoDetect) {
       if (req.cookies.view === 'mobile' || req.cookies.view === 'desktop') {
-        meta.device = req.cookies.view;
+        device = req.cookies.view;
       } else {
-        meta.device = detectDevice(req.headers['user-agent']);
+        device = detectDevice(req.headers['user-agent']);
       }
     }
 
     // generate csrf token
+    let csrfToken;
     if (config.csrfToken) {
       if (req.cookies.csrf === undefined) {
-        meta.csrfToken = generateCsrfToken();
+        csrfToken = generateCsrfToken();
         addCookie(req, res, {
           name: 'csrf',
-          value: meta.csrfToken,
+          value: csrfToken,
           options: { httpOnly: true }
         });
       } else {
-        meta.csrfToken = req.cookies.csrf;
+        csrfToken = req.cookies.csrf;
       }
     }
 
     // basename
-    meta.basename = meta.localeFromUrl ? `/${meta.localeFromUrl}` : '';
+    const basename = localeFromUrl ? `/${localeFromUrl}` : '';
 
+    // create meta data object
+    const meta = {
+      locale,
+      localeFromUrl,
+      localeFromHeader,
+      localeFromCookies,
+      urlWithoutLocale,
+      csrfToken,
+      basename,
+    };
+
+    // development
     if (config.env === 'development') {
       // Do not cache webpack stats: the script file would change since
       // hot module replacement is enabled in the development env

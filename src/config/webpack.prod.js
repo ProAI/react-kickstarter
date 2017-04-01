@@ -6,17 +6,19 @@ var WebpackIsomorphicToolsPlugin = require('webpack-isomorphic-tools/plugin');
 var CleanPlugin = require('clean-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var strip = require('strip-loader');
+var path = require('path');
 var paths = require('./paths');
 var babelConfig = require('./babel.js');
 
 var webpackIsomorphicToolsPlugin = new WebpackIsomorphicToolsPlugin(require('./webpack-isomorphic-tools'));
+var clientEntry = path.join(__dirname, '/../bootstrap/client/execute.js');
 
 module.exports = {
   devtool: 'source-map',
   context: paths.root,
   entry: {
     'main': [
-      paths.clientEntry,
+      clientEntry,
       '-!' + ExtractTextPlugin.extract('style', 'css!sass!./app/theme/scss/examunity-fonts.scss')
     ],
     'mobile': [

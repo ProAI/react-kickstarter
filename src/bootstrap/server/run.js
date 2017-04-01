@@ -9,7 +9,7 @@ module.exports = function runServer(customConfig) {
   // define isomorphic constants
   global.__CLIENT__ = false;
   global.__SERVER__ = true;
-  global.__DISABLE_SSR__ = config.isomorphic.enable;  // <----- DISABLES SERVER SIDE RENDERING FOR ERROR DEBUGGING
+  global.__DISABLE_SSR__ = false;  // <----- DISABLES SERVER SIDE RENDERING FOR ERROR DEBUGGING
   global.__DEVELOPMENT__ = config.env !== 'production';
   global.__DLLS__ = config.app.includeDlls;
   global.webpackIsomorphicTools = new WebpackIsomorphicTools(require('../../config/webpack-isomorphic-tools'))

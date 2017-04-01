@@ -9,20 +9,22 @@ var installVendorDll = require('./utils/installVendorDll');
 var isValidDlls = require('./utils/isValidDlls');
 var paths = require('./paths');
 var babelConfig = require('./babel.js');
-var eslintConfig = {
-  configFile: path.join(paths.config, 'eslint.js')
-};
+/* var eslintConfig = {
+  configFile: path.join(__dirname, '/eslint.js')
+};*/
 
 var host = 'localhost';
 var port = 8081;
+var dlls = false;
+var clientEntry = path.join(__dirname, '/../bootstrap/client/execute.js');
 
 var webpackIsomorphicToolsPlugin = new WebpackIsomorphicToolsPlugin(require('./webpack-isomorphic-tools'));
 
 // https://github.com/bertho-zero/react-redux-universal-hot-example
-if (process.env.WEBPACK_DLLS === '1') {
+if (dlls) {
   var validDlls = isValidDlls(['vendor'], paths.assets);
   if(!validDlls) {
-    process.env.WEBPACK_DLLS = '0';
+    process.env.DEV_WEBPACK_DLLS = '0';
     console.warn('Webpack: Dlls are disabled.');
   }
 }
@@ -40,9 +42,9 @@ var webpackConfig = {
     'main': [
       'webpack-hot-middleware/client?path=http://' + host + ':' + port + '/__webpack_hmr',
       'react-hot-loader/patch',
-      '-!style!raw!sass!'+paths.app+'/theme/scss/examunity-bootstrap.dev.scss',
-      '-!style!css!sass!'+paths.app+'/theme/scss/examunity-fonts.scss',
-      paths.clientEntry,
+      '-!style!raw!sass!./app/theme/scss/examunity-bootstrap.dev.scss',
+      '-!style!css!sass!./app/theme/scss/examunity-fonts.scss',
+      clientEntry,
     ]
   },
   output: {
@@ -60,7 +62,7 @@ var webpackConfig = {
         loaders: [
           'react-hot-loader/webpack',
           'babel?' + JSON.stringify(babelConfig),
-          'eslint?' + JSON.stringify(eslintConfig)
+          // 'eslint?' + JSON.stringify(eslintConfig)
         ]
       },
       {
@@ -116,7 +118,7 @@ var webpackConfig = {
       __SERVER__: false,
       __DEVELOPMENT__: true,
       __DEVTOOLS__: false, // <-------- DISABLE redux-devtools HERE
-      __DLLS__: process.env.WEBPACK_DLLS === '1'
+      __DLLS__: dlls
     }),
 
     // isomorphic
@@ -129,7 +131,7 @@ var webpackConfig = {
   ]
 };
 
-if (process.env.WEBPACK_DLLS === '1' && validDlls) {
+if (dlls && validDlls) {
   installVendorDll(webpackConfig, 'vendor');
 }
 

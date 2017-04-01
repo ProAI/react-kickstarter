@@ -8,7 +8,7 @@ module.exports = function runDevServer(customConfig) {
 
   // add contentBase and publicPath to config
   config.server.contentBase = 'http://' + config.host + ':' + config.port;
-  config.server.publicPath = config.webpack.output.publicPath;
+  config.server.publicPath = 'http://' + config.host + ':' + config.port + '/dist/';
 
   // start server
   createHttpServer(config);

@@ -8,6 +8,7 @@ module.exports = {
     "add-module-exports",
     "transform-class-properties",
     "transform-object-rest-spread",
-    "transform-runtime"
+    "transform-runtime",
+    "react-hot-loader/babel"
   ]
 };
