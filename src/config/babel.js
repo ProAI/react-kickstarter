@@ -1,14 +1,13 @@
 module.exports = {
   "babelrc": false,
   "presets": [
-    "latest",
-    "react"
+    require.resolve('babel-preset-env'),
+    require.resolve("babel-preset-react")
   ],
   "plugins": [
-    "add-module-exports",
-    "transform-class-properties",
-    "transform-object-rest-spread",
-    "transform-runtime",
-    "react-hot-loader/babel"
+    require.resolve("babel-plugin-add-module-exports"),
+    require.resolve("babel-plugin-transform-class-properties"),
+    require.resolve("babel-plugin-transform-object-rest-spread"),
+    require.resolve("babel-plugin-transform-runtime")
   ]
 };

@@ -1,49 +1,37 @@
-require('babel-polyfill');
-
 // Webpack config for development
-var path = require('path');
-var webpack = require('webpack');
-var WebpackIsomorphicToolsPlugin = require('webpack-isomorphic-tools/plugin');
-var createHappyPlugin = require('./utils/createHappyPlugin');
-var installVendorDll = require('./utils/installVendorDll');
-var isValidDlls = require('./utils/isValidDlls');
-var paths = require('./paths');
-var babelConfig = require('./babel.js');
-/* var eslintConfig = {
-  configFile: path.join(__dirname, '/eslint.js')
-};*/
+const autoprefixer = require('autoprefixer');
+const path = require('path');
+const webpack = require('webpack');
+const WebpackIsomorphicToolsPlugin = require('webpack-isomorphic-tools/plugin');
+const paths = require('./paths');
+const babelConfig = require('./babel.js');
+const eslintConfig = require('./eslint.js');
 
-var host = 'localhost';
-var port = 8081;
-var dlls = false;
-var clientEntry = path.join(__dirname, '/../bootstrap/client/execute.js');
+const host = 'localhost';
+const port = 8081;
+const clientEntry = path.join(__dirname, '/../bootstrap/client/execute.js');
+const ownNodeModules = path.join(__dirname, '/../../node_modules');
 
-var webpackIsomorphicToolsPlugin = new WebpackIsomorphicToolsPlugin(require('./webpack-isomorphic-tools'));
+process.traceDeprecation = true;
 
-// https://github.com/bertho-zero/react-redux-universal-hot-example
-if (dlls) {
-  var validDlls = isValidDlls(['vendor'], paths.assets);
-  if(!validDlls) {
-    process.env.DEV_WEBPACK_DLLS = '0';
-    console.warn('Webpack: Dlls are disabled.');
-  }
-}
+const webpackIsomorphicToolsPlugin = new WebpackIsomorphicToolsPlugin(require('./webpack-isomorphic-tools'));
 
-var includePaths = [
+const includePaths = [
   paths.app,
   path.join(paths.root, '..', 'react-essentials', 'src'),
   path.join(paths.root, '..', 'react-kickstarter', 'src')
 ];
 
-var webpackConfig = {
+const webpackConfig = {
   devtool: 'cheap-module-eval-source-map',
   context: paths.root,
   entry: {
     'main': [
-      'webpack-hot-middleware/client?path=http://' + host + ':' + port + '/__webpack_hmr',
-      'react-hot-loader/patch',
-      '-!style!raw!sass!./app/theme/scss/examunity-bootstrap.dev.scss',
-      '-!style!css!sass!./app/theme/scss/examunity-fonts.scss',
+      require.resolve('webpack-hot-middleware/client') + '?path=http://' + host + ':' + port + '/__webpack_hmr',
+      require.resolve('react-hot-loader/patch'),
+      require.resolve('babel-polyfill'),
+      '-!style-loader!raw-loader!sass-loader!./app/theme/scss/examunity-bootstrap.dev.scss',
+      '-!style-loader!css-loader!sass-loader!./app/theme/scss/examunity-fonts.scss',
       clientEntry,
     ]
   },
@@ -54,39 +42,130 @@ var webpackConfig = {
     publicPath: 'http://' + host + ':' + port + '/dist/'
   },
   module: {
-    loaders: [
+    rules: [
+      // Disable require.ensure as it's not a standard language feature.
+      { parser: { requireEnsure: false } },
+      // First, run the linter.
+      // It's important to do this before Babel processes the JS.
       {
-        happy: { id: 'jsx' },
-        test: /\.jsx?$/,
+        test: /\.(js|jsx)$/,
         include: includePaths,
-        loaders: [
-          'react-hot-loader/webpack',
-          'babel?' + JSON.stringify(babelConfig),
-          // 'eslint?' + JSON.stringify(eslintConfig)
+        enforce: 'pre',
+        use: [
+          {
+            loader: 'eslint-loader',
+            // Point ESLint to our predefined config.
+            options: {
+              // useEslintrc: false,
+              baseConfig: eslintConfig,
+            }
+          },
+        ],
+      },
+      // Process react-hot-loader and process JS with Babel.
+      {
+        test: /\.(js|jsx)$/,
+        include: includePaths,
+        use: [
+          {
+            loader: 'react-hot-loader/webpack',
+          },
+          {
+            loader: 'babel-loader',
+            // This causes a deprecation warning that is fixed in v7.0.0-alpha.2
+            // https://github.com/babel/babel-loader/pull/391
+            options: Object.assign({}, babelConfig, { cacheDirectory: true })
+          }
         ]
       },
       {
-        happy: { id: 'json' },
-        test: /\.json$/,
-        include: includePaths,
-        loader: 'json'
-      },
-      {
-        happy: { id: 'sass' },
         test: /\.scss$/,
         include: includePaths,
-        loader: 'style!css?modules&importLoaders=2&sourceMap&localIdentName=[local]___[hash:base64:5]!postcss?browsers=last 2 version!sass?outputStyle=expanded&sourceMap'
+        use: [
+          {
+            loader: 'style-loader',
+          },
+          {
+            loader: 'css-loader',
+            options: {
+              modules: true,
+              importLoaders: 2,
+              sourceMap: true,
+              localIdentName: '[local]___[hash:base64:5]',
+            }
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              ident: 'postcss', // https://webpack.js.org/guides/migrating/#complex-options
+              plugins: () => [
+                autoprefixer({
+                  browsers: [
+                    '>1%',
+                    'last 4 versions',
+                    'Firefox ESR',
+                    'not ie < 9', // React doesn't support IE8 anyway
+                  ],
+                })
+              ]
+            }
+          },
+          {
+            loader: 'sass-loader',
+            options: {
+              outputStyle: 'expanded',
+              sourceMap: true
+            }
+          }
+        ]
       },
-      { test: /\.woff2?(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=application/font-woff" },
-      { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=application/octet-stream" },
-      { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file" },
-      { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=image/svg+xml" },
-      { test: webpackIsomorphicToolsPlugin.regular_expression('images'), loader: 'url-loader?limit=10240' }
+      {
+        test: /\.woff2?(\?v=\d+\.\d+\.\d+)?$/,
+        loader: 'url-loader',
+        options: {
+          limit: 10000,
+          mimetype: 'application/font-woff'
+        }
+      },
+      {
+        test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
+        loader: 'url-loader',
+        options: {
+          limit: 10000,
+          mimetype: 'application/octet-stream'
+        }
+      },
+      {
+        test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
+        loader: 'file-loader'
+      },
+      {
+        test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+        loader: 'url-loader',
+        options: {
+          limit: 10000,
+          mimetype: 'image/svg+xml'
+        }
+      },
+      {
+        test: webpackIsomorphicToolsPlugin.regular_expression('images'),
+        loader: 'url-loader',
+        options: {
+          limit: 10240
+        }
+      }
     ]
   },
-  progress: true,
+  // Resolve loaders (webpack plugins for CSS, images, transpilation) from the
+  // directory of `react-scripts` itself rather than the project directory.
+  resolveLoader: {
+    modules: [
+      ownNodeModules,
+      paths.node,
+    ],
+  },
   resolve: {
-    modulesDirectories: [
+    modules: [
       paths.app,
       paths.node
     ],
@@ -96,7 +175,7 @@ var webpackConfig = {
       'react-kickstarter/lib': path.join(paths.root, '..', 'react-kickstarter', 'src'),
       'react-kickstarter': path.join(paths.root, '..', 'react-kickstarter', 'src', 'index.js'),
     },
-    extensions: ['', '.json', '.js', '.jsx']
+    extensions: ['.json', '.js', '.jsx']
   },
   plugins: [
     // only load required languages for moment.js
@@ -117,22 +196,25 @@ var webpackConfig = {
       __CLIENT__: true,
       __SERVER__: false,
       __DEVELOPMENT__: true,
-      __DEVTOOLS__: false, // <-------- DISABLE redux-devtools HERE
-      __DLLS__: dlls
+      __DEVTOOLS__: false // <-------- DISABLE redux-devtools HERE
     }),
 
     // isomorphic
     webpackIsomorphicToolsPlugin.development(),
-
-    // happypack for faster init builds
-    createHappyPlugin('jsx'),
-    createHappyPlugin('json'),
-    createHappyPlugin('sass')
-  ]
+  ],
+  // Some libraries import Node modules but don't use them in the browser.
+  // Tell Webpack to provide empty mocks for them so importing them works.
+  node: {
+    fs: 'empty',
+    net: 'empty',
+    tls: 'empty',
+  },
+  // Turn off performance hints during development because we don't do any
+  // splitting or minification in interest of speed. These warnings become
+  // cumbersome.
+  performance: {
+    hints: false,
+  }
 };
-
-if (dlls && validDlls) {
-  installVendorDll(webpackConfig, 'vendor');
-}
 
 module.exports = webpackConfig;

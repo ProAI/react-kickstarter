@@ -98,9 +98,9 @@ export default function createAppOnServer(config) {
       const renderHtml = require(paths.htmlFile);
 
       const html = renderHtml(
-        ReactDOM.renderToString(component),
+        component ? ReactDOM.renderToString(component) : '',
         webpackIsomorphicTools.assets(),
-        serialize(initialState),
+        initialState ? serialize(initialState) : '{}',
         meta,
       );
 
@@ -116,6 +116,11 @@ export default function createAppOnServer(config) {
       if (message) {
         res.send(message)
       }
+    }
+
+    if (__DISABLE_SSR__) {
+      render();
+      return;
     }
 
     const hydrate = require(paths.serverEntry);
