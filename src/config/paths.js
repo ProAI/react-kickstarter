@@ -15,8 +15,8 @@ module.exports = {
   serverEntry: resolveApp('app/server.js'),
   htmlFile: resolveApp('app/html.js'),
   node: resolveApp('node_modules'),
-  static: resolveApp('static'),
-  assets: resolveApp('static/dist'),
+  public: resolveApp('public'),
+  assets: resolveApp('public/dist'),
   config: resolveApp('config'),
   webpackCache: findCacheDir({ name: 'webpack' })
 }

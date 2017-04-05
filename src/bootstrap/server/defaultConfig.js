@@ -4,7 +4,7 @@ module.exports = {
   host: 'localhost',
   port: 8080,
   root: paths.root,
-  static: paths.static,
+  public: paths.public,
   proxies: [],
   enableSSR: true,
   enableCookies: true,

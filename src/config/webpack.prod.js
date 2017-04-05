@@ -158,7 +158,7 @@ module.exports = {
     // css files from the extract-text-plugin loader
     new ExtractTextPlugin({
       filename: '[name]-[chunkhash].css',
-      // allChunks: true,
+      allChunks: true,
     }),
 
     // define process.env constants

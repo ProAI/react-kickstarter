@@ -22,7 +22,8 @@ module.exports = function build(customConfig) {
 
     console.log(stats.toString({
       chunks: false,  // Makes the build much quieter
-      colors: true    // Shows colors in the console
+      colors: true,    // Shows colors in the console
+      children: false,
     }));
   });
 };

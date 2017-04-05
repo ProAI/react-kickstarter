@@ -30,7 +30,7 @@ export default function createHttpServer(config) {
   }
 
   // static directory middleware
-  app.use(Express.static(config.static));
+  app.use(Express.static(config.public));
 
   // initialize app middleware
   app.use(createReactAppOnServer(config.app, config.enableCookies, config.enableSSR));
