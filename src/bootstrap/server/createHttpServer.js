@@ -8,8 +8,8 @@ import createReactAppOnServer from './createReactAppOnServer';
 
 export default function createHttpServer(config) {
   // create server
-  var app = new Express();
-  var server = new http.Server(app);
+  const app = new Express();
+  const server = new http.Server(app);
 
   // proxy middleware
   config.proxies.forEach((proxy) => {
@@ -17,9 +17,7 @@ export default function createHttpServer(config) {
   });
 
   // compression middleware
-  if (config.compression) {
-    app.use(compression());
-  }
+  app.use(compression());
 
   // favicon middleware
   if (config.favicon) {
@@ -27,7 +25,7 @@ export default function createHttpServer(config) {
   }
 
   // cookies middleware
-  if (config.cookies) {
+  if (config.enableCookies) {
     app.use(cookieParser());
   }
 
@@ -35,7 +33,7 @@ export default function createHttpServer(config) {
   app.use(Express.static(config.static));
 
   // initialize app middleware
-  app.use(createReactAppOnServer(config.app));
+  app.use(createReactAppOnServer(config.app, config.enableCookies, config.enableSSR));
 
   // start server
   if (config.port && config.host) {

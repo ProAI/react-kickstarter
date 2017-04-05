@@ -9,17 +9,12 @@ const eslintConfig = require('./eslint.js');
 
 const host = 'localhost';
 const port = 8081;
-const clientEntry = path.join(__dirname, '/../bootstrap/client/execute.js');
-const ownNodeModules = path.join(__dirname, '/../../node_modules');
-
-process.traceDeprecation = true;
 
 const webpackIsomorphicToolsPlugin = new WebpackIsomorphicToolsPlugin(require('./webpack-isomorphic-tools'));
 
 const includePaths = [
   paths.app,
-  path.join(paths.root, '..', 'react-essentials', 'src'),
-  path.join(paths.root, '..', 'react-kickstarter', 'src')
+  path.join(paths.node, 'react-kickstarter/src/bootstrap')
 ];
 
 const webpackConfig = {
@@ -30,10 +25,8 @@ const webpackConfig = {
       require.resolve('webpack-hot-middleware/client') + '?path=http://' + host + ':' + port + '/__webpack_hmr',
       require.resolve('react-hot-loader/patch'),
       require.resolve('babel-polyfill'),
-      '-!style-loader!raw-loader!sass-loader!./app/theme/scss/examunity-bootstrap.dev.scss',
-      '-!style-loader!css-loader!sass-loader!./app/theme/scss/examunity-fonts.scss',
-      clientEntry,
-    ]
+      path.join(__dirname, '/../bootstrap/client/execute.js'),
+    ],
   },
   output: {
     path: paths.assets,
@@ -56,7 +49,6 @@ const webpackConfig = {
             loader: 'eslint-loader',
             // Point ESLint to our predefined config.
             options: {
-              // useEslintrc: false,
               baseConfig: eslintConfig,
             }
           },
@@ -78,8 +70,9 @@ const webpackConfig = {
           }
         ]
       },
+      // Define rules for sass files
       {
-        test: /\.scss$/,
+        test: /.*[^\.raw]\.scss$/,
         include: includePaths,
         use: [
           {
@@ -88,10 +81,9 @@ const webpackConfig = {
           {
             loader: 'css-loader',
             options: {
-              modules: true,
               importLoaders: 2,
-              sourceMap: true,
-              localIdentName: '[local]___[hash:base64:5]',
+              // sourceMap: true,
+              // localIdentName: '[local]___[hash:base64:5]',
             }
           },
           {
@@ -112,28 +104,54 @@ const webpackConfig = {
           },
           {
             loader: 'sass-loader',
-            options: {
-              outputStyle: 'expanded',
-              sourceMap: true
-            }
+            // options: { sourceMap: true }
           }
         ]
       },
+      // Define rules for .raw.scss sass files. These files will be loaded with
+      // raw-loader in development in order to save some build time.
+      {
+        test: /.*[\.raw]\.scss$/,
+        include: includePaths,
+        use: [
+          {
+            loader: 'style-loader',
+          },
+          {
+            loader: 'raw-loader',
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              ident: 'postcss', // https://webpack.js.org/guides/migrating/#complex-options
+              plugins: () => [
+                autoprefixer({
+                  browsers: [
+                    '>1%',
+                    'last 4 versions',
+                    'Firefox ESR',
+                    'not ie < 9', // React doesn't support IE8 anyway
+                  ],
+                })
+              ]
+            }
+          },
+          {
+            loader: 'sass-loader',
+            // options: { sourceMap: true }
+          }
+        ]
+      },
+      // Process font files
       {
         test: /\.woff2?(\?v=\d+\.\d+\.\d+)?$/,
         loader: 'url-loader',
-        options: {
-          limit: 10000,
-          mimetype: 'application/font-woff'
-        }
+        options: { limit: 10000, mimetype: 'application/font-woff' }
       },
       {
         test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
         loader: 'url-loader',
-        options: {
-          limit: 10000,
-          mimetype: 'application/octet-stream'
-        }
+        options: { limit: 10000, mimetype: 'application/octet-stream' }
       },
       {
         test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
@@ -142,38 +160,31 @@ const webpackConfig = {
       {
         test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
         loader: 'url-loader',
-        options: {
-          limit: 10000,
-          mimetype: 'image/svg+xml'
-        }
+        options: { limit: 10000, mimetype: 'image/svg+xml' }
       },
+      // Process images
       {
         test: webpackIsomorphicToolsPlugin.regular_expression('images'),
         loader: 'url-loader',
-        options: {
-          limit: 10240
-        }
+        options: { limit: 10000 }
       }
     ]
   },
-  // Resolve loaders (webpack plugins for CSS, images, transpilation) from the
-  // directory of `react-scripts` itself rather than the project directory.
+  // Resolve node modules from node_modules app and react-kickstarter directory
   resolveLoader: {
     modules: [
-      ownNodeModules,
+      path.join(__dirname, '/../../node_modules'),
       paths.node,
     ],
   },
   resolve: {
     modules: [
-      paths.app,
+      paths.app, // todo: point to the entry directory to only resolve client.js
       paths.node
     ],
     alias: {
       'react-essentials/lib': path.join(paths.root, '..', 'react-essentials', 'src'),
       'react-essentials': path.join(paths.root, '..', 'react-essentials', 'src', 'index.js'),
-      'react-kickstarter/lib': path.join(paths.root, '..', 'react-kickstarter', 'src'),
-      'react-kickstarter': path.join(paths.root, '..', 'react-kickstarter', 'src', 'index.js'),
     },
     extensions: ['.json', '.js', '.jsx']
   },
@@ -187,16 +198,12 @@ const webpackConfig = {
     // ignore webpack stats
     new webpack.IgnorePlugin(/webpack-stats\.json$/),
 
-    // constants
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: '"development"'
-      },
-
-      __CLIENT__: true,
-      __SERVER__: false,
-      __DEVELOPMENT__: true,
-      __DEVTOOLS__: false // <-------- DISABLE redux-devtools HERE
+    // define process.env constants
+    new webpack.EnvironmentPlugin({
+      NODE_ENV: 'development',
+      APP_MODE: 'development',
+      APP_ENV: 'client',
+      APP_PLATFORM: 'web',
     }),
 
     // isomorphic

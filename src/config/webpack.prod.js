@@ -1,32 +1,30 @@
-require('babel-polyfill');
-
 // Webpack config for creating the production bundle.
-var webpack = require('webpack');
-var WebpackIsomorphicToolsPlugin = require('webpack-isomorphic-tools/plugin');
-var CleanPlugin = require('clean-webpack-plugin');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var strip = require('strip-loader');
-var path = require('path');
-var paths = require('./paths');
-var babelConfig = require('./babel.js');
+const autoprefixer = require('autoprefixer');
+const webpack = require('webpack');
+const WebpackIsomorphicToolsPlugin = require('webpack-isomorphic-tools/plugin');
+const CleanPlugin = require('clean-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const path = require('path');
+const paths = require('./paths');
+const babelConfig = require('./babel.js');
+const eslintConfig = require('./eslint.js');
 
-var webpackIsomorphicToolsPlugin = new WebpackIsomorphicToolsPlugin(require('./webpack-isomorphic-tools'));
-var clientEntry = path.join(__dirname, '/../bootstrap/client/execute.js');
+const webpackIsomorphicToolsPlugin = new WebpackIsomorphicToolsPlugin(require('./webpack-isomorphic-tools'));
+
+const includePaths = [
+  paths.app,
+  path.join(paths.root, '..', 'react-essentials', 'src'),
+  path.join(paths.root, '..', 'react-kickstarter/src/bootstrap')
+];
 
 module.exports = {
   devtool: 'source-map',
   context: paths.root,
   entry: {
     'main': [
-      clientEntry,
-      '-!' + ExtractTextPlugin.extract('style', 'css!sass!./app/theme/scss/examunity-fonts.scss')
+      require.resolve('babel-polyfill'),
+      path.join(__dirname, '/../bootstrap/client/execute.js'),
     ],
-    'mobile': [
-      '-!' + ExtractTextPlugin.extract('style', 'css!sass!./app/theme/scss/examunity-bootstrap-mobile.prod.scss')
-    ],
-    'desktop': [
-      '-!' + ExtractTextPlugin.extract('style', 'css!sass!./app/theme/scss/examunity-bootstrap-desktop.prod.scss')
-    ]
   },
   output: {
     path: paths.assets,
@@ -35,24 +33,120 @@ module.exports = {
     publicPath: '/dist/'
   },
   module: {
-    loaders: [
-      { test: /\.jsx?$/, exclude: /node_modules/, loaders: [strip.loader('debug'), 'babel?' + JSON.stringify(babelConfig)] },
-      { test: /\.json$/, loader: 'json-loader' },
-      { test: /\.scss$/, loader: ExtractTextPlugin.extract('style', 'css?modules&importLoaders=2&sourceMap!postcss?browsers=last 2 version!sass?outputStyle=expanded&sourceMap=true&sourceMapContents=true') },
-      { test: /\.woff2?(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=application/font-woff" },
-      { test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=application/octet-stream" },
-      { test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file" },
-      { test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: "url?limit=10000&mimetype=image/svg+xml" },
-      { test: webpackIsomorphicToolsPlugin.regular_expression('images'), loader: 'url-loader?limit=10240' }
+    rules: [
+      // Disable require.ensure as it's not a standard language feature.
+      { parser: { requireEnsure: false } },
+      // First, run the linter.
+      // It's important to do this before Babel processes the JS.
+      {
+        test: /\.(js|jsx)$/,
+        include: includePaths,
+        enforce: 'pre',
+        use: [
+          {
+            loader: 'eslint-loader',
+            // Point ESLint to our predefined config.
+            options: {
+              baseConfig: eslintConfig,
+            }
+          },
+        ],
+      },
+      // Process JS with Babel.
+      {
+        test: /\.(js|jsx)$/,
+        include: includePaths,
+        use: [
+          {
+            loader: 'babel-loader',
+            // This causes a deprecation warning that is fixed in v7.0.0-alpha.2
+            // https://github.com/babel/babel-loader/pull/391
+            options: babelConfig
+          }
+        ]
+      },
+      // Define rules for sass files
+      {
+        test: /\.scss$/,
+        include: includePaths,
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: [
+            {
+              loader: 'css-loader',
+              options: {
+                importLoaders: 2,
+                // sourceMap: true
+              }
+            },
+            {
+              loader: 'postcss-loader',
+              options: {
+                ident: 'postcss', // https://webpack.js.org/guides/migrating/#complex-options
+                plugins: () => [
+                  autoprefixer({
+                    browsers: [
+                      '>1%',
+                      'last 4 versions',
+                      'Firefox ESR',
+                      'not ie < 9', // React doesn't support IE8 anyway
+                    ],
+                  })
+                ]
+              }
+            },
+            {
+              loader: 'sass-loader',
+              // options: { sourceMap: true }
+            }
+          ]
+        })
+      },
+      // Process font files
+      {
+        test: /\.woff2?(\?v=\d+\.\d+\.\d+)?$/,
+        loader: 'url-loader',
+        options: { limit: 10000, mimetype: 'application/font-woff' }
+      },
+      {
+        test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
+        loader: 'url-loader',
+        options: { limit: 10000, mimetype: 'application/octet-stream' }
+      },
+      {
+        test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
+        loader: 'file-loader'
+      },
+      {
+        test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
+        loader: 'url-loader',
+        options: { limit: 10000, mimetype: 'image/svg+xml' }
+      },
+      // Process images
+      {
+        test: webpackIsomorphicToolsPlugin.regular_expression('images'),
+        loader: 'url-loader',
+        options: { limit: 10000 }
+      }
     ]
   },
-  progress: true,
+  // Resolve node modules from node_modules app and react-kickstarter directory
+  resolveLoader: {
+    modules: [
+      path.join(__dirname, '/../../node_modules'),
+      paths.node,
+    ],
+  },
   resolve: {
-    modulesDirectories: [
+    modules: [
       paths.app,
       paths.node
     ],
-    extensions: ['', '.json', '.js', '.jsx']
+    alias: {
+      'react-essentials/lib': path.join(paths.root, '..', 'react-essentials', 'src'),
+      'react-essentials': path.join(paths.root, '..', 'react-essentials', 'src', 'index.js'),
+    },
+    extensions: ['.json', '.js', '.jsx']
   },
   plugins: [
     // clean old dist files
@@ -62,35 +156,46 @@ module.exports = {
     new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /de|fr/),
 
     // css files from the extract-text-plugin loader
-    new ExtractTextPlugin('[name]-[chunkhash].css', { allChunks: true }),
+    new ExtractTextPlugin({
+      filename: '[name]-[chunkhash].css',
+      // allChunks: true,
+    }),
 
-    // constants
-    new webpack.DefinePlugin({
-      'process.env': {
-        NODE_ENV: '"production"'
-      },
-
-      __CLIENT__: true,
-      __SERVER__: false,
-      __DEVELOPMENT__: false,
-      __DEVTOOLS__: false,
-      __DLLS__: false
+    // define process.env constants
+    new webpack.EnvironmentPlugin({
+      NODE_ENV: 'production',
+      APP_MODE: 'production',
+      APP_ENV: 'client',
+      APP_PLATFORM: 'web',
     }),
 
     // ignore dev config
-    new webpack.IgnorePlugin(/\.\/dev/, /\/config$/),
+    // new webpack.IgnorePlugin(/\.\/dev/, /\/config$/),
 
-    // optimizations
-    new webpack.optimize.DedupePlugin(),
-    new webpack.optimize.OccurenceOrderPlugin(),
+    // Minify the code.
     new webpack.optimize.UglifyJsPlugin({
-      sourceMap: false,
       compress: {
-        warnings: false
-      }
+        screw_ie8: true, // React doesn't support IE8
+        warnings: false,
+      },
+      mangle: {
+        screw_ie8: true,
+      },
+      output: {
+        comments: false,
+        screw_ie8: true,
+      },
+      // sourceMap: true,
     }),
 
     // isomorphic
     webpackIsomorphicToolsPlugin
-  ]
+  ],
+  // Some libraries import Node modules but don't use them in the browser.
+  // Tell Webpack to provide empty mocks for them so importing them works.
+  node: {
+    fs: 'empty',
+    net: 'empty',
+    tls: 'empty',
+  }
 };

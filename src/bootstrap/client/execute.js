@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { AppContainer as HotEnabler } from 'react-hot-loader';
 import getLocaleFromUrl from '../utils/getLocaleFromUrl';
 // import 'isomorphic-fetch';
 
@@ -19,18 +20,17 @@ const meta = {
 
 const dest = document.getElementById('content');
 
-/* CUSTOM CODE START */
-const render = (component) => {
-  ReactDOM.render(component, dest);
+// define render function for hydrate function
+const render = component => {
+  ReactDOM.render(<HotEnabler>{component}</HotEnabler>, dest);
 };
 
+// get hydrate function and hydrate
 // eslint-disable-next-line
 const hydrate = require('client');
-
 hydrate(meta, { render });
-/* CUSTOM CODE END */
 
-if (__DEVELOPMENT__) {
+if (process.env.APP_MODE === 'development') {
   window.React = React; // enable debugger
 
   if (!dest

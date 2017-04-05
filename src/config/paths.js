@@ -1,8 +1,8 @@
-var path = require('path');
-var findCacheDir = require('find-cache-dir');
-var fs = require('fs');
+const path = require('path');
+const findCacheDir = require('find-cache-dir');
+const fs = require('fs');
 
-var appDirectory = fs.realpathSync(process.cwd());
+const appDirectory = fs.realpathSync(process.cwd());
 
 function resolveApp(relativePath) {
   return path.resolve(appDirectory, relativePath);

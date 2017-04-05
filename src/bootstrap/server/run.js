@@ -1,21 +1,20 @@
-var WebpackIsomorphicTools = require('webpack-isomorphic-tools');
-var defaultConfig = require('./defaultConfig');
-var deepmerge = require('deepmerge');
+const WebpackIsomorphicTools = require('webpack-isomorphic-tools');
+const defaultConfig = require('./defaultConfig');
+const deepmerge = require('deepmerge');
 
 module.exports = function runServer(customConfig) {
   // merge config
-  var config = deepmerge(defaultConfig, customConfig);
+  const config = deepmerge(defaultConfig, customConfig);
 
-  // define isomorphic constants
-  global.__CLIENT__ = false;
-  global.__SERVER__ = true;
-  global.__DISABLE_SSR__ = false;  // <----- DISABLES SERVER SIDE RENDERING FOR ERROR DEBUGGING
-  global.__DEVELOPMENT__ = config.env !== 'production';
-  global.__DLLS__ = config.app.includeDlls;
+  // define process.env constants
+  process.env.APP_MODE = process.env.NODE_ENV;
+  process.env.APP_ENV = 'server';
+  process.env.APP_PLATFORM = 'web';
+
+  // define webpackIsomorphicTools constant
   global.webpackIsomorphicTools = new WebpackIsomorphicTools(require('../../config/webpack-isomorphic-tools'))
-    .development(__DEVELOPMENT__)
     .server(config.root, function() {
-      var createHttpServer = require('./createHttpServer');
+      const createHttpServer = require('./createHttpServer');
       createHttpServer(config);
     });
 };

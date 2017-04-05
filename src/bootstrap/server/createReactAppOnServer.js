@@ -11,11 +11,12 @@ import paths from '../../config/paths';
 import serialize from 'serialize-javascript';
 import 'isomorphic-fetch';
 
-export default function createAppOnServer(config) {
+export default function createAppOnServer(config, enableCookies, enableSSR) {
   return (req, res) => {
     // auto detect locale
     let locale, localeFromUrl, localeFromHeader, localeFromCookies, urlWithoutLocale;
     if (true || config.locale.autoDetect) {
+      // try to find locale from url, header and cookies
       localeFromUrl = getLocaleFromUrl(req.originalUrl, config.locale.supported);
       localeFromHeader = getLocaleFromHeader(req.headers['accept-language'], config.locale.supported);
       localeFromCookies = getLocaleFromCookies(req.cookies, config.locale.supported);
@@ -34,7 +35,8 @@ export default function createAppOnServer(config) {
         ? stripLocaleFromUrl(req.originalUrl, localeFromUrl)
         : req.originalUrl;
 
-      if (!localeFromCookies) {
+      // if cookies are enabled, set language cookie
+      if (enableCookies && !localeFromCookies) {
         addCookie(req, res, {
           name: 'lang',
           value: locale,
@@ -82,18 +84,13 @@ export default function createAppOnServer(config) {
       basename,
     };
 
-    // development
-    if (config.env === 'development') {
-      // Do not cache webpack stats: the script file would change since
-      // hot module replacement is enabled in the development env
+    // Do not cache webpack stats: the script file would change since
+    // hot module replacement is enabled in the development env
+    if (process.env.APP_MODE === 'development') {
       webpackIsomorphicTools.refresh();
-
-      // delete cached dev modules
-      delete require.cache[require.resolve('react-essentials')];
-      // delete require.cache[require.resolve('react-kickstarter')];
     }
 
-    /* CUSTOM CODE START */
+    // define render, redirect and error function for hydrate function
     const render = (component, initialState) => {
       const renderHtml = require(paths.htmlFile);
 
@@ -106,11 +103,9 @@ export default function createAppOnServer(config) {
 
       res.status(200).send(html);
     };
-
     const redirect = (path) => {
       res.redirect(path);
     }
-
     const error = (message, status) => {
       res.status(404);
       if (message) {
@@ -118,18 +113,14 @@ export default function createAppOnServer(config) {
       }
     }
 
-    if (__DISABLE_SSR__) {
+    // render page on client if server side rendering is disabled
+    if (!enableSSR) {
       render();
       return;
     }
 
+    // get hydrate function and hydrate
     const hydrate = require(paths.serverEntry);
-
-    hydrate(meta, {
-      error,
-      redirect,
-      render,
-    });
-    /* CUSTOM CODE END */
+    hydrate(meta, { error, redirect, render });
   };
 };
