@@ -1,4 +1,4 @@
-export default function addCookie(req, res, data) {
+module.exports = function addCookie(req, res, data) {
   // eslint-disable-next-line no-param-reassign
   req.cookies[data.name] = data.value;
   if (req.headers.cookie === undefined) {

@@ -1,4 +1,4 @@
-import httpProxy from 'http-proxy';
+const httpProxy = require('http-proxy');
 
 function proxyError(error, req, res) {
   // add the error handling
@@ -14,7 +14,7 @@ function proxyError(error, req, res) {
   res.end(JSON.stringify(json));
 };
 
-export default function createProxy(options, server) {
+module.exports = function createProxy(options, server) {
   const proxy = httpProxy.createProxyServer(options);
 
   if (options.ws && server) {

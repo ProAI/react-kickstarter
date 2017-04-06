@@ -41,7 +41,9 @@ module.exports = function createHttpDevServer(config) {
     if (err) {
       console.error(err);
     } else {
-      console.info('==> 🚧  Webpack development server listening on port %s', config.devServer.port);
+      console.info(
+        `\n~~> Webpack development server listening on port ${config.devServer.port}`
+      );
     }
   });
 }

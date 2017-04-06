@@ -1,22 +1,13 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { AppContainer as HotEnabler } from 'react-hot-loader';
-import getLocaleFromUrl from '../utils/getLocaleFromUrl';
 // import 'isomorphic-fetch';
 
-// get locale
-const locale = document.getElementsByTagName('html')[0].getAttribute('lang');
-const localeFromUrl = getLocaleFromUrl(window.location.pathname, ['de', 'en']); // todo
+// eslint-disable-next-line no-underscore-dangle
+const data = window.__DATA__;
 
-// basename
-const basename = localeFromUrl ? `/${localeFromUrl}` : '';
-
-// create meta data object
-const meta = {
-  locale,
-  localeFromUrl,
-  basename,
-};
+// eslint-disable-next-line no-underscore-dangle
+const meta = window.__METADATA__;
 
 const dest = document.getElementById('content');
 
@@ -28,7 +19,7 @@ const render = component => {
 // get hydrate function and hydrate
 // eslint-disable-next-line
 const hydrate = require('client');
-hydrate(meta, { render });
+hydrate(meta, data, { render });
 
 if (process.env.APP_MODE === 'development') {
   window.React = React; // enable debugger

@@ -3,12 +3,9 @@ const paths = require('../../config/paths');
 module.exports = {
   host: 'localhost',
   port: 8080,
-  root: paths.root,
-  public: paths.public,
   proxies: [],
   enableSSR: true,
   enableCookies: true,
-  favicon: null,
   app: {
     csrfToken: true,
     locale: {

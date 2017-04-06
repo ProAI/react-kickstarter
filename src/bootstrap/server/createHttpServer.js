@@ -1,12 +1,13 @@
-import Express from 'express';
-import http from 'http';
-import compression from 'compression';
-import favicon from 'serve-favicon';
-import cookieParser from 'cookie-parser';
-import createProxy from '../utils/createProxy';
-import createReactAppOnServer from './createReactAppOnServer';
+const Express = require('express');
+const http = require('http');
+const compression = require('compression');
+const favicon = require('serve-favicon');
+const cookieParser = require('cookie-parser');
+const createProxy = require('../utils/createProxy');
+const createReactAppOnServer = require('./createReactAppOnServer');
+const paths = require('../../config/paths');
 
-export default function createHttpServer(config) {
+module.exports = function createHttpServer(config) {
   // create server
   const app = new Express();
   const server = new http.Server(app);
@@ -21,7 +22,7 @@ export default function createHttpServer(config) {
 
   // favicon middleware
   if (config.favicon) {
-    app.use(favicon(config.favicon));
+    app.use(favicon(paths.appFavicon));
   }
 
   // cookies middleware
@@ -30,7 +31,7 @@ export default function createHttpServer(config) {
   }
 
   // static directory middleware
-  app.use(Express.static(config.public));
+  app.use(Express.static(paths.appPublic));
 
   // initialize app middleware
   app.use(createReactAppOnServer(config.app, config.enableCookies, config.enableSSR));
@@ -41,10 +42,13 @@ export default function createHttpServer(config) {
       if (err) {
         console.error(err);
       }
-      console.info('----\n==> ✅  Node server is running, talking to API server.');
-      console.info('==> 💻  Open http://localhost:%s in a browser to view the app.', config.port);
+      console.info(
+        '\n~~> Node.js server is running.\n    Open',
+        `\x1b[93mhttp://localhost:${config.port}\x1b[0m`,
+        'in a browser to view the app.\n'
+      );
     });
   } else {
-    console.error('==>     ERROR: No PORT or HOST config variable has been specified');
+    console.error('ERROR: No PORT or HOST config variable has been specified');
   }
 };

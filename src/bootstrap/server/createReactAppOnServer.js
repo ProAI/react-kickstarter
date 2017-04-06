@@ -2,72 +2,61 @@ import React from 'react';
 import ReactDOM from 'react-dom/server';
 import addCookie from '../utils/addCookie';
 import detectDevice from '../utils/detectDevice';
-import getLocaleFromUrl from '../utils/getLocaleFromUrl';
-import getLocaleFromHeader from '../utils/getLocaleFromHeader';
+import detectLocale from '../utils/detectLocale';
+import getCsrfToken from '../utils/getCsrfToken';
 import getLocaleFromCookies from '../utils/getLocaleFromCookies';
+import getLocaleFromHeader from '../utils/getLocaleFromHeader';
+import getLocaleFromUrl from '../utils/getLocaleFromUrl';
 import stripLocaleFromUrl from '../utils/stripLocaleFromUrl';
-import generateCsrfToken from '../utils/generateCsrfToken';
 import paths from '../../config/paths';
-import serialize from 'serialize-javascript';
-import 'isomorphic-fetch';
+// import 'isomorphic-fetch';
 
 export default function createAppOnServer(config, enableCookies, enableSSR) {
   return (req, res) => {
-    // auto detect locale
-    let locale, localeFromUrl, localeFromHeader, localeFromCookies, urlWithoutLocale;
-    if (true || config.locale.autoDetect) {
-      // try to find locale from url, header and cookies
-      localeFromUrl = getLocaleFromUrl(req.originalUrl, config.locale.supported);
-      localeFromHeader = getLocaleFromHeader(req.headers['accept-language'], config.locale.supported);
-      localeFromCookies = getLocaleFromCookies(req.cookies, config.locale.supported);
+    // try to find locale from url, header and cookies
+    const localeFromUrl = getLocaleFromUrl(req.originalUrl, config.locale.supported);
+    const localeFromHeader = getLocaleFromHeader(req.headers['accept-language'], config.locale.supported);
+    const localeFromCookies = getLocaleFromCookies(req.cookies, config.locale.supported);
 
-      if (localeFromUrl) {
-        locale = localeFromUrl;
-      } else if (localeFromHeader) {
-        locale = localeFromHeader;
-      } else if (localeFromCookies) {
-        locale = localeFromCookies;
-      } else {
-        locale = config.locale.default;
-      }
+    const urlWithoutLocale = (localeFromUrl)
+      ? stripLocaleFromUrl(req.originalUrl, localeFromUrl)
+      : req.originalUrl;
 
-      urlWithoutLocale = (localeFromUrl)
-        ? stripLocaleFromUrl(req.originalUrl, localeFromUrl)
-        : req.originalUrl;
+    // (auto) detect locale
+    const locale = detectLocale(
+      config.locale.default,
+      localeFromUrl,
+      localeFromHeader,
+      localeFromCookies,
+      config.locale.autoDetect
+    );
 
-      // if cookies are enabled, set language cookie
-      if (enableCookies && !localeFromCookies) {
-        addCookie(req, res, {
-          name: 'lang',
-          value: locale,
-          options: { maxAge: 2628000 * 60 * 1000 } // 5 years lifetime
-        });
-      }
+    // if cookies are enabled, set language cookie
+    if (enableCookies && !localeFromCookies) {
+      addCookie(req, res, {
+        name: 'lang',
+        value: locale,
+        options: { maxAge: 2628000 * 60 * 1000 } // 5 years lifetime
+      });
     }
 
-    // auto detect device
-    let device;
-    if (config.device.autoDetect) {
-      if (req.cookies.view === 'mobile' || req.cookies.view === 'desktop') {
-        device = req.cookies.view;
-      } else {
-        device = detectDevice(req.headers['user-agent']);
-      }
-    }
+    // (auto) detect device
+    const device = detectDevice(
+      req.headers['user-agent'],
+      req.cookies.view,
+      config.device.autoDetect
+    );
 
-    // generate csrf token
-    let csrfToken;
-    if (config.csrfToken) {
-      if (req.cookies.csrf === undefined) {
-        csrfToken = generateCsrfToken();
-        addCookie(req, res, {
-          name: 'csrf',
-          value: csrfToken,
-          options: { httpOnly: true }
-        });
-      } else {
-        csrfToken = req.cookies.csrf;
-      }
+    // set csrf token
+    const csrfToken = getCsrfToken(req.cookies.csrf, config.csrfToken);
+
+    // if cookies and csrf token are enabled, set csrf token cookie
+    if (enableCookies && config.csrfToken && req.cookies.csrf === undefined) {
+      addCookie(req, res, {
+        name: 'csrf',
+        value: csrfToken,
+        options: { httpOnly: true }
+      });
     }
 
     // basename
@@ -80,6 +69,7 @@ export default function createAppOnServer(config, enableCookies, enableSSR) {
       localeFromHeader,
       localeFromCookies,
       urlWithoutLocale,
+      device,
       csrfToken,
       basename,
     };
@@ -91,14 +81,14 @@ export default function createAppOnServer(config, enableCookies, enableSSR) {
     }
 
     // define render, redirect and error function for hydrate function
-    const render = (component, initialState) => {
-      const renderHtml = require(paths.htmlFile);
+    const render = (component, data) => {
+      const renderHtml = require(paths.appHtml);
 
       const html = renderHtml(
         component ? ReactDOM.renderToString(component) : '',
-        webpackIsomorphicTools.assets(),
-        initialState ? serialize(initialState) : '{}',
         meta,
+        webpackIsomorphicTools.assets(),
+        data ? data : {},
       );
 
       res.status(200).send(html);
@@ -113,14 +103,15 @@ export default function createAppOnServer(config, enableCookies, enableSSR) {
       }
     }
 
-    // render page on client if server side rendering is disabled
+    // Render page on client if server side rendering is disabled.
+    // Initial state should be empty in this case.
     if (!enableSSR) {
       render();
       return;
     }
 
     // get hydrate function and hydrate
-    const hydrate = require(paths.serverEntry);
+    const hydrate = require(paths.appServerEntry);
     hydrate(meta, { error, redirect, render });
   };
 };

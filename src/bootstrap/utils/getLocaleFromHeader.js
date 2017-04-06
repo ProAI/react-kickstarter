@@ -1,4 +1,4 @@
-export default function getLocaleFromHeader(acceptLanguageHeader, availableLanguages) {
+module.exports = function getLocaleFromHeader(acceptLanguageHeader, availableLanguages) {
   if (acceptLanguageHeader === undefined) {
     return null;
   }

@@ -12,22 +12,21 @@ const eslintConfig = require('./eslint.js');
 const webpackIsomorphicToolsPlugin = new WebpackIsomorphicToolsPlugin(require('./webpack-isomorphic-tools'));
 
 const includePaths = [
-  paths.app,
-  path.join(paths.root, '..', 'react-essentials', 'src'),
-  path.join(paths.root, '..', 'react-kickstarter/src/bootstrap')
+  paths.appMain,
+  path.join(paths.appNodeModules, 'react-kickstarter/src')
 ];
 
 module.exports = {
   devtool: 'source-map',
-  context: paths.root,
+  context: paths.appRoot,
   entry: {
     'main': [
       require.resolve('babel-polyfill'),
-      path.join(__dirname, '/../bootstrap/client/execute.js'),
-    ],
+      paths.kickstarterClientEntry,
+    ]
   },
   output: {
-    path: paths.assets,
+    path: paths.appAssets,
     filename: '[name]-[chunkhash].js',
     chunkFilename: '[name]-[chunkhash].js',
     publicPath: '/dist/'
@@ -133,24 +132,20 @@ module.exports = {
   // Resolve node modules from node_modules app and react-kickstarter directory
   resolveLoader: {
     modules: [
-      path.join(__dirname, '/../../node_modules'),
-      paths.node,
+      paths.kickstarterNodeModules,
+      paths.appNodeModules,
     ],
   },
   resolve: {
     modules: [
-      paths.app,
-      paths.node
+      paths.appMain, // we might remove this later
+      paths.appNodeModules,
     ],
-    alias: {
-      'react-essentials/lib': path.join(paths.root, '..', 'react-essentials', 'src'),
-      'react-essentials': path.join(paths.root, '..', 'react-essentials', 'src', 'index.js'),
-    },
     extensions: ['.json', '.js', '.jsx']
   },
   plugins: [
     // clean old dist files
-    new CleanPlugin([paths.assets], { root: paths.root }),
+    new CleanPlugin([paths.appAssets], { root: paths.appRoot }),
 
     // only load required languages for moment.js
     new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /de|fr/),
@@ -161,6 +156,14 @@ module.exports = {
       allChunks: true,
     }),
 
+    // minify css files
+    new webpack.LoaderOptionsPlugin({
+      minimize: true,
+      options: {
+        postcss: [autoprefixer]
+      }
+    }),
+
     // define process.env constants
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'production',
@@ -168,9 +171,6 @@ module.exports = {
       APP_ENV: 'client',
       APP_PLATFORM: 'web',
     }),
-
-    // ignore dev config
-    // new webpack.IgnorePlugin(/\.\/dev/, /\/config$/),
 
     // Minify the code.
     new webpack.optimize.UglifyJsPlugin({

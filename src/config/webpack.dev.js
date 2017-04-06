@@ -1,8 +1,8 @@
 // Webpack config for development
 const autoprefixer = require('autoprefixer');
-const path = require('path');
 const webpack = require('webpack');
 const WebpackIsomorphicToolsPlugin = require('webpack-isomorphic-tools/plugin');
+const path = require('path');
 const paths = require('./paths');
 const babelConfig = require('./babel.js');
 const eslintConfig = require('./eslint.js');
@@ -13,23 +13,23 @@ const port = 8081;
 const webpackIsomorphicToolsPlugin = new WebpackIsomorphicToolsPlugin(require('./webpack-isomorphic-tools'));
 
 const includePaths = [
-  paths.app,
-  path.join(paths.node, 'react-kickstarter/src/bootstrap')
+  paths.appMain,
+  path.join(paths.appNodeModules, 'react-kickstarter/src')
 ];
 
 const webpackConfig = {
   devtool: 'cheap-module-eval-source-map',
-  context: paths.root,
+  context: paths.appRoot,
   entry: {
     'main': [
       require.resolve('webpack-hot-middleware/client') + '?path=http://' + host + ':' + port + '/__webpack_hmr',
       require.resolve('react-hot-loader/patch'),
       require.resolve('babel-polyfill'),
-      path.join(__dirname, '/../bootstrap/client/execute.js'),
+      paths.kickstarterClientEntry,
     ],
   },
   output: {
-    path: paths.assets,
+    path: paths.appAssets,
     filename: '[name]-[hash].js',
     chunkFilename: '[name]-[chunkhash].js',
     publicPath: 'http://' + host + ':' + port + '/dist/'
@@ -173,19 +173,15 @@ const webpackConfig = {
   // Resolve node modules from node_modules app and react-kickstarter directory
   resolveLoader: {
     modules: [
-      path.join(__dirname, '/../../node_modules'),
-      paths.node,
+      paths.kickstarterNodeModules,
+      paths.appNodeModules,
     ],
   },
   resolve: {
     modules: [
-      paths.app, // todo: point to the entry directory to only resolve client.js
-      paths.node
+      paths.appMain, // we might remove this later
+      paths.appNodeModules,
     ],
-    alias: {
-      'react-essentials/lib': path.join(paths.root, '..', 'react-essentials', 'src'),
-      'react-essentials': path.join(paths.root, '..', 'react-essentials', 'src', 'index.js'),
-    },
     extensions: ['.json', '.js', '.jsx']
   },
   plugins: [

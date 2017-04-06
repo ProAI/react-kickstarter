@@ -1,4 +1,4 @@
-const stripLocaleFromUrl = (url, locale) => {
+module.exports = function stripLocaleFromUrl(url, locale) {
   if (locale) {
     if (url.length === 2) {
       return '';
