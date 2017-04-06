@@ -1,3 +1,5 @@
+const webpack = require('webpack');
+
 module.exports = function mergeWebpackConfig(defaultWebpackConfig, customConfig, development) {
   const webpackConfig = defaultWebpackConfig;
 
@@ -20,6 +22,16 @@ module.exports = function mergeWebpackConfig(defaultWebpackConfig, customConfig,
   if (customConfig.customEntries.mobile) {
     webpackConfig.entry.mobile = customConfig.customEntries.mobile;
   }
+
+  // add custom plugins
+  const plugins = customConfig.customPlugins.map(function(plugin, key) {
+    if (plugin.type === 'ContextReplacementPlugin') {
+      return new webpack.ContextReplacementPlugin(plugin.args[0], plugin.args[1]);
+    }
+
+    // more plugins should be added later
+  });
+  webpackConfig.plugins = webpackConfig.plugins.concat(plugins);
 
   // add include paths for dev modules
   if (customConfig.devModules.include) {

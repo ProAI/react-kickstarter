@@ -4,6 +4,7 @@ module.exports = {
     desktop: null,
     mobile: null,
   },
+  customPlugins: [],
   devModules: {
     include: null,
     alias: null,

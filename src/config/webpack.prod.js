@@ -147,9 +147,6 @@ module.exports = {
     // clean old dist files
     new CleanPlugin([paths.appAssets], { root: paths.appRoot }),
 
-    // only load required languages for moment.js
-    new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /de|fr/),
-
     // css files from the extract-text-plugin loader
     new ExtractTextPlugin({
       filename: '[name]-[chunkhash].css',

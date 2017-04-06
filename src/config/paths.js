@@ -12,6 +12,8 @@ function resolveKickstarterPath(relativePath) {
   return path.join(__dirname, '../..', relativePath);
 }
 
+// Hint: appClientEntry is not in use, because it is not clear if we can pass
+// this path securely to the client.
 module.exports = {
   appRoot: resolveAppPath('.'),
   appMain: resolveAppPath('app'),

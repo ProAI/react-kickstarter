@@ -185,9 +185,6 @@ const webpackConfig = {
     extensions: ['.json', '.js', '.jsx']
   },
   plugins: [
-    // only load required languages for moment.js
-    new webpack.ContextReplacementPlugin(/moment[\/\\]locale$/, /de|fr/),
-
     // hot reload
     new webpack.HotModuleReplacementPlugin(),
 
