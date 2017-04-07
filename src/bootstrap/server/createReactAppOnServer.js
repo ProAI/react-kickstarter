@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/server';
+// import 'isomorphic-fetch';
 import addCookie from '../utils/addCookie';
 import detectDevice from '../utils/detectDevice';
 import detectLocale from '../utils/detectLocale';
@@ -7,11 +8,11 @@ import getCsrfToken from '../utils/getCsrfToken';
 import getLocaleFromCookies from '../utils/getLocaleFromCookies';
 import getLocaleFromHeader from '../utils/getLocaleFromHeader';
 import getLocaleFromUrl from '../utils/getLocaleFromUrl';
+import injectAssetsIntoHtml from '../utils/injectAssetsIntoHtml';
 import stripLocaleFromUrl from '../utils/stripLocaleFromUrl';
 import paths from '../../config/paths';
-// import 'isomorphic-fetch';
 
-export default function createAppOnServer(config, enableCookies, enableSSR) {
+export default function createAppOnServer(config, enableCookies, enableSSR, useDll) {
   return (req, res) => {
     // try to find locale from url, header and cookies
     const localeFromUrl = getLocaleFromUrl(req.originalUrl, config.locale.supported);
@@ -82,16 +83,15 @@ export default function createAppOnServer(config, enableCookies, enableSSR) {
 
     // define render, redirect and error function for hydrate function
     const render = (component, data) => {
+      const assets = webpackIsomorphicTools.assets();
+      const content = component ? ReactDOM.renderToString(component) : '';
       const renderHtml = require(paths.appHtml);
 
-      const html = renderHtml(
-        component ? ReactDOM.renderToString(component) : '',
-        meta,
-        webpackIsomorphicTools.assets(),
-        data ? data : {},
-      );
+      const html = renderHtml(meta);
 
-      res.status(200).send(html);
+      const finalHtml = injectAssetsIntoHtml(html, meta, content, assets, data, useDll);
+
+      res.status(200).send(finalHtml);
     };
     const redirect = (path) => {
       res.redirect(path);

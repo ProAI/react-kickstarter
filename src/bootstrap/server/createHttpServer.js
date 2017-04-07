@@ -34,7 +34,7 @@ module.exports = function createHttpServer(config) {
   app.use(Express.static(paths.appPublic));
 
   // initialize app middleware
-  app.use(createReactAppOnServer(config.app, config.enableCookies, config.enableSSR));
+  app.use(createReactAppOnServer(config.app, config.enableCookies, config.enableSSR, config.devBuild.dll));
 
   // start server
   if (config.port && config.host) {

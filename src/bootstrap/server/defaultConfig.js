@@ -17,8 +17,7 @@ module.exports = {
       autoDetect: true
     },
   },
-  /* build: {
-    enableDLLs: false,
-    happypack: false
-  }*/
+  devBuild: {
+    dll: false
+  }
 };

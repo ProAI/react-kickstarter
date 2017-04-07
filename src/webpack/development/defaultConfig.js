@@ -12,9 +12,8 @@ module.exports = {
   devServer: {
     host: 'localhost',
     port: 8081,
+  },
+  devBuild: {
+    dll: false
   }
-  /* build: {
-    enableDLLs: false,
-    happypack: false,
-  }*/
 };

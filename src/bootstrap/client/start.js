@@ -19,7 +19,7 @@ const render = component => {
 // get hydrate function and hydrate
 // eslint-disable-next-line
 const hydrate = require('client');
-hydrate(meta, data, { render });
+hydrate(meta, { render }, data);
 
 if (process.env.APP_MODE === 'development') {
   window.React = React; // enable debugger

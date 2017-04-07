@@ -1,6 +1,6 @@
 const WebpackIsomorphicTools = require('webpack-isomorphic-tools');
-const defaultConfig = require('./defaultConfig');
 const deepmerge = require('deepmerge');
+const defaultConfig = require('./defaultConfig');
 const registerBabel = require('../utils/registerBabel');
 const babelConfig = require('../../config/babel');
 const paths = require('../../config/paths');
@@ -18,7 +18,7 @@ module.exports = function runServer(customConfig) {
   process.env.APP_PLATFORM = 'web';
 
   // define webpackIsomorphicTools constant
-  global.webpackIsomorphicTools = new WebpackIsomorphicTools(require('../../config/webpack-isomorphic-tools'))
+  global.webpackIsomorphicTools = new WebpackIsomorphicTools(require('../../config/webpackIsomorphicTools'))
     .server(paths.appRoot, function() {
       const createHttpServer = require('./createHttpServer');
       createHttpServer(config);

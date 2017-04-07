@@ -29,7 +29,7 @@ module.exports = function mergeWebpackConfig(defaultWebpackConfig, customConfig,
       return new webpack.ContextReplacementPlugin(plugin.args[0], plugin.args[1]);
     }
 
-    // more plugins should be added later
+    // todo: more plugins should be added
   });
   webpackConfig.plugins = webpackConfig.plugins.concat(plugins);
 

@@ -10,14 +10,14 @@ const eslintConfig = require('./eslint.js');
 const host = 'localhost';
 const port = 8081;
 
-const webpackIsomorphicToolsPlugin = new WebpackIsomorphicToolsPlugin(require('./webpack-isomorphic-tools'));
+const webpackIsomorphicToolsPlugin = new WebpackIsomorphicToolsPlugin(require('./webpackIsomorphicTools'));
 
 const includePaths = [
   paths.appMain,
   path.join(paths.appNodeModules, 'react-kickstarter/src')
 ];
 
-const webpackConfig = {
+module.exports = {
   devtool: 'cheap-module-eval-source-map',
   context: paths.appRoot,
   entry: {
@@ -216,5 +216,3 @@ const webpackConfig = {
     hints: false,
   }
 };
-
-module.exports = webpackConfig;

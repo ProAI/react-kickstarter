@@ -9,7 +9,7 @@ const paths = require('./paths');
 const babelConfig = require('./babel.js');
 const eslintConfig = require('./eslint.js');
 
-const webpackIsomorphicToolsPlugin = new WebpackIsomorphicToolsPlugin(require('./webpack-isomorphic-tools'));
+const webpackIsomorphicToolsPlugin = new WebpackIsomorphicToolsPlugin(require('./webpackIsomorphicTools'));
 
 const includePaths = [
   paths.appMain,

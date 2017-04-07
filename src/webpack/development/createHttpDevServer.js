@@ -4,6 +4,8 @@ const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
 const mergeWebpackConfig = require('../utils/mergeWebpackConfig');
 const defaultWebpackConfig = require('../../config/webpack.dev');
+const validateDll = require('../utils/validateDll.js');
+const installDll = require('../utils/installDll.js');
 
 module.exports = function createHttpDevServer(config) {
   // create server
@@ -11,6 +13,15 @@ module.exports = function createHttpDevServer(config) {
 
   // modify webpack config
   const webpackConfig = mergeWebpackConfig(defaultWebpackConfig, config, true);
+
+  // handle dll
+  if (config.devBuild.dll) {
+    if (validateDll()) {
+      installDll(webpackConfig);
+    } else {
+      console.warn('Webpack: Dll is not valid. Maybe you have to rebuild the dll with npm run build-dll.');
+    }
+  }
 
   // webpack compiler
   const compiler = webpack(webpackConfig);

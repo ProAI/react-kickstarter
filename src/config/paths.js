@@ -27,5 +27,5 @@ module.exports = {
   kickstarterRoot: resolveKickstarterPath('.'), // not in use yet
   kickstarterClientEntry: resolveKickstarterPath('src/bootstrap/client/start.js'),
   kickstarterNodeModules: resolveKickstarterPath('node_modules'),
-  webpackCache: findCacheDir({ name: 'webpack' }) // for webpack dlls
+  webpackCache: findCacheDir({ name: 'webpack' }) // for webpack dll
 }

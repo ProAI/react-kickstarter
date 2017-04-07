@@ -1,18 +1,16 @@
 const webpack = require("webpack");
 const deepmerge = require('deepmerge');
-const path = require('path');
-const fs = require('fs');
 const defaultConfig = require('./defaultConfig');
-const mergeWebpackConfig = require('../utils/mergeWebpackConfig');
-const defaultWebpackConfig = require("../../config/webpack.prod");
-const paths = require('../../config/paths');
+const getDllDependencyNames = require('../utils/getDllDependencyNames');
+const defaultWebpackConfig = require("../../config/webpack.dll");
 
-module.exports = function buildProductionWebpack(customConfig) {
+module.exports = function buildDllWebpack(customConfig) {
   // merge config
   const config = deepmerge(defaultConfig, customConfig);
 
   // modify webpack config
-  const webpackConfig = mergeWebpackConfig(defaultWebpackConfig, config);
+  const webpackConfig = defaultWebpackConfig;
+  webpackConfig.entry.vendor = getDllDependencyNames(config);
 
   // webpack compiler
   const compiler = webpack(webpackConfig);
@@ -22,9 +20,6 @@ module.exports = function buildProductionWebpack(customConfig) {
       console.error(err);
       return;
     }
-
-    // save stats to file
-    fs.writeFile(path.join(paths.appRoot, 'webpack-stats.json'), JSON.stringify(stats.toJson()));
 
     // console log stats
     console.log(stats.toString({
