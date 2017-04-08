@@ -27,24 +27,20 @@ module.exports = function createHttpDevServer(config) {
   const compiler = webpack(webpackConfig);
 
   // build dev server config
-  const devServerConfig = {
+  const devServerOptions = {
     host: config.devServer.host,
     port: config.devServer.port,
     contentBase: 'http://' + config.devServer.host + ':' + config.devServer.port,
     publicPath: 'http://' + config.devServer.host + ':' + config.devServer.port + '/dist/',
-    compress: true,
-    clientLogLevel: 'none',
-    watchContentBase: true,
     hot: true,
     quiet: true,
-    // See https://github.com/facebookincubator/create-react-app/issues/293
-    watchOptions: {
-      ignored: /node_modules/,
-    },
+    noInfo: true,
+    inline: true,
+    lazy: false,
   };
 
   // use webpack dev and hot middleware
-  app.use(webpackDevMiddleware(compiler, devServerConfig));
+  app.use(webpackDevMiddleware(compiler, devServerOptions));
   app.use(webpackHotMiddleware(compiler));
 
   // run server

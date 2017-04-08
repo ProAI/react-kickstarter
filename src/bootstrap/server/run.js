@@ -18,7 +18,7 @@ module.exports = function runServer(customConfig) {
   process.env.APP_PLATFORM = 'web';
 
   // define webpackIsomorphicTools constant
-  global.webpackIsomorphicTools = new WebpackIsomorphicTools(require('../../config/webpackIsomorphicTools'))
+  new WebpackIsomorphicTools(require('../../config/webpackIsomorphicTools'))
     .server(paths.appRoot, function() {
       const createHttpServer = require('./createHttpServer');
       createHttpServer(config);

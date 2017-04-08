@@ -7,8 +7,5 @@ module.exports = {
   "rules": {
     "linebreak-style": "off",
     "react/jsx-filename-extension": ["error", { "extensions": [".js", ".jsx"] }],
-  },
-  "globals": {
-    "webpackIsomorphicTools": null,
   }
 };

@@ -75,15 +75,20 @@ export default function createAppOnServer(config, enableCookies, enableSSR, useD
       basename,
     };
 
-    // Do not cache webpack stats: the script file would change since
-    // hot module replacement is enabled in the development env
-    if (process.env.APP_MODE === 'development') {
+    // https://github.com/ProAI/react-kickstarter/issues/4
+    /* if (process.env.APP_MODE === 'development') {
+      // Do not cache webpack stats: the script file would change since
+      // hot module replacement is enabled in the development env
       webpackIsomorphicTools.refresh();
-    }
+
+      // delete cached dev modules
+      delete require.cache[require.resolve('react-essentials')];
+      // delete require.cache[require.resolve('react-kickstarter')];
+    }*/
 
     // define render, redirect and error function for hydrate function
     const render = (component, data) => {
-      const assets = webpackIsomorphicTools.assets();
+      const assets = require(paths.webpackAssets);
       const content = component ? ReactDOM.renderToString(component) : '';
       const renderHtml = require(paths.appHtml);
 
