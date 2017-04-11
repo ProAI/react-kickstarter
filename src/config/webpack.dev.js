@@ -66,7 +66,19 @@ module.exports = {
             loader: 'babel-loader',
             // This causes a deprecation warning that is fixed in v7.0.0-alpha.2
             // https://github.com/babel/babel-loader/pull/391
-            options: Object.assign({}, babelConfig, { cacheDirectory: true })
+            options: Object.assign({}, {
+  "babelrc": false,
+  "presets": [
+    [require.resolve('babel-preset-env'), {modules: false}],
+    require.resolve("babel-preset-react")
+  ],
+  "plugins": [
+    require.resolve("babel-plugin-add-module-exports"),
+    require.resolve("babel-plugin-transform-class-properties"),
+    require.resolve("babel-plugin-transform-object-rest-spread"),
+    require.resolve("babel-plugin-transform-runtime")
+  ]
+}, { cacheDirectory: true })
           }
         ]
       },
@@ -179,9 +191,11 @@ module.exports = {
   },
   resolve: {
     modules: [
-      paths.appMain, // we might remove this later
       paths.appNodeModules,
     ],
+    alias: {
+      appClientEntry: paths.appClientEntry,
+    },
     extensions: ['.json', '.js', '.jsx']
   },
   plugins: [

@@ -4,20 +4,20 @@ import ReactDOM from 'react-dom/server';
 import addCookie from '../utils/addCookie';
 import detectDevice from '../utils/detectDevice';
 import detectLocale from '../utils/detectLocale';
+import generateHtmlSnippets from '../utils/generateHtmlSnippets';
 import getCsrfToken from '../utils/getCsrfToken';
 import getLocaleFromCookies from '../utils/getLocaleFromCookies';
 import getLocaleFromHeader from '../utils/getLocaleFromHeader';
 import getLocaleFromUrl from '../utils/getLocaleFromUrl';
-import injectAssetsIntoHtml from '../utils/injectAssetsIntoHtml';
 import stripLocaleFromUrl from '../utils/stripLocaleFromUrl';
 import paths from '../../config/paths';
 
-export default function createAppOnServer(config, enableCookies, enableSSR, useDll) {
+export default function createAppOnServer(config) {
   return (req, res) => {
     // try to find locale from url, header and cookies
-    const localeFromUrl = getLocaleFromUrl(req.originalUrl, config.locale.supported);
-    const localeFromHeader = getLocaleFromHeader(req.headers['accept-language'], config.locale.supported);
-    const localeFromCookies = getLocaleFromCookies(req.cookies, config.locale.supported);
+    const localeFromUrl = getLocaleFromUrl(req.originalUrl, config.app.locale.supported);
+    const localeFromHeader = getLocaleFromHeader(req.headers['accept-language'], config.app.locale.supported);
+    const localeFromCookies = getLocaleFromCookies(req.cookies, config.app.locale.supported);
 
     const urlWithoutLocale = (localeFromUrl)
       ? stripLocaleFromUrl(req.originalUrl, localeFromUrl)
@@ -25,15 +25,15 @@ export default function createAppOnServer(config, enableCookies, enableSSR, useD
 
     // (auto) detect locale
     const locale = detectLocale(
-      config.locale.default,
+      config.app.locale.default,
       localeFromUrl,
       localeFromHeader,
       localeFromCookies,
-      config.locale.autoDetect
+      config.app.locale.autoDetect
     );
 
     // if cookies are enabled, set language cookie
-    if (enableCookies && !localeFromCookies) {
+    if (config.enableCookies && !localeFromCookies) {
       addCookie(req, res, {
         name: 'lang',
         value: locale,
@@ -45,14 +45,14 @@ export default function createAppOnServer(config, enableCookies, enableSSR, useD
     const device = detectDevice(
       req.headers['user-agent'],
       req.cookies.view,
-      config.device.autoDetect
+      config.app.device.autoDetect
     );
 
     // set csrf token
-    const csrfToken = getCsrfToken(req.cookies.csrf, config.csrfToken);
+    const csrfToken = getCsrfToken(req.cookies.csrf, config.app.csrfToken);
 
     // if cookies and csrf token are enabled, set csrf token cookie
-    if (enableCookies && config.csrfToken && req.cookies.csrf === undefined) {
+    if (config.enableCookies && config.app.csrfToken && req.cookies.csrf === undefined) {
       addCookie(req, res, {
         name: 'csrf',
         value: csrfToken,
@@ -75,16 +75,12 @@ export default function createAppOnServer(config, enableCookies, enableSSR, useD
       basename,
     };
 
-    // https://github.com/ProAI/react-kickstarter/issues/4
-    /* if (process.env.APP_MODE === 'development') {
+    // See https://github.com/ProAI/react-kickstarter/issues/4
+    if (process.env.APP_MODE === 'development' && config.devBuild.hotReloadServer) {
       // Do not cache webpack stats: the script file would change since
       // hot module replacement is enabled in the development env
       webpackIsomorphicTools.refresh();
-
-      // delete cached dev modules
-      delete require.cache[require.resolve('react-essentials')];
-      // delete require.cache[require.resolve('react-kickstarter')];
-    }*/
+    }
 
     // define render, redirect and error function for hydrate function
     const render = (component, data) => {
@@ -92,11 +88,11 @@ export default function createAppOnServer(config, enableCookies, enableSSR, useD
       const content = component ? ReactDOM.renderToString(component) : '';
       const renderHtml = require(paths.appHtml);
 
-      const html = renderHtml(meta);
+      const htmlSnippets = generateHtmlSnippets(meta, content, assets, data, config.devBuild.dll);
 
-      const finalHtml = injectAssetsIntoHtml(html, meta, content, assets, data, useDll);
+      const html = renderHtml(meta, htmlSnippets);
 
-      res.status(200).send(finalHtml);
+      res.status(200).send(html);
     };
     const redirect = (path) => {
       res.redirect(path);
@@ -110,7 +106,7 @@ export default function createAppOnServer(config, enableCookies, enableSSR, useD
 
     // Render page on client if server side rendering is disabled.
     // Initial state should be empty in this case.
-    if (!enableSSR) {
+    if (!config.enableSSR) {
       render();
       return;
     }

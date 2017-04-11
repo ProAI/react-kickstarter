@@ -16,10 +16,7 @@
     "starter",
     "babel"
   ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/ProAI/react-kickstarter.git"
-  },
+  "repository": "https://github.com/ProAI/react-kickstarter.git",
   "bugs": {
     "url": "https://github.com/ProAI/react-kickstarter/issues"
   },
@@ -45,7 +42,9 @@
     "deepmerge": "1.3.2",
     "eslint": "3.19.0",
     "eslint-config-airbnb": "14.1.0",
+    "eslint-import-resolver-webpack": "^0.8.1",
     "eslint-loader": "1.7.1",
+    "eslint-plugin-flowtype": "^2.30.4",
     "eslint-plugin-import": "2.2.0",
     "eslint-plugin-jsx-a11y": "4.0.0",
     "eslint-plugin-react": "6.10.3",

@@ -18,7 +18,7 @@ const render = (component) => {
 
 // get hydrate function and hydrate
 // eslint-disable-next-line
-const hydrate = require('client');
+const hydrate = require('appClientEntry');
 hydrate(meta, { render }, data);
 
 if (process.env.APP_MODE === 'development') {

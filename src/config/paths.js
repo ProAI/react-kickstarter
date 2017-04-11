@@ -12,12 +12,10 @@ function resolveKickstarterPath(relativePath) {
   return path.join(__dirname, '../..', relativePath);
 }
 
-// Hint: appClientEntry is not in use, because it is not clear if we can pass
-// this path securely to the client.
 module.exports = {
   appRoot: resolveAppPath('.'),
   appMain: resolveAppPath('app'),
-  appClientEntry: resolveAppPath('app/client.js'), // not in use yet
+  appClientEntry: resolveAppPath('app/client.js'),
   appServerEntry: resolveAppPath('app/server.js'),
   appHtml: resolveAppPath('app/html.js'),
   appNodeModules: resolveAppPath('node_modules'),
@@ -25,6 +23,7 @@ module.exports = {
   appAssets: resolveAppPath('public/dist'),
   appFavicon: resolveAppPath('public/favicon/favicon.ico'),
   kickstarterRoot: resolveKickstarterPath('.'), // not in use yet
+  kickstarterConfig: resolveKickstarterPath('src/config'),
   kickstarterClientEntry: resolveKickstarterPath('src/bootstrap/client/start.js'),
   kickstarterNodeModules: resolveKickstarterPath('node_modules'),
   webpackAssets: resolveAppPath('webpack-assets.json'),

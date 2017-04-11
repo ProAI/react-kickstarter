@@ -138,9 +138,11 @@ module.exports = {
   },
   resolve: {
     modules: [
-      paths.appMain, // we might remove this later
       paths.appNodeModules,
     ],
+    alias: {
+      'appClientEntry': paths.appClientEntry
+    },
     extensions: ['.json', '.js', '.jsx']
   },
   plugins: [

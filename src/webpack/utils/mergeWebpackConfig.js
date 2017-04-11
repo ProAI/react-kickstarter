@@ -13,14 +13,14 @@ module.exports = function mergeWebpackConfig(defaultWebpackConfig, customConfig,
   }
 
   // add custom entries
-  if (customConfig.customEntries.main) {
-    webpackConfig.entry.main = webpackConfig.entry.main.concat(customConfig.customEntries.main);
+  if (customConfig.entry.main) {
+    webpackConfig.entry.main = webpackConfig.entry.main.concat(customConfig.entry.main);
   }
-  if (customConfig.customEntries.desktop) {
-    webpackConfig.entry.desktop = customConfig.customEntries.desktop;
+  if (customConfig.entry.desktop) {
+    webpackConfig.entry.desktop = customConfig.entry.desktop;
   }
-  if (customConfig.customEntries.mobile) {
-    webpackConfig.entry.mobile = customConfig.customEntries.mobile;
+  if (customConfig.entry.mobile) {
+    webpackConfig.entry.mobile = customConfig.entry.mobile;
   }
 
   // add custom plugins
@@ -34,17 +34,17 @@ module.exports = function mergeWebpackConfig(defaultWebpackConfig, customConfig,
   webpackConfig.plugins = webpackConfig.plugins.concat(plugins);
 
   // add include paths for dev modules
-  if (customConfig.devModules.include) {
+  if (customConfig.includePaths) {
     webpackConfig.module.rules.forEach((value, key) => {
       if (value.include) {
-        webpackConfig.module.rules[key].include = value.include.concat(customConfig.devModules.include);
+        webpackConfig.module.rules[key].include = value.include.concat(customConfig.includePaths);
       }
     });
   }
 
   // add aliases for dev modules
-  if (customConfig.devModules.alias) {
-    webpackConfig.resolve.alias = Object.assign({}, webpackConfig.resolve.alias, customConfig.devModules.alias);
+  if (customConfig.resolve.alias) {
+    webpackConfig.resolve.alias = Object.assign({}, webpackConfig.resolve.alias, customConfig.resolve.alias);
   }
 
   return webpackConfig;
