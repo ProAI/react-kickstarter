@@ -1,16 +1,16 @@
-import React from 'react';
-import ReactDOM from 'react-dom/server';
-// import 'isomorphic-fetch';
-import addCookie from '../utils/addCookie';
-import detectDevice from '../utils/detectDevice';
-import detectLocale from '../utils/detectLocale';
-import generateHtmlSnippets from '../utils/generateHtmlSnippets';
-import getCsrfToken from '../utils/getCsrfToken';
-import getLocaleFromCookies from '../utils/getLocaleFromCookies';
-import getLocaleFromHeader from '../utils/getLocaleFromHeader';
-import getLocaleFromUrl from '../utils/getLocaleFromUrl';
-import stripLocaleFromUrl from '../utils/stripLocaleFromUrl';
-import paths from '../../config/paths';
+const React = require('react');
+const ReactDOM = require('react-dom/server');
+// const 'isomorphic-fetch';
+const addCookie = require('../utils/addCookie');
+const detectDevice = require('../utils/detectDevice');
+const detectLocale = require('../utils/detectLocale');
+const generateHtmlSnippets = require('../utils/generateHtmlSnippets');
+const getCsrfToken = require('../utils/getCsrfToken');
+const getLocaleFromCookies = require('../utils/getLocaleFromCookies');
+const getLocaleFromHeader = require('../utils/getLocaleFromHeader');
+const getLocaleFromUrl = require('../utils/getLocaleFromUrl');
+const stripLocaleFromUrl = require('../utils/stripLocaleFromUrl');
+const paths = require('../../config/paths');
 
 module.exports = function createAppOnServer(config) {
   return (req, res) => {
