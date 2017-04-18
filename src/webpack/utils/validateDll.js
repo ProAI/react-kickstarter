@@ -7,7 +7,7 @@ module.exports = function validateDll() {
 
   try {
     const manifest = require(path.join(paths.webpackCache, 'dll', `${dllName}.json`));
-    const dll = fs.readFileSync(path.join(paths.appAssets, 'dll', `dll__${dllName}.js`)).toString('utf-8');
+    const dll = fs.readFileSync(path.join(paths.appPublic, 'dll', `dll__${dllName}.js`)).toString('utf-8');
     if (dll.indexOf(manifest.name) === -1) {
       console.warn(`Webpack: Invalid DLL ${dllName}`);
       return false;

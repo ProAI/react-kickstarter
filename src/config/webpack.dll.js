@@ -9,7 +9,7 @@ module.exports = {
     vendor: null, // will be defined in /src/webpack/dll/build.js
   },
   output: {
-    path: path.join(paths.appAssets, 'dll'),
+    path: path.join(paths.appPublic, 'dll'),
     filename: 'dll__[name].js',
     library: 'DLL_[name]_[hash]'
   },
