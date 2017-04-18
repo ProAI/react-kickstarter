@@ -19,6 +19,5 @@ module.exports = {
   },
   devBuild: {
     dll: false,
-    hotReloadServer: false,
   }
 };

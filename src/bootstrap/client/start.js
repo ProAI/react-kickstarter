@@ -18,7 +18,7 @@ const render = (component) => {
 
 // get hydrate function and hydrate
 // eslint-disable-next-line
-const hydrate = require('appClientEntry');
+const hydrate = require('appClientEntry').default;
 hydrate(meta, { render }, data);
 
 if (process.env.APP_MODE === 'development') {
@@ -30,9 +30,6 @@ if (process.env.APP_MODE === 'development') {
     || !dest.firstChild.attributes['data-react-checksum']
   ) {
     // eslint-disable-next-line no-console
-    console.error(`
-      Server-side React render was discarded.
-      Make sure that your initial render does not contain any client-side code.
-    `);
+    console.error('Server-side React rendering was discarded.');
   }
 }

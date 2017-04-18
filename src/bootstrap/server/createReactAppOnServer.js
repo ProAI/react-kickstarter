@@ -12,13 +12,14 @@ import getLocaleFromUrl from '../utils/getLocaleFromUrl';
 import stripLocaleFromUrl from '../utils/stripLocaleFromUrl';
 import paths from '../../config/paths';
 
-export default function createAppOnServer(config) {
+module.exports = function createAppOnServer(config) {
   return (req, res) => {
     // try to find locale from url, header and cookies
     const localeFromUrl = getLocaleFromUrl(req.originalUrl, config.app.locale.supported);
     const localeFromHeader = getLocaleFromHeader(req.headers['accept-language'], config.app.locale.supported);
     const localeFromCookies = getLocaleFromCookies(req.cookies, config.app.locale.supported);
 
+    const url = req.url;
     const urlWithoutLocale = (localeFromUrl)
       ? stripLocaleFromUrl(req.originalUrl, localeFromUrl)
       : req.originalUrl;
@@ -69,24 +70,28 @@ export default function createAppOnServer(config) {
       localeFromUrl,
       localeFromHeader,
       localeFromCookies,
+      url,
       urlWithoutLocale,
       device,
       csrfToken,
       basename,
     };
 
+    // Do not cache webpack-stats.json and all files in /app folder in development
     // See https://github.com/ProAI/react-kickstarter/issues/4
-    if (process.env.APP_MODE === 'development' && config.devBuild.hotReloadServer) {
-      // Do not cache webpack stats: the script file would change since
-      // hot module replacement is enabled in the development env
-      webpackIsomorphicTools.refresh();
+    if (process.env.APP_MODE === 'development') {
+      delete require.cache[paths.webpackAssets];
+
+      Object.keys(require.cache).forEach(function(id) {
+        if (/[\/\\]app[\/\\]/.test(id)) delete require.cache[id];
+      });
     }
 
     // define render, redirect and error function for hydrate function
     const render = (component, data) => {
       const assets = require(paths.webpackAssets);
       const content = component ? ReactDOM.renderToString(component) : '';
-      const renderHtml = require(paths.appHtml);
+      const renderHtml = require(paths.appHtml).default;
 
       const htmlSnippets = generateHtmlSnippets(meta, content, assets, data, config.devBuild.dll);
 
@@ -112,7 +117,7 @@ export default function createAppOnServer(config) {
     }
 
     // get hydrate function and hydrate
-    const hydrate = require(paths.appServerEntry);
+    const hydrate = require(paths.appServerEntry).default;
     hydrate(meta, { error, redirect, render });
   };
 };
