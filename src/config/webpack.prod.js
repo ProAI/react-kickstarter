@@ -60,7 +60,7 @@ module.exports = {
             loader: 'babel-loader',
             // This causes a deprecation warning that is fixed in v7.0.0-alpha.2
             // https://github.com/babel/babel-loader/pull/391
-            options: babelConfig
+            options: babelConfig,
           }
         ]
       },
