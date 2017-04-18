@@ -30,6 +30,6 @@ if (process.env.APP_MODE === 'development') {
     || !dest.firstChild.attributes['data-react-checksum']
   ) {
     // eslint-disable-next-line no-console
-    console.error('Server-side React rendering was discarded.');
+    console.error('React server rendering was discarded.');
   }
 }
