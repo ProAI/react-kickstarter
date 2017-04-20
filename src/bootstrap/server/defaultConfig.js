@@ -4,8 +4,8 @@ module.exports = {
   host: 'localhost',
   port: 8080,
   proxies: [],
-  enableSSR: true,
-  enableCookies: true,
+  ssr: true,
+  cookies: true,
   app: {
     csrfToken: true,
     locale: {

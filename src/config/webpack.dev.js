@@ -4,8 +4,8 @@ const webpack = require('webpack');
 const WebpackIsomorphicToolsPlugin = require('webpack-isomorphic-tools/plugin');
 const path = require('path');
 const paths = require('./paths');
-const babelConfig = require('./babel.js');
-const eslintConfig = require('./eslint.js');
+const babelConfig = require('./babel');
+const eslintConfig = require('./eslint');
 
 const host = 'localhost';
 const port = 8081;
@@ -179,6 +179,7 @@ module.exports = {
   },
   resolve: {
     modules: [
+      paths.appMain,
       paths.appNodeModules,
     ],
     alias: {

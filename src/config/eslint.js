@@ -1,9 +1,9 @@
 const paths = require('./paths');
-const path = require('path');
 
-const webpackConfig = process.env.NODE_ENV === 'development'
-  ? path.join(paths.kickstarterConfig, "webpack.dev.js")
-  : path.join(paths.kickstarterConfig, "webpack.prod.js");
+// TODO: Verfiy that we don't need eslint-import-resolver-webpack anymore
+// const webpackConfig = process.env.NODE_ENV === 'development'
+//   ? path.join(paths.kickstarterConfig, "webpack.dev.js")
+//   : path.join(paths.kickstarterConfig, "webpack.prod.js");
 
 module.exports = {
   "parser": "babel-eslint",
@@ -12,14 +12,17 @@ module.exports = {
     "plugin:flowtype/recommended"
   ],
   "env": {
-    "browser": true
+    "browser": true,
+    "node": true,
+    "es6": true
   },
   "plugins": [
     "flowtype"
   ],
   "rules": {
-    // airbnb
-    "linebreak-style": "on",
+    // airbnb config modifications
+    "linebreak-style": "off",
+    "arrow-parens": ["error", "as-needed"],
     "react/jsx-filename-extension": ["error", { "extensions": [".js", ".jsx"] }],
 
     // flowtype
@@ -34,8 +37,14 @@ module.exports = {
   },
   "settings": {
     "import/resolver": {
-      "webpack": {
-        "config": webpackConfig
+      // TODO: Verfiy that we don't need eslint-import-resolver-webpack anymore
+      // "webpack": {
+      //   "config": webpackConfig
+      // },
+      "node": {
+        "paths": [
+          paths.appMain,
+        ]
       }
     }
   }

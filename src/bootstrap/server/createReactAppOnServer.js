@@ -34,7 +34,7 @@ module.exports = function createAppOnServer(config) {
     );
 
     // if cookies are enabled, set language cookie
-    if (config.enableCookies && !localeFromCookies) {
+    if (config.cookies && !localeFromCookies) {
       addCookie(req, res, {
         name: 'lang',
         value: locale,
@@ -53,7 +53,7 @@ module.exports = function createAppOnServer(config) {
     const csrfToken = getCsrfToken(req.cookies.csrf, config.app.csrfToken);
 
     // if cookies and csrf token are enabled, set csrf token cookie
-    if (config.enableCookies && config.app.csrfToken && req.cookies.csrf === undefined) {
+    if (config.cookies && config.app.csrfToken && req.cookies.csrf === undefined) {
       addCookie(req, res, {
         name: 'csrf',
         value: csrfToken,
@@ -111,7 +111,7 @@ module.exports = function createAppOnServer(config) {
 
     // Render page on client if server side rendering is disabled.
     // Initial state should be empty in this case.
-    if (!config.enableSSR) {
+    if (!config.ssr) {
       render();
       return;
     }

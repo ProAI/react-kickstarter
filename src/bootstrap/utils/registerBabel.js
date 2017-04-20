@@ -1,4 +1,6 @@
-module.exports = function registerBabel(babelConfig) {
+const babelConfig = require('../../config/babel');
+
+module.exports = function registerBabel() {
   // node.js (other than webpack) has no ES6 modules support, so use commonjs
   babelConfig.presets[0][1].modules = 'commonjs';
 

@@ -12,7 +12,7 @@ const meta = window.__METADATA__;
 const dest = document.getElementById('content');
 
 // define render function for hydrate function
-const render = (component) => {
+const render = component => {
   ReactDOM.render(<HotEnabler>{component}</HotEnabler>, dest);
 };
 

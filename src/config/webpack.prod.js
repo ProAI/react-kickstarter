@@ -6,8 +6,8 @@ const CleanPlugin = require('clean-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const path = require('path');
 const paths = require('./paths');
-const babelConfig = require('./babel.js');
-const eslintConfig = require('./eslint.js');
+const babelConfig = require('./babel');
+const eslintConfig = require('./eslint');
 
 const webpackIsomorphicToolsPlugin = new WebpackIsomorphicToolsPlugin(require('./webpackIsomorphicTools'));
 
@@ -138,6 +138,7 @@ module.exports = {
   },
   resolve: {
     modules: [
+      paths.appMain,
       paths.appNodeModules,
     ],
     alias: {

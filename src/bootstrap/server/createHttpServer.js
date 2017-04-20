@@ -26,7 +26,7 @@ module.exports = function createHttpServer(config) {
   }
 
   // cookies middleware
-  if (config.enableCookies) {
+  if (config.cookies) {
     app.use(cookieParser());
   }
 
