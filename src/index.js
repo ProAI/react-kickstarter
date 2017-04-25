@@ -7,5 +7,5 @@ module.exports = {
   runServer,
   watchDevelopmentWebpack,
   buildDllWebpack,
-  buildProductionWebpack
-}
+  buildProductionWebpack,
+};

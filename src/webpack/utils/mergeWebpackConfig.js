@@ -7,9 +7,10 @@ module.exports = function mergeWebpackConfig(defaultWebpackConfig, customConfig,
   if (development) {
     const host = customConfig.devServer.host;
     const port = customConfig.devServer.port;
-    webpackConfig.entry.main[0] = require.resolve('webpack-hot-middleware/client')
-      + '?path=http://' + host + ':' + port + '/__webpack_hmr';
-    webpackConfig.output.publicPath = 'http://' + host + ':' + port + '/dist/';
+    webpackConfig.entry.main[
+      0
+    ] = `${require.resolve('webpack-hot-middleware/client')}?path=http://${host}:${port}/__webpack_hmr`;
+    webpackConfig.output.publicPath = `http://${host}:${port}/dist/`;
   }
 
   // add custom entries
@@ -24,10 +25,12 @@ module.exports = function mergeWebpackConfig(defaultWebpackConfig, customConfig,
   }
 
   // add custom plugins
-  const plugins = customConfig.customPlugins.map(function(plugin, key) {
+  const plugins = customConfig.customPlugins.map(plugin => {
     if (plugin.type === 'ContextReplacementPlugin') {
       return new webpack.ContextReplacementPlugin(plugin.args[0], plugin.args[1]);
     }
+
+    return null;
 
     // todo: more plugins should be added
   });
@@ -44,7 +47,11 @@ module.exports = function mergeWebpackConfig(defaultWebpackConfig, customConfig,
 
   // add aliases for dev modules
   if (customConfig.resolve.alias) {
-    webpackConfig.resolve.alias = Object.assign({}, webpackConfig.resolve.alias, customConfig.resolve.alias);
+    webpackConfig.resolve.alias = Object.assign(
+      {},
+      webpackConfig.resolve.alias,
+      customConfig.resolve.alias
+    );
   }
 
   return webpackConfig;

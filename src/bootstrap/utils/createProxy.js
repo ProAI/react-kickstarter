@@ -4,6 +4,7 @@ function proxyError(error, req, res) {
   // add the error handling
   // https://github.com/nodejitsu/node-http-proxy/issues/527
   if (error.code !== 'ECONNRESET') {
+    // eslint-disable-next-line no-console
     console.error('proxy error', error);
   }
   if (!res.headersSent) {
@@ -12,7 +13,7 @@ function proxyError(error, req, res) {
 
   const json = { error: 'proxy_error', reason: error.message };
   res.end(JSON.stringify(json));
-};
+}
 
 module.exports = function createProxy(options, server) {
   const proxy = httpProxy.createProxyServer(options);

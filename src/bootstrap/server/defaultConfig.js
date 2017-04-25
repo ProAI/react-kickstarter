@@ -1,5 +1,3 @@
-const paths = require('../../config/paths');
-
 module.exports = {
   host: 'localhost',
   port: 8080,
@@ -14,10 +12,10 @@ module.exports = {
       supported: ['en'],
     },
     device: {
-      autoDetect: true
+      autoDetect: true,
     },
   },
   devBuild: {
     dll: false,
-  }
+  },
 };

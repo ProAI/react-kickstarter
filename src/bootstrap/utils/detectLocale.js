@@ -12,4 +12,4 @@ module.exports = function detectLocale(defaultLoc, urlLoc, headerLoc, cookiesLoc
   }
 
   return defaultLoc;
-}
+};

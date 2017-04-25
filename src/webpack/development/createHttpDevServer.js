@@ -19,7 +19,10 @@ module.exports = function createHttpDevServer(config) {
     if (validateDll()) {
       installDll(webpackConfig);
     } else {
-      console.warn('Webpack: Dll is not valid. Maybe you have to rebuild the dll with npm run build-dll.');
+      // eslint-disable-next-line no-console
+      console.warn(
+        'Webpack: Dll is not valid. Maybe you have to rebuild the dll with npm run build-dll.'
+      );
     }
   }
 
@@ -30,8 +33,8 @@ module.exports = function createHttpDevServer(config) {
   const devServerOptions = {
     host: config.devServer.host,
     port: config.devServer.port,
-    contentBase: 'http://' + config.devServer.host + ':' + config.devServer.port,
-    publicPath: 'http://' + config.devServer.host + ':' + config.devServer.port + '/dist/',
+    contentBase: `http://${config.devServer.host}:${config.devServer.port}`,
+    publicPath: `http://${config.devServer.host}:${config.devServer.port}/dist/`,
     hot: true,
     quiet: true,
     noInfo: true,
@@ -44,13 +47,13 @@ module.exports = function createHttpDevServer(config) {
   app.use(webpackHotMiddleware(compiler));
 
   // run server
-  app.listen(config.devServer.port, config.devServer.host, function onAppListening(err) {
+  app.listen(config.devServer.port, config.devServer.host, err => {
     if (err) {
+      // eslint-disable-next-line no-console
       console.error(err);
     } else {
-      console.info(
-        `\n~~> Webpack development server listening on port ${config.devServer.port}`
-      );
+      // eslint-disable-next-line no-console
+      console.info(`\n~~> Webpack development server listening on port ${config.devServer.port}`);
     }
   });
-}
+};

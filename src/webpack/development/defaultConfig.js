@@ -14,6 +14,6 @@ module.exports = {
     port: 8081,
   },
   devBuild: {
-    dll: false
-  }
+    dll: false,
+  },
 };

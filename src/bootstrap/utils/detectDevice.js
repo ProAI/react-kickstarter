@@ -17,12 +17,10 @@ module.exports = function detectDevice(userAgent, cookie, auto) {
     if (md.phone() !== null) {
       // phone
       return 'mobile';
-    } else {
-      // tablet
-      return 'desktop';
     }
-  } else {
-    // desktop
+    // tablet
     return 'desktop';
   }
+  // desktop
+  return 'desktop';
 };

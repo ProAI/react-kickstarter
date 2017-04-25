@@ -24,10 +24,11 @@ hydrate(meta, { render }, data);
 if (process.env.APP_MODE === 'development') {
   window.React = React; // enable debugger
 
-  if (!dest
-    || !dest.firstChild
-    || !dest.firstChild.attributes
-    || !dest.firstChild.attributes['data-react-checksum']
+  if (
+    !dest ||
+    !dest.firstChild ||
+    !dest.firstChild.attributes ||
+    !dest.firstChild.attributes['data-react-checksum']
   ) {
     // eslint-disable-next-line no-console
     console.error('React server rendering was discarded.');

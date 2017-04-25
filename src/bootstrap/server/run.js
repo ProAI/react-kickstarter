@@ -12,8 +12,10 @@ module.exports = function runServer(customConfig) {
   const config = deepmerge(defaultConfig, customConfig);
 
   // define process.env.NODE_PATH for imports
+  // eslint-disable-next-line global-require
   const Module = require('module').Module;
   process.env.NODE_PATH = paths.appMain;
+  // eslint-disable-next-line no-underscore-dangle
   Module._initPaths();
 
   // define app process.env constants
@@ -22,9 +24,12 @@ module.exports = function runServer(customConfig) {
   process.env.APP_PLATFORM = 'web';
 
   // define webpackIsomorphicTools constant
-  new WebpackIsomorphicTools(require('../../config/webpackIsomorphicTools'))
-    .server(paths.appRoot, function() {
-      const createHttpServer = require('./createHttpServer');
-      createHttpServer(config);
-    });
+  new WebpackIsomorphicTools(
+    // eslint-disable-next-line global-require
+    require('../../config/webpackIsomorphicTools')
+  ).server(paths.appRoot, () => {
+    // eslint-disable-next-line global-require
+    const createHttpServer = require('./createHttpServer');
+    createHttpServer(config);
+  });
 };

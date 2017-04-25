@@ -11,12 +11,10 @@ module.exports = {
   output: {
     path: path.join(paths.appPublic, 'dll'),
     filename: 'dll__[name].js',
-    library: 'DLL_[name]_[hash]'
+    library: 'DLL_[name]_[hash]',
   },
   resolve: {
-    modules: [
-      paths.appNodeModules,
-    ],
+    modules: [paths.appNodeModules],
     extensions: ['.js'],
   },
   plugins: [
@@ -26,13 +24,13 @@ module.exports = {
 
     new webpack.DllPlugin({
       path: path.join(paths.webpackCache, 'dll', '[name].json'),
-      name: 'DLL_[name]_[hash]'
-    })
+      name: 'DLL_[name]_[hash]',
+    }),
   ],
   // Turn off performance hints during development because we don't do any
   // splitting or minification in interest of speed. These warnings become
   // cumbersome.
   performance: {
     hints: false,
-  }
+  },
 };

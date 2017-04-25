@@ -1,4 +1,3 @@
-const React = require('react');
 const ReactDOM = require('react-dom/server');
 // const 'isomorphic-fetch';
 const addCookie = require('../utils/addCookie');
@@ -16,11 +15,14 @@ module.exports = function createAppOnServer(config) {
   return (req, res) => {
     // try to find locale from url, header and cookies
     const localeFromUrl = getLocaleFromUrl(req.originalUrl, config.app.locale.supported);
-    const localeFromHeader = getLocaleFromHeader(req.headers['accept-language'], config.app.locale.supported);
+    const localeFromHeader = getLocaleFromHeader(
+      req.headers['accept-language'],
+      config.app.locale.supported
+    );
     const localeFromCookies = getLocaleFromCookies(req.cookies, config.app.locale.supported);
 
     const url = req.url;
-    const urlWithoutLocale = (localeFromUrl)
+    const urlWithoutLocale = localeFromUrl
       ? stripLocaleFromUrl(req.originalUrl, localeFromUrl)
       : req.originalUrl;
 
@@ -38,7 +40,7 @@ module.exports = function createAppOnServer(config) {
       addCookie(req, res, {
         name: 'lang',
         value: locale,
-        options: { maxAge: 2628000 * 60 * 1000 } // 5 years lifetime
+        options: { maxAge: 2628000 * 60 * 1000 }, // 5 years lifetime
       });
     }
 
@@ -57,7 +59,7 @@ module.exports = function createAppOnServer(config) {
       addCookie(req, res, {
         name: 'csrf',
         value: csrfToken,
-        options: { httpOnly: true }
+        options: { httpOnly: true },
       });
     }
 
@@ -82,15 +84,17 @@ module.exports = function createAppOnServer(config) {
     if (process.env.APP_MODE === 'development') {
       delete require.cache[paths.webpackAssets];
 
-      Object.keys(require.cache).forEach(function(id) {
-        if (/[\/\\]app[\/\\]/.test(id)) delete require.cache[id];
+      Object.keys(require.cache).forEach(id => {
+        if (/[/\\]app[/\\]/.test(id)) delete require.cache[id];
       });
     }
 
     // define render, redirect and error function for hydrate function
     const render = (component, data) => {
+      // eslint-disable-next-line
       const assets = require(paths.webpackAssets);
       const content = component ? ReactDOM.renderToString(component) : '';
+      // eslint-disable-next-line
       const renderHtml = require(paths.appHtml).default;
 
       const htmlSnippets = generateHtmlSnippets(meta, content, assets, data, config.devBuild.dll);
@@ -99,15 +103,15 @@ module.exports = function createAppOnServer(config) {
 
       res.status(200).send(html);
     };
-    const redirect = (path) => {
+    const redirect = path => {
       res.redirect(path);
-    }
-    const error = (message, status) => {
+    };
+    const error = message => {
       res.status(404);
       if (message) {
-        res.send(message)
+        res.send(message);
       }
-    }
+    };
 
     // Render page on client if server side rendering is disabled.
     // Initial state should be empty in this case.
@@ -117,6 +121,7 @@ module.exports = function createAppOnServer(config) {
     }
 
     // get hydrate function and hydrate
+    // eslint-disable-next-line
     const hydrate = require(paths.appServerEntry).default;
     hydrate(meta, { error, redirect, render });
   };

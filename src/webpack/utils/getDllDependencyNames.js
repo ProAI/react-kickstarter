@@ -1,8 +1,8 @@
 const path = require('path');
-const fs = require('fs');
 const paths = require('../../config/paths');
 
 function getFromPackageJson() {
+  // eslint-disable-next-line
   const packageJson = require(path.join(paths.appRoot, 'package.json'));
 
   return Object.keys(packageJson.dependencies);
@@ -20,9 +20,7 @@ function remove(name, dependencyNames) {
 
 module.exports = function getDllDependencyNames(config) {
   // get dependencies from package.json or create an empty array
-  var dependencyNames = (config.readFromPackageJson)
-    ? getFromPackageJson()
-    : [];
+  let dependencyNames = config.readFromPackageJson ? getFromPackageJson() : [];
 
   // include dependencies from config
   if (config.include) {
@@ -31,10 +29,10 @@ module.exports = function getDllDependencyNames(config) {
 
   // exclude dependencies from config
   if (config.exclude) {
-    config.exclude.forEach(function(value, key) {
+    config.exclude.forEach(value => {
       dependencyNames = remove(value, dependencyNames);
     });
   }
 
   return dependencyNames;
-}
+};

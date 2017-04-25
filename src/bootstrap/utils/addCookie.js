@@ -9,4 +9,4 @@ module.exports = function addCookie(req, res, data) {
     req.headers.cookie = `${req.headers.cookie};${data.name}=${data.value}`;
   }
   res.cookie(data.name, data.value, data.options);
-}
+};

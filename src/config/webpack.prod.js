@@ -9,27 +9,24 @@ const paths = require('./paths');
 const babelConfig = require('./babel');
 const eslintConfig = require('./eslint');
 
-const webpackIsomorphicToolsPlugin = new WebpackIsomorphicToolsPlugin(require('./webpackIsomorphicTools'));
+const webpackIsomorphicToolsPlugin = new WebpackIsomorphicToolsPlugin(
+  // eslint-disable-next-line global-require
+  require('./webpackIsomorphicTools')
+);
 
-const includePaths = [
-  paths.appMain,
-  path.join(paths.appNodeModules, 'react-kickstarter/src')
-];
+const includePaths = [paths.appMain, path.join(paths.appNodeModules, 'react-kickstarter/src')];
 
 module.exports = {
   devtool: 'source-map',
   context: paths.appRoot,
   entry: {
-    'main': [
-      require.resolve('babel-polyfill'),
-      paths.kickstarterClientEntry,
-    ]
+    main: [require.resolve('babel-polyfill'), paths.kickstarterClientEntry],
   },
   output: {
     path: paths.appAssets,
     filename: '[name]-[chunkhash].js',
     chunkFilename: '[name]-[chunkhash].js',
-    publicPath: '/dist/'
+    publicPath: '/dist/',
   },
   module: {
     rules: [
@@ -47,7 +44,7 @@ module.exports = {
             // Point ESLint to our predefined config.
             options: {
               baseConfig: eslintConfig,
-            }
+            },
           },
         ],
       },
@@ -61,8 +58,8 @@ module.exports = {
             // This causes a deprecation warning that is fixed in v7.0.0-alpha.2
             // https://github.com/babel/babel-loader/pull/391
             options: babelConfig,
-          }
-        ]
+          },
+        ],
       },
       // Define rules for sass files
       {
@@ -76,7 +73,7 @@ module.exports = {
               options: {
                 importLoaders: 2,
                 // sourceMap: true
-              }
+              },
             },
             {
               loader: 'postcss-loader',
@@ -90,61 +87,55 @@ module.exports = {
                       'Firefox ESR',
                       'not ie < 9', // React doesn't support IE8 anyway
                     ],
-                  })
-                ]
-              }
+                  }),
+                ],
+              },
             },
             {
               loader: 'sass-loader',
               // options: { sourceMap: true }
-            }
-          ]
-        })
+            },
+          ],
+        }),
       },
       // Process font files
       {
         test: /\.woff2?(\?v=\d+\.\d+\.\d+)?$/,
         loader: 'url-loader',
-        options: { limit: 10000, mimetype: 'application/font-woff' }
+        options: { limit: 10000, mimetype: 'application/font-woff' },
       },
       {
         test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
         loader: 'url-loader',
-        options: { limit: 10000, mimetype: 'application/octet-stream' }
+        options: { limit: 10000, mimetype: 'application/octet-stream' },
       },
       {
         test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'file-loader'
+        loader: 'file-loader',
       },
       {
         test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
         loader: 'url-loader',
-        options: { limit: 10000, mimetype: 'image/svg+xml' }
+        options: { limit: 10000, mimetype: 'image/svg+xml' },
       },
       // Process images
       {
         test: webpackIsomorphicToolsPlugin.regular_expression('images'),
         loader: 'url-loader',
-        options: { limit: 10000 }
-      }
-    ]
+        options: { limit: 10000 },
+      },
+    ],
   },
   // Resolve node modules from node_modules app and react-kickstarter directory
   resolveLoader: {
-    modules: [
-      paths.kickstarterNodeModules,
-      paths.appNodeModules,
-    ],
+    modules: [paths.kickstarterNodeModules, paths.appNodeModules],
   },
   resolve: {
-    modules: [
-      paths.appMain,
-      paths.appNodeModules,
-    ],
+    modules: [paths.appMain, paths.appNodeModules],
     alias: {
-      'appClientEntry': paths.appClientEntry
+      appClientEntry: paths.appClientEntry,
     },
-    extensions: ['.json', '.js', '.jsx']
+    extensions: ['.json', '.js', '.jsx'],
   },
   plugins: [
     // clean old dist files
@@ -160,8 +151,8 @@ module.exports = {
     new webpack.LoaderOptionsPlugin({
       minimize: true,
       options: {
-        postcss: [autoprefixer]
-      }
+        postcss: [autoprefixer],
+      },
     }),
 
     // define process.env constants
@@ -189,7 +180,7 @@ module.exports = {
     }),
 
     // isomorphic
-    webpackIsomorphicToolsPlugin
+    webpackIsomorphicToolsPlugin,
   ],
   // Some libraries import Node modules but don't use them in the browser.
   // Tell Webpack to provide empty mocks for them so importing them works.
@@ -197,5 +188,5 @@ module.exports = {
     fs: 'empty',
     net: 'empty',
     tls: 'empty',
-  }
+  },
 };
