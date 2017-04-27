@@ -7,8 +7,7 @@ module.exports = function getLocaleFromHeader(acceptLanguageHeader, availableLan
 
   const locales = [];
 
-  // eslint-disable-next-line no-restricted-syntax
-  for (const localePair of localeArray) {
+  localeArray.forEach(localePair => {
     const locale = localePair.split(';');
 
     if (locale[1] === undefined) {
@@ -18,7 +17,7 @@ module.exports = function getLocaleFromHeader(acceptLanguageHeader, availableLan
     }
 
     locales[locale[0]] = locale[1];
-  }
+  });
 
   let returnLocale = null;
   locales.forEach(locale => {
