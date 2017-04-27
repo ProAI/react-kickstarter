@@ -20,7 +20,9 @@
   "bugs": {
     "url": "https://github.com/ProAI/react-kickstarter/issues"
   },
-  "scripts": {},
+  "scripts": {
+    "lint": "./node_modules/.bin/eslint src"
+  },
   "dependencies": {
     "autoprefixer": "6.7.7",
     "babel-cli": "6.24.1",
