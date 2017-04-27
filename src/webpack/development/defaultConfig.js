@@ -1,10 +1,9 @@
 module.exports = {
-  customEntries: {
+  styles: {
     main: null,
     desktop: null,
     mobile: null,
   },
-  customPlugins: [],
   devModules: {
     include: null,
     alias: null,

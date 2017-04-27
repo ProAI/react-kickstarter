@@ -1,5 +1,3 @@
-const webpack = require('webpack');
-
 module.exports = function mergeWebpackConfig(defaultWebpackConfig, customConfig, development) {
   const webpackConfig = defaultWebpackConfig;
 
@@ -7,51 +5,65 @@ module.exports = function mergeWebpackConfig(defaultWebpackConfig, customConfig,
   if (development) {
     const host = customConfig.devServer.host;
     const port = customConfig.devServer.port;
-    webpackConfig.entry.main[
-      0
-    ] = `${require.resolve('webpack-hot-middleware/client')}?path=http://${host}:${port}/__webpack_hmr`;
+    const hotMiddlewareEntry = `${require.resolve('webpack-hot-middleware/client')}?path=http://${host}:${port}/__webpack_hmr`;
+    webpackConfig.entry.main[0] = hotMiddlewareEntry;
     webpackConfig.output.publicPath = `http://${host}:${port}/dist/`;
   }
 
   // add custom entries
-  if (customConfig.entry.main) {
-    webpackConfig.entry.main = webpackConfig.entry.main.concat(customConfig.entry.main);
+  if (customConfig.styles.main) {
+    customConfig.styles.main.forEach(styleEntry => {
+      if (styleEntry.split('.').pop() === 'scss') {
+        webpackConfig.entry.main.push(styleEntry);
+      }
+    });
   }
-  if (customConfig.entry.desktop) {
-    webpackConfig.entry.desktop = customConfig.entry.desktop;
+  if (customConfig.styles.desktop) {
+    customConfig.styles.desktop.forEach(styleEntry => {
+      if (styleEntry.split('.').pop() === 'scss') {
+        if (webpackConfig.entry.desktop) {
+          webpackConfig.entry.desktop.push(styleEntry);
+        } else {
+          webpackConfig.entry.desktop = [styleEntry];
+        }
+      }
+    });
   }
-  if (customConfig.entry.mobile) {
-    webpackConfig.entry.mobile = customConfig.entry.mobile;
-  }
-
-  // add custom plugins
-  const plugins = customConfig.customPlugins.map(plugin => {
-    if (plugin.type === 'ContextReplacementPlugin') {
-      return new webpack.ContextReplacementPlugin(plugin.args[0], plugin.args[1]);
-    }
-
-    return null;
-
-    // todo: more plugins should be added
-  });
-  webpackConfig.plugins = webpackConfig.plugins.concat(plugins);
-
-  // add include paths for dev modules
-  if (customConfig.includePaths) {
-    webpackConfig.module.rules.forEach((value, key) => {
-      if (value.include) {
-        webpackConfig.module.rules[key].include = value.include.concat(customConfig.includePaths);
+  if (customConfig.styles.mobile) {
+    customConfig.styles.mobile.forEach(styleEntry => {
+      if (styleEntry.split('.').pop() === 'scss') {
+        if (webpackConfig.entry.mobile) {
+          webpackConfig.entry.mobile.push(styleEntry);
+        } else {
+          webpackConfig.entry.mobile = [styleEntry];
+        }
       }
     });
   }
 
-  // add aliases for dev modules
-  if (customConfig.resolve.alias) {
-    webpackConfig.resolve.alias = Object.assign(
-      {},
-      webpackConfig.resolve.alias,
-      customConfig.resolve.alias
-    );
+  // add dev modules include paths and aliases
+  if (customConfig.devModules) {
+    Object.keys(customConfig.devModules).forEach(devModuleKey => {
+      const devModule = customConfig.devModules[devModuleKey];
+
+      // add include paths for dev modules
+      if (devModule && devModule.include) {
+        webpackConfig.module.rules.forEach((value, key) => {
+          if (value.include) {
+            webpackConfig.module.rules[key].include = value.include.concat([devModule.include]);
+          }
+        });
+      }
+
+      // add aliases for dev modules
+      if (devModule && devModule.alias) {
+        webpackConfig.resolve.alias = Object.assign(
+          {},
+          webpackConfig.resolve.alias,
+          devModule.alias
+        );
+      }
+    });
   }
 
   return webpackConfig;

@@ -15,7 +15,7 @@ module.exports = function generateHtmlSnippets(meta, reactContent, assets, data,
       window.__METADATA__=${serialize(meta)};
     </script>
     ${useDll && process.env.APP_MODE === 'development' ? '<script key="dll__vendor" src="/dll/dll__vendor.js" charset="UTF-8" /></script>' : ''}
-    ${assets.javascript.desktop && meta.device === 'desktop' ? `<script src="${assets.javascript.desktop}" charset="UTF-8"></script>` : ''}${assets.javascript.mobile && meta.device === 'mobile' ? `<script src="${assets.javascript.mobile}" charset="UTF-8"></script>` : ''}<script src="${assets.javascript.main}" charset="UTF-8"></script>`;
+    <script src="${assets.javascript.main}" charset="UTF-8"></script>`;
 
   // bundle html snippets
   return {
