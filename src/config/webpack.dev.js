@@ -50,6 +50,7 @@ module.exports = {
             // Point ESLint to our predefined config.
             options: {
               baseConfig: eslintConfig,
+              useEslintrc: false,
             },
           },
         ],

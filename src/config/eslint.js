@@ -17,7 +17,7 @@ module.exports = {
   rules: {
     // airbnb config modifications
     'linebreak-style': 'off',
-    'arrow-parens': ['error', 'as-needed'],
+    'arrow-parens': 'off', // ['error', 'as-needed'],
     'react/jsx-filename-extension': ['error', { extensions: ['.js', '.jsx'] }],
 
     // flowtype
