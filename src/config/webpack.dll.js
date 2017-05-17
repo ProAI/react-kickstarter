@@ -6,7 +6,7 @@ module.exports = {
   devtool: 'cheap-module-eval-source-map',
   context: paths.appRoot,
   entry: {
-    vendor: null, // will be defined in /src/webpack/dll/build.js
+    vendor: null, // will be defined in dll config
   },
   output: {
     path: path.join(paths.appPublic, 'dll'),

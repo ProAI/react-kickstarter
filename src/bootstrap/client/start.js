@@ -13,7 +13,7 @@ const dest = document.getElementById('content');
 
 // define render function for hydrate function
 const render = component => {
-  ReactDOM.render(<HotEnabler>{component}</HotEnabler>, dest);
+  ReactDOM.render(React.createElement(HotEnabler, {}, component), dest);
 };
 
 // get hydrate function and hydrate

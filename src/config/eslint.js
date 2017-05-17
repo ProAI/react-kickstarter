@@ -1,6 +1,6 @@
 const paths = require('./paths');
 
-// TODO - Verfiy that we don"t need eslint-import-resolver-webpack anymore
+// TODO - Verfiy that we don't need eslint-import-resolver-webpack anymore
 // const webpackConfig = process.env.NODE_ENV === "development"
 //   ? path.join(paths.kickstarterConfig, "webpack.dev.js")
 //   : path.join(paths.kickstarterConfig, "webpack.prod.js");
@@ -17,22 +17,21 @@ module.exports = {
   rules: {
     // airbnb config modifications
     'linebreak-style': 'off',
-    'arrow-parens': 'off', // ['error', 'as-needed'],
+    'arrow-parens': 'off', // ['error', 'as-needed'], conflict with prettier
+    'react/prop-types': 'off', // conflict with Flow
     'react/jsx-filename-extension': ['error', { extensions: ['.js', '.jsx'] }],
 
     // flowtype
     'flowtype/delimiter-dangle': ['error', 'always-multiline'],
     'flowtype/no-primitive-constructor-types': 'error',
-    'flowtype/no-weak-types': 'error',
     'flowtype/object-type-delimiter': ['error', 'comma'],
     'flowtype/require-valid-file-annotation': 'error',
     'flowtype/semi': ['error', 'always'],
     'flowtype/space-before-generic-bracket': ['error', 'never'],
-    'flowtype/type-id-match': ['error', '^([A-Z][a-z0-9]+)+Type$'],
   },
   settings: {
     'import/resolver': {
-      // TODO - Verfiy we don"t need eslint-import-resolver-webpack anymore
+      // TODO - Verfiy we don't need eslint-import-resolver-webpack anymore
       // "webpack": {
       //   "config": webpackConfig
       // },

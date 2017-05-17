@@ -1,3 +1,5 @@
+require('babel-polyfill');
+
 const babelConfig = require('../../config/babel');
 
 module.exports = function registerBabel() {
