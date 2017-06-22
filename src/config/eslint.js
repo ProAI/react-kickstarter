@@ -16,6 +16,7 @@ module.exports = {
   plugins: ['flowtype'],
   rules: {
     // airbnb config modifications
+    'no-unused-vars': 'warn',
     'linebreak-style': 'off',
     'arrow-parens': 'off', // ['error', 'as-needed'], conflict with prettier
     'react/prop-types': 'off', // conflict with Flow

@@ -44,6 +44,7 @@ module.exports = {
             // Point ESLint to our predefined config.
             options: {
               baseConfig: eslintConfig,
+              useEslintrc: false,
             },
           },
         ],
@@ -164,7 +165,7 @@ module.exports = {
     }),
 
     // Minify the code.
-    new webpack.optimize.UglifyJsPlugin({
+    /* new webpack.optimize.UglifyJsPlugin({
       compress: {
         screw_ie8: true, // React doesn't support IE8
         warnings: false,
@@ -177,7 +178,7 @@ module.exports = {
         screw_ie8: true,
       },
       // sourceMap: true,
-    }),
+    }),*/
 
     // isomorphic
     webpackIsomorphicToolsPlugin,

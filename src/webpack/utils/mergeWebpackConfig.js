@@ -5,7 +5,9 @@ module.exports = function mergeWebpackConfig(defaultWebpackConfig, customConfig,
   if (development) {
     const host = customConfig.devServer.host;
     const port = customConfig.devServer.port;
-    const hotMiddlewareEntry = `${require.resolve('webpack-hot-middleware/client')}?path=http://${host}:${port}/__webpack_hmr`;
+    const hotMiddlewareEntry = `${require.resolve(
+      'webpack-hot-middleware/client'
+    )}?path=http://${host}:${port}/__webpack_hmr`;
     webpackConfig.entry.main[0] = hotMiddlewareEntry;
     webpackConfig.output.publicPath = `http://${host}:${port}/dist/`;
   }
@@ -13,14 +15,14 @@ module.exports = function mergeWebpackConfig(defaultWebpackConfig, customConfig,
   // add custom entries
   if (customConfig.styles.main) {
     customConfig.styles.main.forEach(styleEntry => {
-      if (styleEntry.split('.').pop() === 'scss') {
+      if (styleEntry.split('.').pop() === 'scss' || styleEntry.split('.').pop() === 'js') {
         webpackConfig.entry.main.push(styleEntry);
       }
     });
   }
   if (customConfig.styles.desktop) {
     customConfig.styles.desktop.forEach(styleEntry => {
-      if (styleEntry.split('.').pop() === 'scss') {
+      if (styleEntry.split('.').pop() === 'scss' || styleEntry.split('.').pop() === 'js') {
         if (webpackConfig.entry.desktop) {
           webpackConfig.entry.desktop.push(styleEntry);
         } else {
@@ -31,7 +33,7 @@ module.exports = function mergeWebpackConfig(defaultWebpackConfig, customConfig,
   }
   if (customConfig.styles.mobile) {
     customConfig.styles.mobile.forEach(styleEntry => {
-      if (styleEntry.split('.').pop() === 'scss') {
+      if (styleEntry.split('.').pop() === 'scss' || styleEntry.split('.').pop() === 'js') {
         if (webpackConfig.entry.mobile) {
           webpackConfig.entry.mobile.push(styleEntry);
         } else {

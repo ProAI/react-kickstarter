@@ -1,4 +1,4 @@
-const ReactDOM = require('react-dom/server');
+const ReactDOMServer = require('react-dom/server');
 // const 'isomorphic-fetch';
 const addCookie = require('../utils/addCookie');
 const detectDevice = require('../utils/detectDevice');
@@ -93,7 +93,7 @@ module.exports = function createAppOnServer(config) {
     const render = (component, getData) => {
       // eslint-disable-next-line
       const assets = require(paths.webpackAssets);
-      const content = component ? ReactDOM.renderToString(component) : '';
+      const content = component ? ReactDOMServer.renderToString(component) : '';
       // eslint-disable-next-line
       const renderHtml = require(paths.appHtml).default;
 
@@ -101,7 +101,7 @@ module.exports = function createAppOnServer(config) {
         meta,
         content,
         assets,
-        getData(),
+        getData ? getData() : {},
         config.devBuild.dll
       );
 
