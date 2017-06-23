@@ -21,7 +21,7 @@ module.exports = function createHttpDevServer(config) {
     } else {
       // eslint-disable-next-line no-console
       console.warn(
-        'Webpack: Dll is not valid. Maybe you have to rebuild the dll with npm run build-dll.'
+        'Webpack: Development mode is not optimized. Update your webpack dll to optimize it.'
       );
     }
   }
@@ -40,6 +40,9 @@ module.exports = function createHttpDevServer(config) {
     noInfo: true,
     inline: true,
     lazy: false,
+    headers: {
+      'Access-Control-Allow-Origin': `http://${config.host}:${config.port}`,
+    },
   };
 
   // use webpack dev and hot middleware

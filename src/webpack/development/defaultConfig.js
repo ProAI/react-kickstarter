@@ -1,4 +1,6 @@
 module.exports = {
+  host: 'localhost',
+  port: 8080,
   styles: {
     main: null,
     desktop: null,
