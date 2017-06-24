@@ -14,7 +14,7 @@ module.exports = function runServer(customConfig) {
   // define process.env.NODE_PATH for imports
   // eslint-disable-next-line global-require
   const Module = require('module').Module;
-  process.env.NODE_PATH = paths.appMain;
+  process.env.NODE_PATH = './app'; // paths.appMain;
   // eslint-disable-next-line no-underscore-dangle
   Module._initPaths();
 
