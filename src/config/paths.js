@@ -6,9 +6,6 @@ const appRootPath = process.cwd();
 
 const realAppRootPath = fs.realpathSync(appRootPath);
 
-// eslint-disable-next-line no-console
-console.log(`Your real app root path: ${realAppRootPath}`);
-
 function resolveAppPath(relativePath) {
   return path.resolve(realAppRootPath, relativePath);
 }
