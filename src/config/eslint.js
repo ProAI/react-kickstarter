@@ -16,10 +16,11 @@ module.exports = {
   plugins: ['flowtype'],
   rules: {
     // airbnb config modifications
-    'no-unused-vars': 'warn',
+    'no-unused-vars': 'warn', // easier for development
     'linebreak-style': 'off',
-    'arrow-parens': 'off', // ['error', 'as-needed'], conflict with prettier
-    'react/prop-types': 'off', // conflict with Flow
+    'arrow-parens': 'off', // conflict with Prettier
+    'react/prop-types': 'off', // not needed with Flow
+    'react/require-default-props': 'off', // not needed with Flow
     'react/jsx-filename-extension': ['error', { extensions: ['.js', '.jsx'] }],
 
     // flowtype
