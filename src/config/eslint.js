@@ -19,8 +19,6 @@ module.exports = {
     'no-unused-vars': 'warn', // easier for development
     'linebreak-style': 'off',
     'arrow-parens': 'off', // conflict with Prettier
-    'react/prop-types': 'off', // not needed with Flow
-    'react/require-default-props': 'off', // not needed with Flow
     'react/jsx-filename-extension': ['error', { extensions: ['.js', '.jsx'] }],
 
     // flowtype
