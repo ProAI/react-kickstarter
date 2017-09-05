@@ -68,6 +68,8 @@ module.exports = function createAppOnServer(config) {
 
     // create meta data object
     const meta = {
+      supportedLocales: config.app.locale.supported,
+      defaultLocale: config.app.locale.default,
       locale,
       localeFromUrl,
       localeFromHeader,
