@@ -18,6 +18,7 @@ module.exports = {
     // airbnb config modifications
     'no-unused-vars': 'warn', // easier for development
     'linebreak-style': 'off',
+    'react/prop-types': 'off', // disable rule until update to Flow v0.53
     'arrow-parens': 'off', // conflict with Prettier
     'react/jsx-filename-extension': ['error', { extensions: ['.js', '.jsx'] }],
 
