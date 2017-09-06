@@ -7,13 +7,12 @@ const paths = require('./paths');
 
 module.exports = {
   parser: 'babel-eslint',
-  extends: ['airbnb', 'plugin:flowtype/recommended'],
+  extends: ['airbnb'],
   env: {
     browser: true,
     node: true,
     es6: true,
   },
-  plugins: ['flowtype'],
   rules: {
     // airbnb config modifications
     'no-unused-vars': 'warn', // easier for development
@@ -21,14 +20,6 @@ module.exports = {
     'react/prop-types': 'off', // disable rule until update to Flow v0.53
     'arrow-parens': 'off', // conflict with Prettier
     'react/jsx-filename-extension': ['error', { extensions: ['.js', '.jsx'] }],
-
-    // flowtype
-    'flowtype/delimiter-dangle': ['error', 'always-multiline'],
-    'flowtype/no-primitive-constructor-types': 'error',
-    'flowtype/object-type-delimiter': ['error', 'comma'],
-    'flowtype/require-valid-file-annotation': 'error',
-    'flowtype/semi': ['error', 'always'],
-    'flowtype/space-before-generic-bracket': ['error', 'never'],
   },
   settings: {
     'import/resolver': {
