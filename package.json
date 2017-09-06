@@ -2,8 +2,7 @@
   "name": "react-kickstarter",
   "version": "0.2.18",
   "main": "src/index.js",
-  "description":
-    "Create isomorphic/universal React apps extremely simple with no configuration (until you need it)",
+  "description": "Create isomorphic/universal React apps extremely simple with no configuration (until you need it)",
   "author": "Markus Wetzel <markuswetzel@gmx.net>",
   "license": "MIT",
   "keywords": [
@@ -47,6 +46,7 @@
     "eslint-config-airbnb": "15.1.0",
     "eslint-import-resolver-node": "0.3.1",
     "eslint-loader": "1.9.0",
+    "eslint-plugin-flowtype": "2.35.1",
     "eslint-plugin-import": "2.7.0",
     "eslint-plugin-jsx-a11y": "5.1.1",
     "eslint-plugin-react": "7.3.0",
