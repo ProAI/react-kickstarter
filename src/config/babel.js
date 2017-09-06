@@ -7,6 +7,7 @@ module.exports = {
     require.resolve('babel-preset-stage-2'),
   ],
   plugins: [
+    [require.resolve('babel-plugin-styled-components'), { ssr: true }],
     // TODO - Verify that we don't need babel-plugin-transform-runtime anymore
     // require.resolve("babel-plugin-transform-runtime")
   ],
