@@ -1,8 +1,9 @@
 {
   "name": "react-kickstarter",
-  "version": "0.2.18",
+  "version": "0.2.19",
   "main": "src/index.js",
-  "description": "Create isomorphic/universal React apps extremely simple with no configuration (until you need it)",
+  "description":
+    "Create isomorphic/universal React apps extremely simple with no configuration (until you need it)",
   "author": "Markus Wetzel <markuswetzel@gmx.net>",
   "license": "MIT",
   "keywords": [
