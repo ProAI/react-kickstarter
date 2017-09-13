@@ -21,7 +21,6 @@ module.exports = function createAppOnServer(config) {
     );
     const localeFromCookies = getLocaleFromCookies(req.cookies, config.app.locale.supported);
 
-    const url = req.url;
     const urlWithoutLocale = localeFromUrl
       ? stripLocaleFromUrl(req.originalUrl, localeFromUrl)
       : req.originalUrl;
@@ -68,14 +67,15 @@ module.exports = function createAppOnServer(config) {
 
     // create meta data object
     const meta = {
+      hostname: req.hostname,
+      url: req.url,
+      urlWithoutLocale,
       supportedLocales: config.app.locale.supported,
       defaultLocale: config.app.locale.default,
       locale,
       localeFromUrl,
       localeFromHeader,
       localeFromCookies,
-      url,
-      urlWithoutLocale,
       device,
       csrfToken,
       basename,
