@@ -18,9 +18,18 @@ module.exports = {
     // airbnb config modifications
     'no-unused-vars': 'warn', // easier for development
     'linebreak-style': 'off',
-    'react/prop-types': 'off', // disable rule until update to Flow v0.53
-    'arrow-parens': 'off', // conflict with Prettier
+    'arrow-parens': 'off', // not necessary with Prettier
+    'react/no-unused-prop-types': 'off', // conflict with Flow type defs
+    'react/prop-types': 'off', // not necessary with Flow
+    'react/default-props-match-prop-types': 'off', // conflict with Flow v0.57.3
     'react/jsx-filename-extension': ['error', { extensions: ['.js', '.jsx'] }],
+    'jsx-a11y/anchor-is-valid': [
+      'error',
+      {
+        components: ['a', 'Link'],
+        specialLink: ['href', 'to'],
+      },
+    ],
 
     // flowtype
     'flowtype/delimiter-dangle': ['error', 'always-multiline'],
