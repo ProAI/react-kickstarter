@@ -11,9 +11,24 @@ const meta = window.__METADATA__;
 
 const dest = document.getElementById('content');
 
+const ssr =
+  dest &&
+  dest.firstChild &&
+  dest.firstChild.attributes &&
+  dest.firstChild.attributes['data-reactroot'];
+
+// backwards compatibility for React 15
+const isReact15 = ReactDOM.createPortal === undefined;
+
 // define render function for hydrate function
 const render = component => {
-  ReactDOM.render(React.createElement(HotEnabler, {}, component), dest);
+  const element = React.createElement(HotEnabler, {}, component);
+
+  if (!isReact15 && ssr) {
+    ReactDOM.hydrate(element, dest);
+  } else {
+    ReactDOM.render(element, dest);
+  }
 };
 
 // get hydrate function and hydrate
@@ -24,13 +39,8 @@ hydrate(meta, { render }, data);
 if (process.env.APP_MODE === 'development') {
   window.React = React; // enable debugger
 
-  if (
-    !dest ||
-    !dest.firstChild ||
-    !dest.firstChild.attributes ||
-    !dest.firstChild.attributes['data-react-checksum']
-  ) {
+  if (!ssr) {
     // eslint-disable-next-line no-console
-    console.error('React server rendering was discarded.');
+    console.error('React server side rendering is disabled or was discarded.');
   }
 }

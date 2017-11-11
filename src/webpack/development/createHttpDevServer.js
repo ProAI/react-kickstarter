@@ -20,9 +20,7 @@ module.exports = function createHttpDevServer(config) {
       installDll(webpackConfig);
     } else {
       // eslint-disable-next-line no-console
-      console.warn(
-        'Webpack: Development mode is not optimized. Update your webpack dll to optimize it.'
-      );
+      console.warn('Webpack: Development mode is not optimized. Update your webpack dll to optimize it.');
     }
   }
 

@@ -24,12 +24,10 @@ module.exports = function buildDllWebpack(customConfig) {
 
     // console log stats
     // eslint-disable-next-line no-console
-    console.log(
-      stats.toString({
-        chunks: false, // Makes the build much quieter
-        colors: true, // Shows colors in the console
-        children: false,
-      })
-    );
+    console.log(stats.toString({
+      chunks: false, // Makes the build much quieter
+      colors: true, // Shows colors in the console
+      children: false,
+    }));
   });
 };

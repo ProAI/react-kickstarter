@@ -4,15 +4,15 @@ const webpack = require('webpack');
 const WebpackIsomorphicToolsPlugin = require('webpack-isomorphic-tools/plugin');
 const CleanPlugin = require('clean-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const path = require('path');
 const paths = require('./paths');
 const babelConfig = require('./babel');
 const eslintConfig = require('./eslint');
 
-const webpackIsomorphicToolsPlugin = new WebpackIsomorphicToolsPlugin(
-  // eslint-disable-next-line global-require
-  require('./webpackIsomorphicTools')
-);
+/* eslint-disable global-require */
+const webpackIsomorphicToolsPlugin = new WebpackIsomorphicToolsPlugin(require('./webpackIsomorphicTools'));
+/* eslint-enable */
 
 const includePaths = [paths.appMain, path.join(paths.appNodeModules, 'react-kickstarter/src')];
 
@@ -165,20 +165,9 @@ module.exports = {
     }),
 
     // Minify the code.
-    /* new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        screw_ie8: true, // React doesn't support IE8
-        warnings: false,
-      },
-      mangle: {
-        screw_ie8: true,
-      },
-      output: {
-        comments: false,
-        screw_ie8: true,
-      },
-      // sourceMap: true,
-    }),*/
+    new UglifyJSPlugin({
+      sourceMap: true,
+    }),
 
     // isomorphic
     webpackIsomorphicToolsPlugin,

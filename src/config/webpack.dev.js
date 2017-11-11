@@ -10,10 +10,9 @@ const eslintConfig = require('./eslint');
 const host = 'localhost';
 const port = 8081;
 
-const webpackIsomorphicToolsPlugin = new WebpackIsomorphicToolsPlugin(
-  // eslint-disable-next-line global-require
-  require('./webpackIsomorphicTools')
-);
+/* eslint-disable global-require */
+const webpackIsomorphicToolsPlugin = new WebpackIsomorphicToolsPlugin(require('./webpackIsomorphicTools'));
+/* eslint-enable */
 
 const includePaths = [paths.appMain, path.join(paths.appNodeModules, 'react-kickstarter/src')];
 

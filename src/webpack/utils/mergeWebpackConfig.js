@@ -3,11 +3,8 @@ module.exports = function mergeWebpackConfig(defaultWebpackConfig, customConfig,
 
   // modify host and port
   if (development) {
-    const host = customConfig.devServer.host;
-    const port = customConfig.devServer.port;
-    const hotMiddlewareEntry = `${require.resolve(
-      'webpack-hot-middleware/client'
-    )}?path=http://${host}:${port}/__webpack_hmr`;
+    const { host, port } = customConfig.devServer;
+    const hotMiddlewareEntry = `${require.resolve('webpack-hot-middleware/client')}?path=http://${host}:${port}/__webpack_hmr`;
     webpackConfig.entry.main[0] = hotMiddlewareEntry;
     webpackConfig.output.publicPath = `http://${host}:${port}/dist/`;
   }
