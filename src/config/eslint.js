@@ -16,13 +16,24 @@ module.exports = {
   plugins: ['flowtype'],
   rules: {
     // airbnb config modifications
+
+    // general
     'no-unused-vars': 'warn', // easier for development
     'linebreak-style': 'off',
     'arrow-parens': 'off', // not necessary with Prettier
-    'react/no-unused-prop-types': 'off', // conflict with Flow type defs
-    'react/prop-types': 'off', // not necessary with Flow
-    'react/default-props-match-prop-types': 'off', // conflict with Flow v0.57.3
-    'react/jsx-filename-extension': ['error', { extensions: ['.js', '.jsx'] }],
+
+    // flowtype
+    // 'flowtype/delimiter-dangle': ['error', 'always-multiline'],
+    // 'flowtype/no-primitive-constructor-types': 'error',
+    // 'flowtype/object-type-delimiter': ['error', 'comma'],
+    // 'flowtype/require-valid-file-annotation': 'error',
+    // 'flowtype/semi': ['error', 'always'],
+    // 'flowtype/space-before-generic-bracket': ['error', 'never'],
+
+    // import
+    'import/prefer-default-export': 'off', // conflict when there is only 1 action
+
+    // jsx-a11y
     'jsx-a11y/anchor-is-valid': [
       'error',
       {
@@ -31,13 +42,11 @@ module.exports = {
       },
     ],
 
-    // flowtype
-    'flowtype/delimiter-dangle': ['error', 'always-multiline'],
-    'flowtype/no-primitive-constructor-types': 'error',
-    'flowtype/object-type-delimiter': ['error', 'comma'],
-    'flowtype/require-valid-file-annotation': 'error',
-    'flowtype/semi': ['error', 'always'],
-    'flowtype/space-before-generic-bracket': ['error', 'never'],
+    // react
+    'react/no-unused-prop-types': 'off', // conflict with Flow type defs
+    'react/prop-types': 'off', // not necessary with Flow
+    'react/default-props-match-prop-types': 'off', // conflict with Flow v0.57.3
+    'react/jsx-filename-extension': ['error', { extensions: ['.js', '.jsx'] }],
   },
   settings: {
     'import/resolver': {
