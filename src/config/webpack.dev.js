@@ -14,14 +14,20 @@ const port = 8081;
 const webpackIsomorphicToolsPlugin = new WebpackIsomorphicToolsPlugin(require('./webpackIsomorphicTools'));
 /* eslint-enable */
 
-const includePaths = [paths.appMain, path.join(paths.appNodeModules, 'react-kickstarter/src')];
+const includePaths = [
+  paths.appMain,
+  paths.appResources,
+  path.join(paths.appNodeModules, 'react-kickstarter/src'),
+];
 
 module.exports = {
   devtool: 'cheap-module-eval-source-map',
   context: paths.appRoot,
   entry: {
     main: [
-      `${require.resolve('webpack-hot-middleware/client')}?path=http://${host}:${port}/__webpack_hmr`,
+      `${require.resolve('webpack-hot-middleware/client')}?path=http://${host}:${
+        port
+      }/__webpack_hmr`,
       require.resolve('react-hot-loader/patch'),
       require.resolve('babel-polyfill'),
       paths.kickstarterClientEntry,
@@ -176,7 +182,7 @@ module.exports = {
     modules: [paths.kickstarterNodeModules, paths.appNodeModules],
   },
   resolve: {
-    modules: [paths.appMain, paths.appNodeModules],
+    modules: [paths.appMain, paths.appResources, paths.appNodeModules],
     alias: {
       appClientEntry: paths.appClientEntry,
     },

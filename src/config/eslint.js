@@ -55,7 +55,7 @@ module.exports = {
       //   "config": webpackConfig
       // },
       node: {
-        paths: [paths.appMain],
+        paths: [paths.appMain, paths.appResources],
       },
     },
   },

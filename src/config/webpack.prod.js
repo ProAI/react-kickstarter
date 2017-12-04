@@ -14,7 +14,11 @@ const eslintConfig = require('./eslint');
 const webpackIsomorphicToolsPlugin = new WebpackIsomorphicToolsPlugin(require('./webpackIsomorphicTools'));
 /* eslint-enable */
 
-const includePaths = [paths.appMain, path.join(paths.appNodeModules, 'react-kickstarter/src')];
+const includePaths = [
+  paths.appMain,
+  paths.appResources,
+  path.join(paths.appNodeModules, 'react-kickstarter/src'),
+];
 
 module.exports = {
   devtool: 'source-map',
@@ -132,7 +136,7 @@ module.exports = {
     modules: [paths.kickstarterNodeModules, paths.appNodeModules],
   },
   resolve: {
-    modules: [paths.appMain, paths.appNodeModules],
+    modules: [paths.appMain, paths.appResources, paths.appNodeModules],
     alias: {
       appClientEntry: paths.appClientEntry,
     },
