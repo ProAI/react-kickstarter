@@ -560,6 +560,10 @@ babel-plugin-dynamic-import-node@1.2.0:
   dependencies:
     babel-plugin-syntax-dynamic-import "^6.18.0"
 
+babel-plugin-intlized-components@0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/babel-plugin-intlized-components/-/babel-plugin-intlized-components-0.1.0.tgz#6395bfa1f9862e3bbd13211332b56e04522af192"
+
 babel-plugin-styled-components@1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/babel-plugin-styled-components/-/babel-plugin-styled-components-1.3.0.tgz#9e4d9f718b2975dadbfab0bc1c6793d93c751404"
