@@ -43,12 +43,23 @@ module.exports = function createHttpServer(config) {
         // eslint-disable-next-line no-console
         console.error(err);
       }
-      // eslint-disable-next-line no-console
-      console.info(
-        '\n~~> Node.js server is running.\n    Open',
-        `\x1b[93mhttp://localhost:${config.port}\x1b[0m`,
-        'in a browser to view the app.\n'
-      );
+      if (process.env.APP_MODE === 'development') {
+        // eslint-disable-next-line no-console
+        console.info(
+          '\n~~> Node.js server is running.\n    Open',
+          `\x1b[93mhttp://localhost:${config.port}\x1b[0m`,
+          'in a browser after webpack has been built.\n'
+        );
+        // eslint-disable-next-line no-console
+        console.info('Please wait, webpack is building...\n');
+      } else {
+        // eslint-disable-next-line no-console
+        console.info(
+          '\n~~> Node.js server is running.\n    Open',
+          `\x1b[93mhttp://localhost:${config.port}\x1b[0m`,
+          'in a browser to view the app.\n'
+        );
+      }
     });
   } else {
     // eslint-disable-next-line no-console
