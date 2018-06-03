@@ -34,15 +34,11 @@ module.exports = {
     'import/prefer-default-export': 'off', // conflict when there is only 1 action
 
     // jsx-a11y
-    'jsx-a11y/anchor-is-valid': [
-      'error',
-      {
-        components: ['a', 'Link'],
-        specialLink: ['href', 'to'],
-      },
-    ],
+    'jsx-a11y/anchor-is-valid': 'off',
 
     // react
+    'react/no-unknown-property': 'off',
+    'react/jsx-pascal-case': ['error', { allowAllCaps: true, ignore: ['_'] }], // can be removed after update to babel 7
     'react/no-unused-prop-types': 'off', // conflict with Flow type defs
     'react/prop-types': 'off', // not necessary with Flow
     'react/default-props-match-prop-types': 'off', // conflict with Flow v0.57.3
