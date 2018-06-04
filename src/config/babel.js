@@ -8,7 +8,6 @@ module.exports = {
   ],
   plugins: [
     require.resolve('react-hot-loader/babel'),
-    [require.resolve('babel-plugin-styled-components'), { ssr: true }],
     require.resolve('babel-plugin-intlized-components'),
     require.resolve('babel-plugin-transform-flow-strip-types'),
     // TODO - Verify that we don't need babel-plugin-transform-runtime anymore

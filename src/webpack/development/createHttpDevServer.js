@@ -36,8 +36,6 @@ module.exports = function createHttpDevServer(config) {
     hot: true,
     quiet: true,
     noInfo: true,
-    inline: true,
-    lazy: false,
     headers: {
       // In development same origin policy does not matter, so allow all.
       'Access-Control-Allow-Origin': '*',

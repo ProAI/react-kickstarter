@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { hot } from 'react-hot-loader';
 // import 'isomorphic-fetch';
 
 // eslint-disable-next-line no-underscore-dangle
@@ -34,13 +33,9 @@ const render = component => {
 // get hydrate function and hydrate
 // eslint-disable-next-line
 const hydrate = require('appClientEntry').default;
-hydrate(meta, { render, root, hot }, data);
+hydrate(meta, { render, root }, data);
 
-if (process.env.APP_MODE === 'development') {
-  window.React = React; // enable debugger
-
-  if (!ssr) {
-    // eslint-disable-next-line no-console
-    console.error('React server side rendering is disabled or was discarded.');
-  }
+if (process.env.APP_MODE === 'development' && !ssr) {
+  // eslint-disable-next-line no-console
+  console.error('React server side rendering is disabled or was discarded.');
 }
