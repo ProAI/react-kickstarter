@@ -5,7 +5,6 @@ const WebpackIsomorphicToolsPlugin = require('webpack-isomorphic-tools/plugin');
 const path = require('path');
 const paths = require('./paths');
 const babelConfig = require('./babel');
-const eslintConfig = require('./eslint');
 
 const host = 'localhost';
 const port = 8081;
@@ -40,23 +39,6 @@ module.exports = {
     rules: [
       // Disable require.ensure as it's not a standard language feature.
       { parser: { requireEnsure: false } },
-      // First, run the linter.
-      // It's important to do this before Babel processes the JS.
-      {
-        test: /\.(js|jsx)$/,
-        include: includePaths,
-        enforce: 'pre',
-        use: [
-          {
-            loader: 'eslint-loader',
-            // Point ESLint to our predefined config.
-            options: {
-              baseConfig: eslintConfig,
-              useEslintrc: false,
-            },
-          },
-        ],
-      },
       // Process react-hot-loader and process JS with Babel.
       {
         test: /\.(js|jsx)$/,

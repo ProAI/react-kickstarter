@@ -8,7 +8,6 @@ const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const path = require('path');
 const paths = require('./paths');
 const babelConfig = require('./babel');
-const eslintConfig = require('./eslint');
 
 /* eslint-disable global-require */
 const webpackIsomorphicToolsPlugin = new WebpackIsomorphicToolsPlugin(require('./webpackIsomorphicTools'));
@@ -36,23 +35,6 @@ module.exports = {
     rules: [
       // Disable require.ensure as it's not a standard language feature.
       { parser: { requireEnsure: false } },
-      // First, run the linter.
-      // It's important to do this before Babel processes the JS.
-      {
-        test: /\.(js|jsx)$/,
-        include: includePaths,
-        enforce: 'pre',
-        use: [
-          {
-            loader: 'eslint-loader',
-            // Point ESLint to our predefined config.
-            options: {
-              baseConfig: eslintConfig,
-              useEslintrc: false,
-            },
-          },
-        ],
-      },
       // Process JS with Babel.
       {
         test: /\.(js|jsx)$/,
