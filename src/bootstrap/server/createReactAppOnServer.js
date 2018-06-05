@@ -95,7 +95,7 @@ module.exports = function createAppOnServer(config) {
     const render = (component, getData, ...args) => {
       // eslint-disable-next-line
       const assets = require(paths.webpackAssets);
-      const content = component ? ReactDOMServer.renderToString(component) : '';
+      const content = ReactDOMServer.renderToString(component);
       // eslint-disable-next-line
       const renderHtml = require(paths.appHtml).default;
 

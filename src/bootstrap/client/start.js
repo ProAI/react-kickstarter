@@ -1,4 +1,3 @@
-import React from 'react';
 import ReactDOM from 'react-dom';
 // import 'isomorphic-fetch';
 
@@ -10,11 +9,7 @@ const meta = window.__METADATA__;
 
 const root = document.getElementById('content');
 
-const ssr =
-  root &&
-  root.firstChild &&
-  root.firstChild.attributes &&
-  root.firstChild.attributes['data-reactroot'];
+const ssr = root && root.firstChild;
 
 // backwards compatibility for React 15
 const isReact15 = ReactDOM.createPortal === undefined;
@@ -37,5 +32,5 @@ hydrate(meta, { render, root }, data);
 
 if (process.env.APP_MODE === 'development' && !ssr) {
   // eslint-disable-next-line no-console
-  console.error('React server side rendering is disabled or was discarded.');
+  console.warn('React server side rendering is not in use.');
 }
