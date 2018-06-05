@@ -76,8 +76,8 @@
     "webpack-isomorphic-tools": "3.0.5"
   },
   "devDependencies": {
-    "react": "16.1.0",
-    "react-dom": "16.1.0"
+    "react": "16.4.0",
+    "react-dom": "16.4.0"
   },
   "peerDependencies": {
     "react": ">=15",
