@@ -20,7 +20,7 @@ module.exports = function generateHtmlSnippets(meta, reactContent, assets, data,
   const content = `<div id="content">${reactContent}</div>`;
 
   // generate javascript html
-  const javascript = `<script charset="UTF-8">
+  const scripts = `<script charset="UTF-8">
       window.__DATA__=${data ? serialize(data) : '{}'};
       window.__METADATA__=${serialize(meta)};
     </script>
@@ -34,6 +34,6 @@ module.exports = function generateHtmlSnippets(meta, reactContent, assets, data,
   return {
     styles,
     content,
-    javascript,
+    scripts,
   };
 };

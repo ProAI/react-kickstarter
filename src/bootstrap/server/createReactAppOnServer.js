@@ -1,6 +1,5 @@
 const ReactDOMServer = require('react-dom/server');
 // const 'isomorphic-fetch';
-const addCookie = require('../utils/addCookie');
 const detectDevice = require('../utils/detectDevice');
 const detectLocale = require('../utils/detectLocale');
 const generateHtmlSnippets = require('../utils/generateHtmlSnippets');
@@ -13,6 +12,8 @@ const paths = require('../../config/paths');
 
 module.exports = function createAppOnServer(config) {
   return (req, res) => {
+    const { cookies } = req;
+
     // try to find locale from url, header and cookies
     const localeFromUrl = getLocaleFromUrl(req.originalUrl, config.app.locale.supported);
     const localeFromHeader = getLocaleFromHeader(
@@ -36,11 +37,9 @@ module.exports = function createAppOnServer(config) {
 
     // if cookies are enabled, set language cookie
     if (config.cookies && !localeFromCookies) {
-      addCookie(req, res, {
-        name: 'lang',
-        value: locale,
-        options: { maxAge: 2628000 * 60 * 1000 }, // 5 years lifetime
-      });
+      // Add lang cookie to cookies object and to response
+      cookies.lang = locale;
+      res.cookie('lang', locale, { maxAge: 2628000 * 60 * 1000 }); // 5 years lifetime
     }
 
     // (auto) detect device
@@ -55,11 +54,9 @@ module.exports = function createAppOnServer(config) {
 
     // if cookies and csrf token are enabled, set csrf token cookie
     if (config.cookies && config.app.csrfToken && req.cookies.csrf === undefined) {
-      addCookie(req, res, {
-        name: 'csrf',
-        value: csrfToken,
-        options: { httpOnly: true },
-      });
+      // Add lang cookie to cookies object and to response
+      cookies.csrf = csrfToken;
+      res.cookie('csrf', csrfToken, { httpOnly: true });
     }
 
     // basename
@@ -79,6 +76,10 @@ module.exports = function createAppOnServer(config) {
       device,
       csrfToken,
       basename,
+    };
+
+    const metaServerOnly = {
+      cookies,
     };
 
     // Do not cache webpack-stats.json and all files in /app folder in development
@@ -131,6 +132,6 @@ module.exports = function createAppOnServer(config) {
     // get hydrate function and hydrate
     // eslint-disable-next-line
     const hydrate = require(paths.appServerEntry).default;
-    hydrate(meta, { error, redirect, render });
+    hydrate({ ...metaServerOnly, ...meta }, { error, redirect, render });
   };
 };

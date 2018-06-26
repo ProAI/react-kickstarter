@@ -18,7 +18,6 @@ module.exports = {
     // airbnb config modifications
 
     // general
-    'no-unused-vars': 'warn', // easier for development
     'linebreak-style': 'off',
     'arrow-parens': 'off', // not necessary with Prettier
 
