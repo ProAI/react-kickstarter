@@ -64,6 +64,7 @@ module.exports = function createAppOnServer(config) {
 
     // create meta data object
     const meta = {
+      ssr: config.ssr,
       hostname: req.hostname,
       url: req.url,
       urlWithoutLocale,
@@ -96,7 +97,7 @@ module.exports = function createAppOnServer(config) {
     const render = (component, getData, ...args) => {
       // eslint-disable-next-line
       const assets = require(paths.webpackAssets);
-      const content = ReactDOMServer.renderToString(component);
+      const content = component ? ReactDOMServer.renderToString(component) : '';
       // eslint-disable-next-line
       const renderHtml = require(paths.appHtml).default;
 

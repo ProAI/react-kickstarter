@@ -16,7 +16,7 @@ module.exports = function getLocaleFromHeader(acceptLanguageHeader, availableLan
       locale[1] = locale[1].replace(/q=/g, '');
     }
 
-    locales[locale[0]] = locale[1];
+    [, locales[locale[0]]] = locale;
   });
 
   let returnLocale = null;

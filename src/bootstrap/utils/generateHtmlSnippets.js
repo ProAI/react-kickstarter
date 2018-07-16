@@ -21,7 +21,7 @@ module.exports = function generateHtmlSnippets(meta, reactContent, assets, data,
 
   // generate javascript html
   const scripts = `<script charset="UTF-8">
-      window.__DATA__=${data ? serialize(data) : '{}'};
+      window.__DATA__=${serialize(data)};
       window.__METADATA__=${serialize(meta)};
     </script>
     ${useDll && process.env.APP_MODE === 'development'
