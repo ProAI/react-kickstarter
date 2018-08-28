@@ -1,17 +1,12 @@
 // Webpack config for development
 const autoprefixer = require('autoprefixer');
 const webpack = require('webpack');
-const WebpackIsomorphicToolsPlugin = require('webpack-isomorphic-tools/plugin');
 const path = require('path');
 const paths = require('./paths');
 const babelConfig = require('./babel');
 
 const host = 'localhost';
 const port = 8081;
-
-/* eslint-disable global-require */
-const webpackIsomorphicToolsPlugin = new WebpackIsomorphicToolsPlugin(require('./webpackIsomorphicTools'));
-/* eslint-enable */
 
 const includePaths = [
   paths.appMain,
@@ -140,17 +135,17 @@ module.exports = {
         test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
         loader: 'file-loader',
       },
-      {
+      // Process images
+      /* {
         test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
         loader: 'url-loader',
         options: { limit: 10000, mimetype: 'image/svg+xml' },
       },
-      // Process images
       {
         test: webpackIsomorphicToolsPlugin.regular_expression('images'),
         loader: 'url-loader',
         options: { limit: 10000 },
-      },
+      }, */
     ],
   },
   // Resolve node modules from node_modules app and react-kickstarter directory
@@ -178,9 +173,6 @@ module.exports = {
       APP_ENV: 'client',
       APP_PLATFORM: 'web',
     }),
-
-    // isomorphic
-    webpackIsomorphicToolsPlugin.development(),
   ],
   // Some libraries import Node modules but don't use them in the browser.
   // Tell Webpack to provide empty mocks for them so importing them works.

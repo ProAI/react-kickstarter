@@ -1,4 +1,4 @@
-const WebpackIsomorphicTools = require('webpack-isomorphic-tools');
+// const WebpackIsomorphicTools = require('webpack-isomorphic-tools');
 const deepmerge = require('deepmerge');
 const defaultConfig = require('./defaultConfig');
 const registerBabel = require('../utils/registerBabel');
@@ -24,13 +24,6 @@ module.exports = function runServer(customConfig) {
   process.env.APP_ENV = 'server';
   process.env.APP_PLATFORM = 'web';
 
-  // define webpackIsomorphicTools constant
-  new WebpackIsomorphicTools(require('../../config/webpackIsomorphicTools')).server(
-    paths.appRoot,
-    () => {
-      const createHttpServer = require('./createHttpServer');
-      createHttpServer(config);
-    }
-  );
-  /* eslint-enable */
+  const createHttpServer = require('./createHttpServer');
+  createHttpServer(config);
 };
