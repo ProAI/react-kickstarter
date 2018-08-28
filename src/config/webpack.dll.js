@@ -3,6 +3,7 @@ const webpack = require('webpack');
 const paths = require('./paths');
 
 module.exports = {
+  mode: 'development',
   devtool: 'cheap-module-eval-source-map',
   context: paths.appRoot,
   entry: {

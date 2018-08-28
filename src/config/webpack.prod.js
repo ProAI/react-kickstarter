@@ -2,8 +2,9 @@
 const autoprefixer = require('autoprefixer');
 const webpack = require('webpack');
 const CleanPlugin = require('clean-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const ManifestPlugin = require('webpack-manifest-plugin');
+// const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const path = require('path');
 const paths = require('./paths');
 const babelConfig = require('./babel');
@@ -15,6 +16,7 @@ const includePaths = [
 ];
 
 module.exports = {
+  mode: 'production',
   devtool: 'source-map',
   context: paths.appRoot,
   entry: {
@@ -47,38 +49,38 @@ module.exports = {
       {
         test: /\.scss$/,
         include: includePaths,
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: [
-            {
-              loader: 'css-loader',
-              options: {
-                importLoaders: 2,
-                // sourceMap: true
-              },
+        use: [
+          {
+            loader: MiniCssExtractPlugin.loader,
+          },
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders: 2,
+              // sourceMap: true
             },
-            {
-              loader: 'postcss-loader',
-              options: {
-                ident: 'postcss', // https://webpack.js.org/guides/migrating/#complex-options
-                plugins: () => [
-                  autoprefixer({
-                    browsers: [
-                      '>1%',
-                      'last 4 versions',
-                      'Firefox ESR',
-                      'not ie < 9', // React doesn't support IE8 anyway
-                    ],
-                  }),
-                ],
-              },
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              ident: 'postcss', // https://webpack.js.org/guides/migrating/#complex-options
+              plugins: () => [
+                autoprefixer({
+                  browsers: [
+                    '>1%',
+                    'last 4 versions',
+                    'Firefox ESR',
+                    'not ie < 9', // React doesn't support IE8 anyway
+                  ],
+                }),
+              ],
             },
-            {
-              loader: 'sass-loader',
-              // options: { sourceMap: true }
-            },
-          ],
-        }),
+          },
+          {
+            loader: 'sass-loader',
+            // options: { sourceMap: true }
+          },
+        ],
       },
       // Process font files
       {
@@ -124,9 +126,8 @@ module.exports = {
     new CleanPlugin([paths.appAssets], { root: paths.appRoot }),
 
     // css files from the extract-text-plugin loader
-    new ExtractTextPlugin({
+    new MiniCssExtractPlugin({
       filename: '[name]-[chunkhash].css',
-      allChunks: true,
     }),
 
     // minify css files
@@ -145,10 +146,14 @@ module.exports = {
       APP_PLATFORM: 'web',
     }),
 
-    // Minify the code.
-    new UglifyJSPlugin({
-      sourceMap: true,
+    new ManifestPlugin({
+      fileName: paths.webpackManifest,
     }),
+
+    // Minify the code.
+    /* new UglifyJSPlugin({
+      sourceMap: true,
+    }), */
   ],
   // Some libraries import Node modules but don't use them in the browser.
   // Tell Webpack to provide empty mocks for them so importing them works.

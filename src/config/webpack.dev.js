@@ -1,6 +1,7 @@
 // Webpack config for development
 const autoprefixer = require('autoprefixer');
 const webpack = require('webpack');
+const ManifestPlugin = require('webpack-manifest-plugin');
 const path = require('path');
 const paths = require('./paths');
 const babelConfig = require('./babel');
@@ -15,11 +16,12 @@ const includePaths = [
 ];
 
 module.exports = {
+  mode: 'development',
   devtool: 'cheap-module-eval-source-map',
   context: paths.appRoot,
   entry: {
     main: [
-      `${require.resolve('webpack-hot-middleware/client')}?path=http://${host}:${port}/__webpack_hmr`,
+      require.resolve('webpack-hot-middleware/client'),
       require.resolve('babel-polyfill'),
       paths.kickstarterClientEntry,
     ],
@@ -41,8 +43,6 @@ module.exports = {
         use: [
           {
             loader: 'babel-loader',
-            // This causes a deprecation warning that is fixed in v7.0.0-alpha.2
-            // https://github.com/babel/babel-loader/pull/391
             options: Object.assign({}, babelConfig, { cacheDirectory: true }),
           },
         ],
@@ -172,6 +172,11 @@ module.exports = {
       APP_MODE: 'development',
       APP_ENV: 'client',
       APP_PLATFORM: 'web',
+    }),
+
+    new ManifestPlugin({
+      fileName: paths.webpackManifest,
+      writeToFileEmit: true,
     }),
   ],
   // Some libraries import Node modules but don't use them in the browser.

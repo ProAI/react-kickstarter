@@ -34,8 +34,7 @@ module.exports = function createHttpDevServer(config) {
     contentBase: `http://${config.devServer.host}:${config.devServer.port}`,
     publicPath: `http://${config.devServer.host}:${config.devServer.port}/dist/`,
     hot: true,
-    quiet: true,
-    noInfo: true,
+    logLevel: 'warn',
     headers: {
       // In development same origin policy does not matter, so allow all.
       'Access-Control-Allow-Origin': '*',

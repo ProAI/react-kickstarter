@@ -96,7 +96,7 @@ module.exports = function createAppOnServer(config) {
     // define render, redirect and error function for hydrate function
     const render = (component, getData, ...args) => {
       // eslint-disable-next-line
-      const assets = require(paths.webpackAssets);
+      const assets = require(paths.webpackManifest);
       const content = component ? ReactDOMServer.renderToString(component) : '';
       // eslint-disable-next-line
       const renderHtml = require(paths.appHtml).default;
