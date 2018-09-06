@@ -83,10 +83,10 @@ module.exports = function createAppOnServer(config) {
       cookies,
     };
 
-    // Do not cache webpack-stats.json and all files in /app folder in development
+    // Do not cache webpack-manifest.json and all files in /app folder in development
     // See https://github.com/ProAI/react-kickstarter/issues/4
     if (process.env.APP_MODE === 'development') {
-      delete require.cache[paths.webpackAssets];
+      delete require.cache[paths.webpackManifest];
 
       Object.keys(require.cache).forEach(id => {
         if (/[/\\]app[/\\]/.test(id)) delete require.cache[id];

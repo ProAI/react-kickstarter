@@ -21,7 +21,7 @@ module.exports = {
   context: paths.appRoot,
   entry: {
     main: [
-      require.resolve('webpack-hot-middleware/client'),
+      `${require.resolve('webpack-hot-middleware/client')}?path=/__webpack_hmr`,
       require.resolve('babel-polyfill'),
       paths.kickstarterClientEntry,
     ],
