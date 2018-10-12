@@ -21,8 +21,7 @@
     "url": "https://github.com/ProAI/react-kickstarter/issues"
   },
   "bin": {
-    "eslint": "./src/scripts/eslint.js",
-    "prettier": "./src/scripts/prettier.js"
+    "eslint": "./src/scripts/eslint.js"
   },
   "scripts": {
     "lint": "./node_modules/.bin/eslint src"
@@ -80,7 +79,8 @@
   },
   "devDependencies": {
     "react": "16.4.2",
-    "react-dom": "16.4.2"
+    "react-dom": "16.4.2",
+    "prettier": "1.14.3"
   },
   "peerDependencies": {
     "react": ">=15",
