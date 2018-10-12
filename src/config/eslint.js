@@ -7,7 +7,13 @@ const paths = require('./paths');
 
 module.exports = {
   parser: 'babel-eslint',
-  extends: ['airbnb', 'plugin:flowtype/recommended'],
+  extends: [
+    'airbnb',
+    'plugin:flowtype/recommended',
+    'prettier',
+    'prettier/flowtype',
+    'prettier/react',
+  ],
   env: {
     browser: true,
     node: true,
@@ -19,15 +25,6 @@ module.exports = {
 
     // general
     'linebreak-style': 'off',
-    'arrow-parens': 'off', // not necessary with Prettier
-
-    // flowtype
-    // 'flowtype/delimiter-dangle': ['error', 'always-multiline'],
-    // 'flowtype/no-primitive-constructor-types': 'error',
-    // 'flowtype/object-type-delimiter': ['error', 'comma'],
-    // 'flowtype/require-valid-file-annotation': 'error',
-    // 'flowtype/semi': ['error', 'always'],
-    // 'flowtype/space-before-generic-bracket': ['error', 'never'],
 
     // import
     'import/prefer-default-export': 'off', // conflict when there is only 1 action
