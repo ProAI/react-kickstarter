@@ -1,7 +1,7 @@
 const serialize = require('serialize-javascript');
 
 function createPreloadTag(href, as, extra) {
-  return `<link rel="preload" href="${href}"${extra ? ' ' + extra : ''} as="${as}" />`;
+  return `<link rel="preload" href="${href}"${extra ? ` ${extra}` : ''} as="${as}" />`;
 }
 
 function createStyleTag(href) {
@@ -9,7 +9,7 @@ function createStyleTag(href) {
 }
 
 function createScriptTag(src, extra) {
-  return `<script src="${src}"${extra ? ' ' + extra : ''} /></script>`;
+  return `<script src="${src}"${extra ? ` ${extra}` : ''} /></script>`;
 }
 
 module.exports = function generateHtmlSnippets(meta, reactContent, assets, data, useDll) {
