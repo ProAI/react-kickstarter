@@ -135,17 +135,11 @@ module.exports = {
         test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
         loader: 'file-loader',
       },
-      // Process images
-      /* {
+      {
         test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
         loader: 'url-loader',
         options: { limit: 10000, mimetype: 'image/svg+xml' },
       },
-      {
-        test: webpackIsomorphicToolsPlugin.regular_expression('images'),
-        loader: 'url-loader',
-        options: { limit: 10000 },
-      }, */
     ],
   },
   // Resolve node modules from node_modules app and react-kickstarter directory
