@@ -1,5 +1,3 @@
-require('babel-polyfill');
-
 const babelConfig = require('../../config/babel');
 
 module.exports = function registerBabel() {
@@ -12,5 +10,5 @@ module.exports = function registerBabel() {
   // enable runtime transpilation to use ES6/7 in node
   // babel registration (runtime transpilation for node)
   // eslint-disable-next-line global-require
-  require('babel-register')(babelConfig);
+  require('@babel/register')(babelConfig);
 };

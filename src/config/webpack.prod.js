@@ -1,7 +1,7 @@
 // Webpack config for creating the production bundle.
 const autoprefixer = require('autoprefixer');
 const webpack = require('webpack');
-const CleanPlugin = require('clean-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 // const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
@@ -20,7 +20,7 @@ module.exports = {
   devtool: 'source-map',
   context: paths.appRoot,
   entry: {
-    main: [require.resolve('babel-polyfill'), paths.kickstarterClientEntry],
+    main: [paths.kickstarterClientEntry],
   },
   output: {
     path: paths.appAssets,
@@ -97,17 +97,6 @@ module.exports = {
         test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
         loader: 'file-loader',
       },
-      // Process images
-      /* {
-        test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'url-loader',
-        options: { limit: 10000, mimetype: 'image/svg+xml' },
-      },
-      {
-        test: webpackIsomorphicToolsPlugin.regular_expression('images'),
-        loader: 'url-loader',
-        options: { limit: 10000 },
-      }, */
     ],
   },
   // Resolve node modules from node_modules app and react-kickstarter directory
@@ -123,7 +112,7 @@ module.exports = {
   },
   plugins: [
     // clean old dist files
-    new CleanPlugin([paths.appAssets], { root: paths.appRoot }),
+    new CleanWebpackPlugin(),
 
     // css files from the extract-text-plugin loader
     new MiniCssExtractPlugin({

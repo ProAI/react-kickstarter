@@ -22,7 +22,6 @@ module.exports = {
   entry: {
     main: [
       `${require.resolve('webpack-hot-middleware/client')}?path=/__webpack_hmr`,
-      require.resolve('babel-polyfill'),
       paths.kickstarterClientEntry,
     ],
   },
@@ -46,6 +45,12 @@ module.exports = {
             options: Object.assign({}, babelConfig, { cacheDirectory: true }),
           },
         ],
+      },
+      // Use react-hot-loader webpack plugin, because of "hot" patch for react-dom.
+      {
+        test: /\.(js|jsx)$/,
+        include: includePaths,
+        use: ['react-hot-loader/webpack'],
       },
       // Define rules for sass files
       {
@@ -134,11 +139,6 @@ module.exports = {
       {
         test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
         loader: 'file-loader',
-      },
-      {
-        test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'url-loader',
-        options: { limit: 10000, mimetype: 'image/svg+xml' },
       },
     ],
   },

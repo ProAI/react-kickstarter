@@ -1,16 +1,15 @@
 module.exports = {
   babelrc: false,
   presets: [
-    // webpack can resolve ES6 modules, so disable commonjs modules
-    [require.resolve('babel-preset-env'), { modules: false }],
-    require.resolve('babel-preset-react'),
-    require.resolve('babel-preset-stage-2'),
+    [require.resolve('@babel/preset-env'), { modules: false }],
+    require.resolve('@babel/preset-react'),
+    require.resolve('@babel/preset-flow'),
   ],
   plugins: [
     require.resolve('react-hot-loader/babel'),
     require.resolve('babel-plugin-intlized-components'),
-    require.resolve('babel-plugin-transform-flow-strip-types'),
-    // TODO - Verify that we don't need babel-plugin-transform-runtime anymore
-    // require.resolve("babel-plugin-transform-runtime")
+    require.resolve('@babel/plugin-transform-flow-strip-types'),
+    require.resolve('@babel/plugin-syntax-dynamic-import'),
+    [require.resolve('@babel/plugin-proposal-class-properties'), { loose: false }],
   ],
 };
