@@ -23,7 +23,6 @@ module.exports = {
     'jsx-a11y/anchor-is-valid': 'off',
 
     // react
-    'react/no-unknown-property': 'off',
     'react/jsx-filename-extension': ['error', { extensions: ['.js', '.jsx'] }],
   },
   settings: {
