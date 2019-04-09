@@ -1,5 +1,4 @@
 const ReactDOMServer = require('react-dom/server');
-// const 'isomorphic-fetch';
 const detectDevice = require('../utils/detectDevice');
 const detectLocale = require('../utils/detectLocale');
 const generateHtmlSnippets = require('../utils/generateHtmlSnippets');
@@ -18,7 +17,7 @@ module.exports = function createAppOnServer(config) {
     const localeFromUrl = getLocaleFromUrl(req.originalUrl, config.app.locale.supported);
     const localeFromHeader = getLocaleFromHeader(
       req.headers['accept-language'],
-      config.app.locale.supported
+      config.app.locale.supported,
     );
     const localeFromCookies = getLocaleFromCookies(req.cookies, config.app.locale.supported);
 
@@ -32,7 +31,7 @@ module.exports = function createAppOnServer(config) {
       localeFromUrl,
       localeFromHeader,
       localeFromCookies,
-      config.app.locale.autoDetect
+      config.app.locale.autoDetect,
     );
 
     // if cookies are enabled, set language cookie
@@ -46,7 +45,7 @@ module.exports = function createAppOnServer(config) {
     const device = detectDevice(
       req.headers['user-agent'],
       req.cookies.view,
-      config.app.device.autoDetect
+      config.app.device.autoDetect,
     );
 
     // set csrf token
@@ -106,7 +105,7 @@ module.exports = function createAppOnServer(config) {
         content,
         assets,
         getData ? getData() : {},
-        config.devBuild.dll
+        config.devBuild.dll,
       );
 
       const html = renderHtml(meta, htmlSnippets, ...args);

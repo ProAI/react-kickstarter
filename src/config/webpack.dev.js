@@ -49,7 +49,7 @@ module.exports = {
       // Use react-hot-loader webpack plugin, because of "hot" patch for react-dom.
       {
         test: /\.(js|jsx)$/,
-        include: includePaths,
+        include: [/node_modules/, ...includePaths],
         use: ['react-hot-loader/webpack'],
       },
       // Define rules for sass files
