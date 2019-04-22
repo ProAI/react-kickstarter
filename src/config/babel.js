@@ -6,7 +6,10 @@ module.exports = {
     require.resolve('@babel/preset-flow'),
   ],
   plugins: [
-    require.resolve('babel-plugin-intlized-components'),
+    [
+      require.resolve('babel-plugin-intlized-components'),
+      { customImportName: 'foundation/i18n', autoResolveKey: true },
+    ],
     require.resolve('@babel/plugin-syntax-dynamic-import'),
     [require.resolve('@babel/plugin-proposal-class-properties'), { loose: false }],
   ],
