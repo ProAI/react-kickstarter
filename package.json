@@ -43,7 +43,7 @@
     "babel-eslint": "10.0.1",
     "babel-loader": "8.0.5",
     "babel-plugin-dynamic-import-node": "2.2.0",
-    "babel-plugin-intlized-components": "0.2.0",
+    "babel-plugin-intlized-components": "0.2.1",
     "clean-webpack-plugin": "2.0.1",
     "compression": "1.7.4",
     "cookie-parser": "1.4.4",

@@ -1,3 +1,5 @@
+const paths = require('./paths');
+
 module.exports = {
   babelrc: false,
   presets: [
@@ -8,7 +10,7 @@ module.exports = {
   plugins: [
     [
       require.resolve('babel-plugin-intlized-components'),
-      { customImportName: 'foundation/i18n', autoResolveKey: true },
+      { customImportName: 'foundation/i18n', autoResolveKey: paths.appMain },
     ],
     require.resolve('@babel/plugin-syntax-dynamic-import'),
     [require.resolve('@babel/plugin-proposal-class-properties'), { loose: false }],
