@@ -22,6 +22,7 @@ module.exports = {
 
     // react
     'react/jsx-filename-extension': ['error', { extensions: ['.js', '.jsx'] }],
+    'react/jsx-props-no-spreading': 'off', // we can allow spreading, because objects are well defined by Flow
   },
   settings: {
     'import/resolver': {
