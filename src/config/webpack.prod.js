@@ -1,7 +1,7 @@
 // Webpack config for creating the production bundle.
 const autoprefixer = require('autoprefixer');
 const webpack = require('webpack');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 // const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
