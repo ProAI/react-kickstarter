@@ -42,7 +42,7 @@ module.exports = {
         use: [
           {
             loader: 'babel-loader',
-            options: Object.assign({}, babelConfig, { cacheDirectory: true }),
+            options: { ...babelConfig, cacheDirectory: true },
           },
         ],
       },

@@ -4,7 +4,9 @@ module.exports = function mergeWebpackConfig(defaultWebpackConfig, customConfig,
   // modify host and port
   if (development) {
     const { host, port } = customConfig.devServer;
-    const hotMiddlewareEntry = `${require.resolve('webpack-hot-middleware/client')}?path=http://${host}:${port}/__webpack_hmr`;
+    const hotMiddlewareEntry = `${require.resolve(
+      'webpack-hot-middleware/client',
+    )}?path=http://${host}:${port}/__webpack_hmr`;
     webpackConfig.entry.main[0] = hotMiddlewareEntry;
     webpackConfig.output.publicPath = `http://${host}:${port}/dist/`;
   }
@@ -56,11 +58,7 @@ module.exports = function mergeWebpackConfig(defaultWebpackConfig, customConfig,
 
       // add aliases for dev modules
       if (devModule && devModule.alias) {
-        webpackConfig.resolve.alias = Object.assign(
-          {},
-          webpackConfig.resolve.alias,
-          devModule.alias
-        );
+        webpackConfig.resolve.alias = { ...webpackConfig.resolve.alias, ...devModule.alias };
       }
     });
   }

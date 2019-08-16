@@ -132,6 +132,6 @@ module.exports = function createAppOnServer(config) {
     // get hydrate function and hydrate
     // eslint-disable-next-line
     const hydrate = require(paths.appServerEntry).default;
-    hydrate(Object.assign({}, metaServerOnly, meta), { error, redirect, render });
+    hydrate({ ...metaServerOnly, ...meta }, { error, redirect, render });
   };
 };
