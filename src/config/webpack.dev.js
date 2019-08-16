@@ -5,6 +5,7 @@ const ManifestPlugin = require('webpack-manifest-plugin');
 const path = require('path');
 const paths = require('./paths');
 const babelConfig = require('./babel');
+const browserslist = require('./browserslist');
 
 const host = 'localhost';
 const port = 8081;
@@ -109,12 +110,7 @@ module.exports = {
               ident: 'postcss',
               plugins: () => [
                 autoprefixer({
-                  browsers: [
-                    '>1%',
-                    'last 4 versions',
-                    'Firefox ESR',
-                    'not ie < 9', // React doesn't support IE8 anyway
-                  ],
+                  overrideBrowserslist: browserslist,
                 }),
               ],
             },

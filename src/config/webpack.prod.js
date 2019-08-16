@@ -8,6 +8,7 @@ const ManifestPlugin = require('webpack-manifest-plugin');
 const path = require('path');
 const paths = require('./paths');
 const babelConfig = require('./babel');
+const browserslist = require('./browserslist');
 
 const includePaths = [
   paths.appMain,
@@ -66,12 +67,7 @@ module.exports = {
               ident: 'postcss', // https://webpack.js.org/guides/migrating/#complex-options
               plugins: () => [
                 autoprefixer({
-                  browsers: [
-                    '>1%',
-                    'last 4 versions',
-                    'Firefox ESR',
-                    'not ie < 9', // React doesn't support IE8 anyway
-                  ],
+                  overrideBrowserslist: browserslist,
                 }),
               ],
             },
