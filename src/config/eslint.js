@@ -1,5 +1,3 @@
-const paths = require('./paths');
-
 module.exports = {
   parser: 'babel-eslint',
   extends: [
@@ -28,7 +26,7 @@ module.exports = {
   settings: {
     'import/resolver': {
       node: {
-        paths: [paths.appMain, paths.appResources],
+        moduleDirectory: ['node_modules', 'app'],
       },
     },
   },
