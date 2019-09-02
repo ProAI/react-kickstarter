@@ -58,6 +58,7 @@ module.exports = function createAppOnServer(config) {
       ssr: config.ssr,
       url: req.url,
       hostname: req.hostname,
+      mockHostname: process.env.MOCK_HOST,
       csrfToken,
       device,
       locale: {
