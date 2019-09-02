@@ -3,10 +3,9 @@ const detectDevice = require('../utils/detectDevice');
 const detectLocale = require('../utils/detectLocale');
 const generateHtmlSnippets = require('../utils/generateHtmlSnippets');
 const getCsrfToken = require('../utils/getCsrfToken');
-const getLocaleFromCookies = require('../utils/getLocaleFromCookies');
+const getLocaleFromCookie = require('../utils/getLocaleFromCookie');
 const getLocaleFromHeader = require('../utils/getLocaleFromHeader');
 const getLocaleFromUrl = require('../utils/getLocaleFromUrl');
-const stripLocaleFromUrl = require('../utils/stripLocaleFromUrl');
 const paths = require('../../config/paths');
 
 module.exports = function createAppOnServer(config) {
@@ -19,23 +18,19 @@ module.exports = function createAppOnServer(config) {
       req.headers['accept-language'],
       config.app.locale.supported,
     );
-    const localeFromCookies = getLocaleFromCookies(req.cookies, config.app.locale.supported);
-
-    const urlWithoutLocale = localeFromUrl
-      ? stripLocaleFromUrl(req.originalUrl, localeFromUrl)
-      : req.originalUrl;
+    const localeFromCookie = getLocaleFromCookie(req.cookies.lang, config.app.locale.supported);
 
     // (auto) detect locale
     const locale = detectLocale(
       config.app.locale.default,
       localeFromUrl,
       localeFromHeader,
-      localeFromCookies,
+      localeFromCookie,
       config.app.locale.autoDetect,
     );
 
     // if cookies are enabled, set language cookie
-    if (config.cookies && !localeFromCookies) {
+    if (config.cookies && !localeFromCookie) {
       // Add lang cookie to cookies object and to response
       cookies.lang = locale;
       res.cookie('lang', locale, { maxAge: 2628000 * 60 * 1000 }); // 5 years lifetime
@@ -58,24 +53,23 @@ module.exports = function createAppOnServer(config) {
       res.cookie('csrf', csrfToken, { httpOnly: true });
     }
 
-    // basename
-    const basename = localeFromUrl ? `/${localeFromUrl}` : '';
-
     // create meta data object
     const meta = {
       ssr: config.ssr,
-      hostname: req.hostname,
       url: req.url,
-      urlWithoutLocale,
-      supportedLocales: config.app.locale.supported,
-      defaultLocale: config.app.locale.default,
-      locale,
-      localeFromUrl,
-      localeFromHeader,
-      localeFromCookies,
-      device,
+      hostname: req.hostname,
       csrfToken,
-      basename,
+      device,
+      locale: {
+        supported: config.app.locale.supported,
+        default: config.app.locale.default,
+        current: locale,
+        sources: {
+          url: localeFromUrl,
+          header: localeFromHeader,
+          cookie: localeFromCookie,
+        },
+      },
     };
 
     const metaServerOnly = {
