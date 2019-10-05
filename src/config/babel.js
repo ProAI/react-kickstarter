@@ -10,7 +10,7 @@ module.exports = {
   plugins: [
     [
       require.resolve('babel-plugin-intlized-components'),
-      { customImportName: 'foundation/i18n', autoResolveKey: paths.appMain },
+      { customImportName: 'libs/intl', autoResolveKey: paths.appMain },
     ],
     require.resolve('@babel/plugin-syntax-dynamic-import'),
     [require.resolve('@babel/plugin-proposal-class-properties'), { loose: false }],
