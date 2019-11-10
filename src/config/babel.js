@@ -3,7 +3,14 @@ const paths = require('./paths');
 module.exports = {
   babelrc: false,
   presets: [
-    [require.resolve('@babel/preset-env'), { modules: false }],
+    [
+      require.resolve('@babel/preset-env'),
+      {
+        useBuiltIns: 'entry',
+        corejs: 3,
+        modules: false,
+      },
+    ],
     require.resolve('@babel/preset-react'),
     require.resolve('@babel/preset-flow'),
   ],

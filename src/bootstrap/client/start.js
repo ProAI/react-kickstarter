@@ -1,3 +1,8 @@
+// add polyfills
+import 'react-app-polyfill/ie9';
+import 'react-app-polyfill/stable';
+
+// import react-dom
 import ReactDOM from 'react-dom';
 
 /* eslint-disable no-underscore-dangle */
