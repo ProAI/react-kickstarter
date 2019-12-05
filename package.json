@@ -73,7 +73,7 @@
     "react-app-polyfill": "1.0.4",
     "require-control": "2.2.0",
     "sass-loader": "8.0.0",
-    "serialize-javascript": "2.1.0",
+    "serialize-javascript": "2.1.1",
     "serve-favicon": "2.5.0",
     "style-loader": "1.0.0",
     "url-loader": "2.2.0",
