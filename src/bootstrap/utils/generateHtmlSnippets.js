@@ -29,7 +29,7 @@ module.exports = function generateHtmlSnippets(meta, reactContent, assets, data,
       styles.push(createStyleTag(assets['mobile.css']));
     }
     if (assets['main.css']) {
-      preloads.push(createPreloadTag(assets['desktop.css'], 'style'));
+      preloads.push(createPreloadTag(assets['main.css'], 'style'));
       styles.push(createStyleTag(assets['main.css']));
     }
   }
