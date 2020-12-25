@@ -75,6 +75,7 @@ module.exports = function createAppOnServer(config) {
 
     const metaServerOnly = {
       req,
+      res,
       cookies,
     };
 
