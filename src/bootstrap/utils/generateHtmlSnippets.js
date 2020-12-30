@@ -12,7 +12,7 @@ function createScriptTag(src, extra) {
   return `<script src="${src}"${extra ? ` ${extra}` : ''} /></script>`;
 }
 
-module.exports = function generateHtmlSnippets(meta, reactContent, assets, data, useDll) {
+module.exports = function generateHtmlSnippets(ctx, reactContent, assets, data, useDll) {
   const preloads = [];
 
   // generate styles html
@@ -20,11 +20,11 @@ module.exports = function generateHtmlSnippets(meta, reactContent, assets, data,
   if (process.env.APP_MODE === 'development') {
     styles.push('<!-- styles are injected via hot loading in development -->');
   } else {
-    if (assets['desktop.css'] && meta.device === 'desktop') {
+    if (assets['desktop.css'] && ctx.device !== 'mobile') {
       preloads.push(createPreloadTag(assets['desktop.css'], 'style'));
       styles.push(createStyleTag(assets['desktop.css']));
     }
-    if (assets['mobile.css'] && meta.device === 'mobile') {
+    if (assets['mobile.css'] && ctx.device === 'mobile') {
       preloads.push(createPreloadTag(assets['mobile.css'], 'style'));
       styles.push(createStyleTag(assets['mobile.css']));
     }
@@ -40,7 +40,7 @@ module.exports = function generateHtmlSnippets(meta, reactContent, assets, data,
   // generate javascript html
   const scripts = [];
   scripts.push(`<script>window.__DATA__=${serialize(data)};</script>`);
-  scripts.push(`<script>window.__METADATA__=${serialize(meta)};</script>`);
+  scripts.push(`<script>window.__CTX__=${serialize(ctx)};</script>`);
 
   if (useDll && process.env.APP_MODE === 'development') {
     preloads.push(createPreloadTag('/dll/dll__vendor.js', 'script'));

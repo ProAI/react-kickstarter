@@ -1,8 +1,6 @@
 const Express = require('express');
 const http = require('http');
 const compression = require('compression');
-const favicon = require('serve-favicon');
-const cookieParser = require('cookie-parser');
 const createProxy = require('../utils/createProxy');
 const createReactAppOnServer = require('./createReactAppOnServer');
 const paths = require('../../config/paths');
@@ -19,16 +17,6 @@ module.exports = function createHttpServer(config) {
 
   // compression middleware
   app.use(compression());
-
-  // favicon middleware
-  if (config.favicon) {
-    app.use(favicon(paths.appFavicon));
-  }
-
-  // cookies middleware
-  if (config.cookies) {
-    app.use(cookieParser());
-  }
 
   // static directory middleware
   app.use(Express.static(paths.appPublic));
@@ -48,7 +36,7 @@ module.exports = function createHttpServer(config) {
         console.info(
           '\n~~> Node.js server is running.\n    Open',
           `\x1b[93mhttp://localhost:${config.port}\x1b[0m`,
-          'in a browser after webpack has been built.\n'
+          'in a browser after webpack has been built.\n',
         );
         // eslint-disable-next-line no-console
         console.info('Please wait, webpack is building...\n');
@@ -57,7 +45,7 @@ module.exports = function createHttpServer(config) {
         console.info(
           '\n~~> Node.js server is running.\n    Open',
           `\x1b[93mhttp://localhost:${config.port}\x1b[0m`,
-          'in a browser to view the app.\n'
+          'in a browser to view the app.\n',
         );
       }
     });

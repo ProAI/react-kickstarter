@@ -3,17 +3,20 @@ module.exports = {
   port: 8080,
   proxies: [],
   ssr: true,
-  cookies: true,
-  app: {
-    csrfToken: true,
-    locale: {
-      autoDetect: true,
-      default: 'en',
-      supported: ['en'],
-    },
-    device: {
-      autoDetect: true,
-    },
+  network: {
+    csrfProtection: true,
+    csrfHeaderName: 'X-Csrf-Token',
+    csrfCookieName: 'csrf',
+  },
+  media: {
+    deviceDetection: true,
+    deviceCookieName: 'view',
+  },
+  intl: {
+    localeDetection: true,
+    defaultLocale: 'en',
+    locales: ['en'],
+    localeCookieName: 'lang',
   },
   devBuild: {
     dll: false,

@@ -24,7 +24,6 @@ module.exports = {
   appNodeModules: resolveAppPath('node_modules'),
   appPublic: resolveAppPath('public'),
   appAssets: resolveAppPath('public/dist'),
-  appFavicon: resolveAppPath('public/favicon/favicon.ico'),
   kickstarterRoot: resolveKickstarterPath('.'), // not in use yet
   kickstarterConfig: resolveKickstarterPath('src/config'),
   kickstarterClientEntry: resolveKickstarterPath('src/bootstrap/client/start.js'),
