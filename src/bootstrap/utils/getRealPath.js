@@ -6,7 +6,7 @@ module.exports = function getRealPath(req, locale, localeSource) {
   }
 
   const basename = `/${locale}`;
-  const path = req.url.substring(locale.length + 2, req.url.length);
+  const path = req.url.substring(locale.length + 1, req.url.length);
 
   return [basename, path];
 };

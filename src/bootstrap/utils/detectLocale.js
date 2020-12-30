@@ -1,6 +1,6 @@
 const parseUrl = (url, locales) => {
   return locales.find(locale => {
-    return url === `/${locale}` || url.substring(0, 4) === `/${locale}/`;
+    return url === `/${locale}` || url.substring(0, locale.length + 2) === `/${locale}/`;
   });
 };
 
