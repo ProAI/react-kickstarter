@@ -33,7 +33,7 @@ const hydrate = require('appClientEntry').default;
 const cookies = new CookieJar(document);
 
 const headers = {
-  create: () => ctx.csrfHeader,
+  create: () => ctx.network.csrfHeader,
 };
 
 const ctxClientOnly = {
