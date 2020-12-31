@@ -10,7 +10,9 @@ module.exports = function handleCsrfProtection(cookies, config) {
   const cookie = cookies.get(config.csrfCookieName);
 
   if (cookie && cookie.length === TOKEN_LENGTH) {
-    return cookie;
+    return {
+      [config.csrfHeaderName]: cookie,
+    };
   }
 
   const token = randomString.generate(TOKEN_LENGTH);
