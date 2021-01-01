@@ -20,11 +20,11 @@ module.exports = function generateHtmlSnippets(ctx, reactContent, assets, data, 
   if (process.env.APP_MODE === 'development') {
     styles.push('<!-- styles are injected via hot loading in development -->');
   } else {
-    if (assets['desktop.css'] && ctx.device !== 'mobile') {
+    if (assets['desktop.css'] && ctx.media.device !== 'mobile') {
       preloads.push(createPreloadTag(assets['desktop.css'], 'style'));
       styles.push(createStyleTag(assets['desktop.css']));
     }
-    if (assets['mobile.css'] && ctx.device === 'mobile') {
+    if (assets['mobile.css'] && ctx.media.device === 'mobile') {
       preloads.push(createPreloadTag(assets['mobile.css'], 'style'));
       styles.push(createStyleTag(assets['mobile.css']));
     }
