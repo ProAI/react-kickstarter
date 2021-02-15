@@ -91,7 +91,7 @@ module.exports = function createAppOnServer(config) {
       if (message) {
         res.status(status).send(message);
       } else {
-        res.sendStatus(status);
+        res.status(status).end();
       }
     };
 
