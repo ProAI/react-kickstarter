@@ -30,7 +30,7 @@ const render = component => {
 // eslint-disable-next-line import/no-unresolved
 const hydrate = require('appClientEntry').default;
 
-const cookies = new CookieJar(document);
+const cookies = new CookieJar();
 
 const headers = {
   create: () => ctx.network.csrfHeader,

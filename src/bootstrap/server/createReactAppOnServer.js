@@ -9,7 +9,7 @@ const paths = require('../../config/paths');
 
 module.exports = function createAppOnServer(config) {
   return (req, res) => {
-    const cookies = new CookieJar(req.headers, res);
+    const cookies = new CookieJar(req, res);
 
     const [locale, localeSource] = detectLocale(req, cookies, config.intl);
     const device = detectDevice(req, cookies, config.media);

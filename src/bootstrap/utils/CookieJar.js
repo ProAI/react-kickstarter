@@ -1,19 +1,30 @@
 const cookie = require('cookie');
 
+const getFromDocument = () => {
+  return document.cookie;
+};
+
 class CookieJar {
-  constructor(source, res) {
-    this.cookies = cookie.parse(source.cookie || '');
+  constructor(req, res) {
+    this.server = !!(req && res);
+
+    this.cookies = cookie.parse(this.server ? req.headers.cookie : getFromDocument());
     this.res = res;
   }
 
   get(name) {
+    // refresh cookies before get
+    if (!this.server) {
+      this.cookies = cookie.parse(getFromDocument());
+    }
+
     return this.cookies[name];
   }
 
   set(name, value, options) {
     this.cookies[name] = value;
 
-    if (this.res) {
+    if (this.server) {
       this.res.cookie(name, value, options);
     } else {
       document.cookie = cookie.serialize(name, value, options);
