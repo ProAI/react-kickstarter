@@ -20,7 +20,9 @@ module.exports = function createHttpDevServer(config) {
       installDll(webpackConfig);
     } else {
       // eslint-disable-next-line no-console
-      console.warn('Webpack: Development mode is not optimized. Update your webpack dll to optimize it.');
+      console.warn(
+        '\x1b[33mDevelopment mode is not optimized. Update your webpack dll to optimize it.\x1b[0m',
+      );
     }
   }
 
@@ -29,15 +31,17 @@ module.exports = function createHttpDevServer(config) {
 
   // build dev server config
   const devServerOptions = {
-    host: config.devServer.host,
-    port: config.devServer.port,
-    contentBase: `http://${config.devServer.host}:${config.devServer.port}`,
     publicPath: `http://${config.devServer.host}:${config.devServer.port}/dist/`,
-    hot: true,
-    logLevel: 'warn',
     headers: {
       // In development same origin policy does not matter, so allow all.
       'Access-Control-Allow-Origin': '*',
+    },
+    stats: {
+      preset: 'none',
+      errors: true,
+      errorDetails: true,
+      warnings: true,
+      logging: 'warn',
     },
   };
 
@@ -46,7 +50,7 @@ module.exports = function createHttpDevServer(config) {
   app.use(webpackHotMiddleware(compiler));
 
   // run server
-  app.listen(config.devServer.port, config.devServer.host, err => {
+  app.listen(config.devServer.port, config.devServer.host, (err) => {
     if (err) {
       // eslint-disable-next-line no-console
       console.error(err);

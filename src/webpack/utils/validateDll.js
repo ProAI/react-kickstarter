@@ -11,14 +11,11 @@ module.exports = function validateDll() {
     const dll = fs
       .readFileSync(path.join(paths.appPublic, 'dll', `dll__${dllName}.js`))
       .toString('utf-8');
+
     if (dll.indexOf(manifest.name) === -1) {
-      // eslint-disable-next-line no-console
-      console.warn(`Webpack: Invalid DLL ${dllName}`);
       return false;
     }
   } catch (e) {
-    // eslint-disable-next-line no-console
-    console.warn(e.message);
     return false;
   }
 

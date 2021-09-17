@@ -21,5 +21,6 @@ module.exports = {
     ],
     require.resolve('@babel/plugin-syntax-dynamic-import'),
     [require.resolve('@babel/plugin-proposal-class-properties'), { loose: false }],
+    ...(process.env.APP_MODE === 'development' ? [require.resolve('react-refresh/babel')] : []),
   ],
 };

@@ -6,9 +6,9 @@ function loadDllManifest(filePath) {
   try {
     // eslint-disable-next-line
     return require(filePath);
-  } catch (e) {
+  } catch (err) {
     // eslint-disable-next-line no-console
-    console.warning('Webpack: Development mode is not optimized. Update your webpack dll to optimize it.');
+    console.error(err);
   }
 
   return undefined;
@@ -23,9 +23,11 @@ module.exports = function installDll(config) {
     // eslint-disable-next-line no-console
     // console.log(`Webpack: Dll ${dllName} will be used.`);
 
-    config.plugins.push(new webpack.DllReferencePlugin({
-      context: paths.appRoot,
-      manifest,
-    }));
+    config.plugins.push(
+      new webpack.DllReferencePlugin({
+        context: paths.appRoot,
+        manifest,
+      }),
+    );
   }
 };

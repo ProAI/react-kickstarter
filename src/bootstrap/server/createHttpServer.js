@@ -11,7 +11,7 @@ module.exports = function createHttpServer(config) {
   const server = new http.Server(app);
 
   // proxy middleware
-  config.proxies.forEach(proxy => {
+  config.proxies.forEach((proxy) => {
     app.use(proxy.path, createProxy(proxy, server));
   });
 
@@ -26,7 +26,7 @@ module.exports = function createHttpServer(config) {
 
   // start server
   if (config.port && config.host) {
-    server.listen(config.port, config.host, err => {
+    server.listen(config.port, config.host, (err) => {
       if (err) {
         // eslint-disable-next-line no-console
         console.error(err);
@@ -35,7 +35,7 @@ module.exports = function createHttpServer(config) {
         // eslint-disable-next-line no-console
         console.info(
           '\n~~> Node.js server is running.\n    Open',
-          `\x1b[93mhttp://localhost:${config.port}\x1b[0m`,
+          `\x1b[36mhttp://localhost:${config.port}\x1b[0m`,
           'in a browser after webpack has been built.\n',
         );
         // eslint-disable-next-line no-console
@@ -44,7 +44,7 @@ module.exports = function createHttpServer(config) {
         // eslint-disable-next-line no-console
         console.info(
           '\n~~> Node.js server is running.\n    Open',
-          `\x1b[93mhttp://localhost:${config.port}\x1b[0m`,
+          `\x1b[36mhttp://localhost:${config.port}\x1b[0m`,
           'in a browser to view the app.\n',
         );
       }

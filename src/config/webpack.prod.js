@@ -1,14 +1,13 @@
 // Webpack config for creating the production bundle.
-const autoprefixer = require('autoprefixer');
 const webpack = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const ManifestPlugin = require('webpack-manifest-plugin');
-// const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
+const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 const path = require('path');
 const paths = require('./paths');
 const babelConfig = require('./babel');
-const browserslist = require('./browserslist');
 
 const includePaths = [
   paths.appMain,
@@ -29,10 +28,11 @@ module.exports = {
     chunkFilename: '[name]-[chunkhash].js',
     publicPath: '/dist/',
   },
+  infrastructureLogging: {
+    level: 'warn',
+  },
   module: {
     rules: [
-      // Disable require.ensure as it's not a standard language feature.
-      { parser: { requireEnsure: false } },
       // Process JS with Babel.
       {
         test: /\.(js|jsx)$/,
@@ -47,6 +47,7 @@ module.exports = {
         ],
       },
       // Define rules for sass files
+      // Forked from https://github.com/facebook/create-react-app/blob/main/packages/react-scripts/config/webpack.config.js
       {
         test: /\.scss$/,
         include: includePaths,
@@ -57,42 +58,101 @@ module.exports = {
           {
             loader: 'css-loader',
             options: {
-              importLoaders: 2,
-              // sourceMap: true
+              importLoaders: 3,
+              sourceMap: false,
             },
           },
           {
             loader: 'postcss-loader',
             options: {
-              ident: 'postcss', // https://webpack.js.org/guides/migrating/#complex-options
-              plugins: () => [
-                autoprefixer({
-                  overrideBrowserslist: browserslist,
-                }),
-              ],
+              postcssOptions: {
+                plugins: [
+                  'postcss-flexbugs-fixes',
+                  [
+                    'postcss-preset-env',
+                    {
+                      autoprefixer: {
+                        flexbox: 'no-2009',
+                      },
+                      stage: 3,
+                    },
+                  ],
+                  'postcss-normalize',
+                ],
+              },
+              sourceMap: false,
             },
           },
           {
             loader: 'sass-loader',
-            // options: { sourceMap: true }
+            options: {
+              sourceMap: false,
+            },
           },
         ],
       },
       // Process font files
       {
         test: /\.woff2?(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'url-loader',
-        options: { limit: 10000, mimetype: 'application/font-woff' },
+        type: 'asset/inline',
       },
       {
         test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'url-loader',
-        options: { limit: 10000, mimetype: 'application/octet-stream' },
+        type: 'asset/inline',
       },
       {
         test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-        loader: 'file-loader',
+        type: 'asset/resource',
       },
+    ],
+  },
+  // Optimize production build
+  // Forked from https://github.com/facebook/create-react-app/blob/main/packages/react-scripts/config/webpack.config.js
+  optimization: {
+    minimize: true,
+    minimizer: [
+      // This is only used in production mode
+      new TerserPlugin({
+        terserOptions: {
+          parse: {
+            // We want terser to parse ecma 8 code. However, we don't want it
+            // to apply any minification steps that turns valid ecma 5 code
+            // into invalid ecma 5 code. This is why the 'compress' and 'output'
+            // sections only apply transformations that are ecma 5 safe
+            // https://github.com/facebook/create-react-app/pull/4234
+            ecma: 8,
+          },
+          compress: {
+            ecma: 5,
+            warnings: false,
+            // Disabled because of an issue with Uglify breaking seemingly valid code:
+            // https://github.com/facebook/create-react-app/issues/2376
+            // Pending further investigation:
+            // https://github.com/mishoo/UglifyJS2/issues/2011
+            comparisons: false,
+            // Disabled because of an issue with Terser breaking valid code:
+            // https://github.com/facebook/create-react-app/issues/5250
+            // Pending further investigation:
+            // https://github.com/terser-js/terser/issues/120
+            inline: 2,
+          },
+          mangle: {
+            safari10: true,
+          },
+          // Added for profiling in devtools
+          keep_classnames: true,
+          keep_fnames: true,
+          output: {
+            ecma: 5,
+            comments: false,
+            // Turned on because emoji and regex is not minified properly using default
+            // https://github.com/facebook/create-react-app/issues/2488
+            ascii_only: true,
+          },
+        },
+      }),
+      // This is only used in production mode
+      new CssMinimizerPlugin(),
     ],
   },
   // Resolve node modules from node_modules app and react-kickstarter directory
@@ -103,8 +163,18 @@ module.exports = {
     modules: [paths.appMain, paths.appResources, paths.appNodeModules],
     alias: {
       appClientEntry: paths.appClientEntry,
+      'react-native': 'react-native-web',
     },
     extensions: ['.json', '.js', '.jsx'],
+    // Some libraries import Node modules but don't use them in the browser.
+    // Tell Webpack to provide empty mocks for them so importing them works.
+    fallback: {
+      fs: false,
+      net: false,
+      tls: false,
+      path: false,
+      stream: false,
+    },
   },
   plugins: [
     // clean old dist files
@@ -115,15 +185,10 @@ module.exports = {
       filename: '[name]-[chunkhash].css',
     }),
 
-    // minify css files
-    new webpack.LoaderOptionsPlugin({
-      minimize: true,
-      options: {
-        postcss: [autoprefixer],
-      },
-    }),
-
     // define process.env constants
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
+    }),
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'production',
       APP_MODE: 'production',
@@ -131,20 +196,8 @@ module.exports = {
       APP_PLATFORM: 'web',
     }),
 
-    new ManifestPlugin({
+    new WebpackManifestPlugin({
       fileName: paths.webpackManifest,
     }),
-
-    // Minify the code.
-    /* new UglifyJSPlugin({
-      sourceMap: true,
-    }), */
   ],
-  // Some libraries import Node modules but don't use them in the browser.
-  // Tell Webpack to provide empty mocks for them so importing them works.
-  node: {
-    fs: 'empty',
-    net: 'empty',
-    tls: 'empty',
-  },
 };
