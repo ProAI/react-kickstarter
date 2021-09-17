@@ -1,8 +1,7 @@
-const parseUrl = (url, locales) => {
-  return locales.find(locale => {
-    return url === `/${locale}` || url.substring(0, locale.length + 2) === `/${locale}/`;
-  });
-};
+const parseUrl = (url, locales) =>
+  locales.find(
+    (locale) => url === `/${locale}` || url.substring(0, locale.length + 2) === `/${locale}/`,
+  );
 
 const parseCookie = (cookie, locales) => {
   const index = locales.indexOf(cookie);

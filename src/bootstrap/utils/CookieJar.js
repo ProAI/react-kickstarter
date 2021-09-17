@@ -1,8 +1,6 @@
 const cookie = require('cookie');
 
-const getFromDocument = () => {
-  return document.cookie || '';
-};
+const getFromDocument = () => document.cookie || '';
 
 class CookieJar {
   constructor(req, res) {
@@ -41,7 +39,7 @@ class CookieJar {
       return;
     }
 
-    headers['set-cookie'].forEach(raw => {
+    headers['set-cookie'].forEach((raw) => {
       const [pair, ...rawOptions] = raw.split(';');
 
       const pairs = cookie.parse(pair);
@@ -67,7 +65,7 @@ class CookieJar {
 
   serialize() {
     return Object.keys(this.cookies)
-      .map(key => `${key}=${this.cookies[key]}`)
+      .map((key) => `${key}=${this.cookies[key]}`)
       .join(';');
   }
 }

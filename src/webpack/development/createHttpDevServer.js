@@ -4,8 +4,8 @@ const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
 const mergeWebpackConfig = require('../utils/mergeWebpackConfig');
 const defaultWebpackConfig = require('../../config/webpack.dev');
-const validateDll = require('../utils/validateDll.js');
-const installDll = require('../utils/installDll.js');
+const validateDll = require('../utils/validateDll');
+const installDll = require('../utils/installDll');
 
 module.exports = function createHttpDevServer(config) {
   // create server
