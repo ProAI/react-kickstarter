@@ -1,5 +1,6 @@
-const path = require('path');
 const webpack = require('webpack');
+const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
+const path = require('path');
 const paths = require('./paths');
 
 module.exports = {
@@ -7,7 +8,7 @@ module.exports = {
   devtool: 'eval-cheap-module-source-map',
   context: paths.appRoot,
   entry: {
-    vendor: null, // will be defined in dll config
+    vendor: undefined, // will be defined in dll config
   },
   output: {
     path: path.join(paths.appPublic, 'dll'),
@@ -20,20 +21,12 @@ module.exports = {
   resolve: {
     modules: [paths.appNodeModules],
     extensions: ['.js'],
-    // Some libraries import Node modules but don't use them in the browser.
-    // Tell Webpack to provide empty mocks for them so importing them works.
-    fallback: {
-      fs: false,
-      net: false,
-      tls: false,
-      path: false,
-      stream: false,
-    },
   },
   plugins: [
-    new webpack.ProvidePlugin({
-      process: 'process/browser',
-    }),
+    // polyfill node modules
+    new NodePolyfillPlugin(),
+
+    // define process.env constants
     new webpack.EnvironmentPlugin({
       NODE_ENV: 'development',
     }),
