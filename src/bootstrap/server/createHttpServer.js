@@ -31,7 +31,7 @@ module.exports = function createHttpServer(config) {
         // eslint-disable-next-line no-console
         console.error(err);
       }
-      if (process.env.APP_MODE === 'development') {
+      if (process.env.NODE_ENV === 'development') {
         // eslint-disable-next-line no-console
         console.info(
           '\n~~> Node.js server is running.\n    Open',

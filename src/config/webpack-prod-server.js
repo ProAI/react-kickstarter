@@ -16,8 +16,13 @@ module.exports = {
     path: path.join(paths.webpackCache, 'prod'),
     filename: 'server-bundle.js',
     library: {
-      type: 'commonjs',
+      type: 'commonjs2',
     },
+  },
+  externalsPresets: { node: true },
+  externals: {
+    react: 'commonjs2 react',
+    'react-dom': 'commonjs2 react-dom',
   },
   plugins: [
     // ignore style files

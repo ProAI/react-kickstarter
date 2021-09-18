@@ -11,7 +11,11 @@ const includePaths = [
   path.join(paths.appNodeModules, 'react-kickstarter/src'),
 ];
 
-const isDev = process.env.APP_MODE === 'development';
+const isDev = process.env.NODE_ENV === 'development';
+
+// if (isDev) {
+//   babelConfig.plugins.push(require.resolve('react-refresh/babel'));
+// }
 
 // Parts of this config are forked from the great create-react-app package
 // ref: https://github.com/facebook/create-react-app/blob/main/packages/react-scripts/config/webpack.config.js
@@ -34,7 +38,7 @@ module.exports = {
         use: [
           {
             loader: 'babel-loader',
-            options: babelConfig,
+            options: { ...babelConfig, cacheDirectory: isDev },
           },
         ],
       },

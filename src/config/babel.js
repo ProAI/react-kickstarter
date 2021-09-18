@@ -1,10 +1,7 @@
 const paths = require('./paths');
 
-const isDev = process.env.APP_MODE === 'development';
-
 module.exports = {
   babelrc: false,
-  cacheDirectory: isDev,
   presets: [
     [
       require.resolve('@babel/preset-env'),
@@ -24,6 +21,5 @@ module.exports = {
     ],
     require.resolve('@babel/plugin-syntax-dynamic-import'),
     [require.resolve('@babel/plugin-proposal-class-properties'), { loose: false }],
-    ...(isDev ? [require.resolve('react-refresh/babel')] : []),
   ],
 };

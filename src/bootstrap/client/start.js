@@ -16,7 +16,7 @@ const root = document.getElementById('content');
 const ssr = root && root.firstChild;
 
 // define render function for hydrate function
-const render = component => {
+const render = (component) => {
   const element = component;
 
   if (ssr) {

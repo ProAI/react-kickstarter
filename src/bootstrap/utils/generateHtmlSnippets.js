@@ -17,7 +17,7 @@ module.exports = function generateHtmlSnippets(ctx, reactContent, assets, data, 
 
   // generate styles html
   const styles = [];
-  if (process.env.APP_MODE === 'development') {
+  if (process.env.NODE_ENV === 'development') {
     styles.push('<!-- styles are injected via hot loading in development -->');
   } else {
     if (assets['desktop.css'] && ctx.media.device !== 'mobile') {
@@ -42,12 +42,12 @@ module.exports = function generateHtmlSnippets(ctx, reactContent, assets, data, 
   scripts.push(`<script>window.__DATA__=${serialize(data)};</script>`);
   scripts.push(`<script>window.__CTX__=${serialize(ctx)};</script>`);
 
-  if (useDll && process.env.APP_MODE === 'development') {
+  if (useDll && process.env.NODE_ENV === 'development') {
     preloads.push(createPreloadTag('/dll/dll__vendor.js', 'script'));
     scripts.push(createScriptTag('/dll/dll__vendor.js', 'key="dll__vendor"'));
   }
 
-  const crossOrigin = process.env.APP_MODE === 'development' ? 'crossorigin' : null;
+  const crossOrigin = process.env.NODE_ENV === 'development' ? 'crossorigin' : null;
   preloads.push(createPreloadTag(assets['main.js'], 'script', crossOrigin));
   scripts.push(createScriptTag(assets['main.js'], crossOrigin));
 

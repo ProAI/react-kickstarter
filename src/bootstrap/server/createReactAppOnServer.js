@@ -55,7 +55,7 @@ module.exports = function createAppOnServer(config) {
 
     // Do not cache webpack-manifest.json and all files in /app folder in development
     // See https://github.com/ProAI/react-kickstarter/issues/4
-    if (process.env.APP_MODE === 'development') {
+    if (process.env.NODE_ENV === 'development') {
       delete require.cache[paths.webpackManifest];
 
       Object.keys(require.cache).forEach((id) => {
@@ -69,7 +69,7 @@ module.exports = function createAppOnServer(config) {
       const assets = require(paths.webpackManifest);
       const content = component ? ReactDOMServer.renderToString(component) : '';
       // eslint-disable-next-line
-      const renderHtml = require(paths.appHtml).default;
+      const renderHtml = require(paths.appHtml);
 
       const snippets = generateHtmlSnippets(
         ctx,
@@ -104,13 +104,14 @@ module.exports = function createAppOnServer(config) {
     }
 
     const entry =
-      process.env.APP_MODE === 'development'
+      process.env.NODE_ENV === 'development'
         ? paths.appServerEntry
         : path.join(paths.webpackCache, 'prod', 'server-bundle.js');
 
     // get hydrate function and hydrate
     // eslint-disable-next-line
     const hydrate = require(entry).default;
+
     hydrate(ctxServerOnly, { error, redirect, render });
   };
 };

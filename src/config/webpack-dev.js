@@ -1,6 +1,6 @@
 // Webpack config for development
 const webpack = require('webpack');
-const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+// const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 const path = require('path');
@@ -32,7 +32,7 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
 
     // react fash refresh
-    new ReactRefreshWebpackPlugin(),
+    // new ReactRefreshWebpackPlugin(),
 
     // ignore webpack stats
     new webpack.IgnorePlugin({ resourceRegExp: /webpack-stats\.json$/ }),
