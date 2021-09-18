@@ -4,7 +4,8 @@ const path = require('path');
 const fs = require('fs');
 const defaultConfig = require('./defaultConfig');
 const mergeWebpackConfig = require('../utils/mergeWebpackConfig');
-const defaultWebpackConfig = require('../../config/webpack.prod');
+const defaultWebpackConfigClient = require('../../config/webpack-prod-client');
+const webpackConfigServer = require('../../config/webpack-prod-server');
 const paths = require('../../config/paths');
 
 module.exports = function buildProductionWebpack(customConfig) {
@@ -12,10 +13,10 @@ module.exports = function buildProductionWebpack(customConfig) {
   const config = deepmerge(defaultConfig, customConfig);
 
   // modify webpack config
-  const webpackConfig = mergeWebpackConfig(defaultWebpackConfig, config);
+  const webpackConfigClient = mergeWebpackConfig(defaultWebpackConfigClient, config);
 
   // webpack compiler
-  const compiler = webpack(webpackConfig);
+  const compiler = webpack([webpackConfigServer, webpackConfigClient]);
 
   compiler.run((err, stats) => {
     if (err) {

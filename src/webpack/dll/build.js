@@ -2,7 +2,7 @@ const webpack = require('webpack');
 const deepmerge = require('deepmerge');
 const defaultConfig = require('./defaultConfig');
 const getDllDependencyNames = require('../utils/getDllDependencyNames');
-const defaultWebpackConfig = require('../../config/webpack.dll');
+const defaultWebpackConfig = require('../../config/webpack-dll');
 
 module.exports = function buildDllWebpack(customConfig) {
   // merge config

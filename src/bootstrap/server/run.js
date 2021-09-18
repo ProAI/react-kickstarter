@@ -7,7 +7,9 @@ const paths = require('../../config/paths');
 /* eslint-disable global-require */
 module.exports = function runServer(customConfig) {
   // babel registration (runtime transpilation for node)
-  registerBabel();
+  if (process.env.APP_MODE === 'development') {
+    registerBabel();
+  }
 
   // merge config
   const config = deepmerge(defaultConfig, customConfig);

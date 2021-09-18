@@ -15,19 +15,16 @@ function loadDllManifest(filePath) {
 }
 
 module.exports = function installDll(config) {
-  const dllName = 'vendor';
+  const manifest = loadDllManifest(path.join(paths.webpackCache, 'dll', 'vendor.json'));
 
-  const manifest = loadDllManifest(path.join(paths.webpackCache, 'dll', `${dllName}.json`));
-
-  if (manifest) {
-    // eslint-disable-next-line no-console
-    // console.log(`Webpack: Dll ${dllName} will be used.`);
-
-    config.plugins.push(
-      new webpack.DllReferencePlugin({
-        context: paths.appRoot,
-        manifest,
-      }),
-    );
+  if (!manifest) {
+    return;
   }
+
+  config.plugins.push(
+    new webpack.DllReferencePlugin({
+      context: paths.appRoot,
+      manifest,
+    }),
+  );
 };

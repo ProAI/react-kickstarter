@@ -1,4 +1,5 @@
 const ReactDOMServer = require('react-dom/server');
+const path = require('path');
 const CookieJar = require('../utils/CookieJar');
 const detectDevice = require('../utils/detectDevice');
 const detectLocale = require('../utils/detectLocale');
@@ -14,11 +15,11 @@ module.exports = function createAppOnServer(config) {
     const [locale, localeSource] = detectLocale(req, cookies, config.intl);
     const device = detectDevice(req, cookies, config.media);
     const csrfHeader = handleCsrfProtection(cookies, config.network);
-    const [basename, path] = getRealPath(req, locale, localeSource);
+    const [basename, realPath] = getRealPath(req, locale, localeSource);
 
     const ctx = {
       basename,
-      path,
+      path: realPath,
       ssr: config.ssr,
       network: {
         csrfHeader,
@@ -57,7 +58,7 @@ module.exports = function createAppOnServer(config) {
     if (process.env.APP_MODE === 'development') {
       delete require.cache[paths.webpackManifest];
 
-      Object.keys(require.cache).forEach(id => {
+      Object.keys(require.cache).forEach((id) => {
         if (/[/\\]app[/\\]/.test(id)) delete require.cache[id];
       });
     }
@@ -83,7 +84,7 @@ module.exports = function createAppOnServer(config) {
       res.status(200).send(html);
     };
 
-    const redirect = location => {
+    const redirect = (location) => {
       res.redirect(location);
     };
 
@@ -102,9 +103,14 @@ module.exports = function createAppOnServer(config) {
       return;
     }
 
+    const entry =
+      process.env.APP_MODE === 'development'
+        ? paths.appServerEntry
+        : path.join(paths.webpackCache, 'prod', 'server-bundle.js');
+
     // get hydrate function and hydrate
     // eslint-disable-next-line
-    const hydrate = require(paths.appServerEntry).default;
+    const hydrate = require(entry).default;
     hydrate(ctxServerOnly, { error, redirect, render });
   };
 };
