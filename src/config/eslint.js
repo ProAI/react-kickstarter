@@ -8,8 +8,11 @@ module.exports = {
   },
   plugins: ['flowtype'],
   rules: {
+    // eslint
+    'arrow-body-style': 'off',
+
     // flowtype
-    'flowtype/space-after-type-colon': 'off',
+    'flowtype/space-after-type-colon': 'off', // conflict with prettier
 
     // import
     'import/prefer-default-export': 'off', // conflict when there is only 1 action
