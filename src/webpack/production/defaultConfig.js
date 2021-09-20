@@ -1,4 +1,5 @@
 module.exports = {
+  only: null,
   styles: {
     main: null,
     desktop: null,

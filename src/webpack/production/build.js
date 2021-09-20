@@ -15,8 +15,18 @@ module.exports = function buildProductionWebpack(customConfig) {
   // modify webpack config
   const webpackConfigClient = mergeWebpackConfig(defaultWebpackConfigClient, config);
 
+  const webpackConfigs = [];
+
+  if (!config.only || config.only === 'SERVER') {
+    webpackConfigs.push(webpackConfigServer);
+  }
+
+  if (!config.only || config.only === 'CLIENT') {
+    webpackConfigs.push(webpackConfigClient);
+  }
+
   // webpack compiler
-  const compiler = webpack([webpackConfigServer, webpackConfigClient]);
+  const compiler = webpack(webpackConfigs);
 
   compiler.run((err, stats) => {
     if (err) {
