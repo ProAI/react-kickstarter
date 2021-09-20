@@ -23,8 +23,8 @@ module.exports = {
   output: {
     path: paths.appAssets,
     pathinfo: false,
-    filename: '[name]-[contenthash].js',
-    chunkFilename: '[name]-[chunkhash].js',
+    filename: 'client-bundle.js',
+    chunkFilename: '[name].chunk.js',
     publicPath: `http://${host}:${port}/dist/`,
   },
   plugins: [
