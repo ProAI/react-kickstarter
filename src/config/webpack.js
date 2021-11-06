@@ -13,10 +13,6 @@ const includePaths = [
 
 const isDev = process.env.NODE_ENV === 'development';
 
-// if (isDev) {
-//   babelConfig.plugins.push(require.resolve('react-refresh/babel'));
-// }
-
 // Parts of this config are forked from the great create-react-app package
 // ref: https://github.com/facebook/create-react-app/blob/main/packages/react-scripts/config/webpack.config.js
 module.exports = {
@@ -38,7 +34,14 @@ module.exports = {
         use: [
           {
             loader: 'babel-loader',
-            options: { ...babelConfig, cacheDirectory: isDev },
+            options: {
+              ...babelConfig,
+              plugins: [
+                ...babelConfig.plugins,
+                isDev && require.resolve('react-refresh/babel'),
+              ].filter(Boolean),
+              cacheDirectory: isDev,
+            },
           },
         ],
       },

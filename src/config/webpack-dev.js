@@ -1,6 +1,6 @@
 // Webpack config for development
 const webpack = require('webpack');
-// const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
 const path = require('path');
@@ -15,10 +15,7 @@ module.exports = {
   mode: 'development',
   devtool: 'eval-cheap-module-source-map',
   entry: {
-    main: [
-      `${require.resolve('webpack-hot-middleware/client')}?path=/__webpack_hmr`,
-      paths.kickstarterClientEntry,
-    ],
+    main: [require.resolve('react-refresh/runtime'), paths.kickstarterClientEntry],
   },
   output: {
     path: paths.appAssets,
@@ -32,7 +29,9 @@ module.exports = {
     new webpack.HotModuleReplacementPlugin(),
 
     // react fash refresh
-    // new ReactRefreshWebpackPlugin(),
+    new ReactRefreshWebpackPlugin({
+      overlay: false,
+    }),
 
     // ignore webpack stats
     new webpack.IgnorePlugin({ resourceRegExp: /webpack-stats\.json$/ }),
