@@ -1,5 +1,6 @@
 // Webpack config for creating the production bundle.
 const webpack = require('webpack');
+const path = require('path');
 const paths = require('./paths');
 const webpackBaseConfig = require('./webpack');
 
@@ -13,7 +14,7 @@ module.exports = () => {
       main: paths.appServerEntry,
     },
     output: {
-      path: paths.webpackCacheProd,
+      path: path.join(paths.webpackCache, 'prod'),
       filename: 'server-bundle.js',
       library: {
         type: 'commonjs2',

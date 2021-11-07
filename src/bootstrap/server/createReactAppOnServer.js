@@ -100,7 +100,7 @@ module.exports = function createAppOnServer(config) {
     const entry =
       process.env.NODE_ENV === 'development'
         ? paths.appServerEntry
-        : path.join(paths.webpackCacheProd, 'server-bundle.js');
+        : path.join(paths.webpackCache, 'prod', 'server-bundle.js');
 
     // get hydrate function and hydrate
     // eslint-disable-next-line
