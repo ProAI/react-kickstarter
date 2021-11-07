@@ -3,7 +3,6 @@ const webpack = require('webpack');
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 const NodePolyfillPlugin = require('node-polyfill-webpack-plugin');
 const { WebpackManifestPlugin } = require('webpack-manifest-plugin');
-const fs = require('fs');
 const path = require('path');
 const paths = require('./paths');
 const webpackBaseConfig = require('./webpack');
@@ -26,8 +25,6 @@ const getEntries = (config, mainEntries) => {
 
 module.exports = (config) => {
   const { host, port } = config.devServer;
-
-  const shouldUseDll = config.devBuild.dll && fs.existsSync(paths.webpackDllVendor);
 
   return {
     ...webpackBaseConfig(true),
@@ -69,17 +66,11 @@ module.exports = (config) => {
         APP_PLATFORM: 'web',
       }),
 
-      shouldUseDll &&
-        new webpack.DllReferencePlugin({
-          context: paths.appRoot,
-          manifest: paths.webpackDllVendor,
-        }),
-
       new WebpackManifestPlugin({
         fileName: paths.webpackManifest,
         writeToFileEmit: true,
       }),
-    ].filter(Boolean),
+    ],
     devServer: {
       static: {
         directory: path.join(__dirname, 'public'),

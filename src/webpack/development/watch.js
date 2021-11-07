@@ -13,9 +13,6 @@ const defaultConfig = {
     host: 'localhost',
     port: 8081,
   },
-  devBuild: {
-    dll: false,
-  },
 };
 
 module.exports = function watchDevelopmentWebpack(customConfig) {

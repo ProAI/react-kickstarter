@@ -18,7 +18,4 @@ module.exports = {
     locales: ['en'],
     localeCookieName: 'lang',
   },
-  devBuild: {
-    dll: false,
-  },
 };

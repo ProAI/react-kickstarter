@@ -1,5 +1,4 @@
 const ReactDOMServer = require('react-dom/server');
-const fs = require('fs');
 const path = require('path');
 const CookieJar = require('../utils/CookieJar');
 const detectDevice = require('../utils/detectDevice');
@@ -72,15 +71,7 @@ module.exports = function createAppOnServer(config) {
       // eslint-disable-next-line
       const renderHtml = require(paths.appHtml);
 
-      const shouldUseDll = config.devBuild.dll && fs.existsSync(paths.webpackDllVendor);
-
-      const snippets = generateHtmlSnippets(
-        ctx,
-        content,
-        assets,
-        getData ? getData() : {},
-        shouldUseDll,
-      );
+      const snippets = generateHtmlSnippets(ctx, content, assets, getData ? getData() : {});
 
       const html = renderHtml(ctxServerOnly, snippets, meta);
 
