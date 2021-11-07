@@ -1,19 +1,18 @@
 const webpack = require('webpack');
 const deepmerge = require('deepmerge');
-const defaultConfig = require('./defaultConfig');
-const getDllDependencyNames = require('../utils/getDllDependencyNames');
-const defaultWebpackConfig = require('../../config/webpack-dll');
+const webpackConfig = require('../../config/webpack-dll');
+
+const defaultConfig = {
+  include: null,
+  exclude: null,
+};
 
 module.exports = function buildDllWebpack(customConfig) {
   // merge config
   const config = deepmerge(defaultConfig, customConfig);
 
-  // modify webpack config
-  const webpackConfig = defaultWebpackConfig;
-  webpackConfig.entry.vendor = getDllDependencyNames(config);
-
   // webpack compiler
-  const compiler = webpack(webpackConfig);
+  const compiler = webpack(webpackConfig(config));
 
   compiler.run((err, stats) => {
     if (err) {

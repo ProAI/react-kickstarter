@@ -14,6 +14,12 @@ function resolveKickstarterPath(relativePath) {
   return path.join(__dirname, '../..', relativePath);
 }
 
+const webpackCachePath = findCacheDir({ name: 'webpack' });
+
+function resolveWebpackCachePath(relativePath) {
+  return path.resolve(webpackCachePath, relativePath);
+}
+
 module.exports = {
   appRoot: resolveAppPath('.'),
   appMain: resolveAppPath('app'),
@@ -29,5 +35,6 @@ module.exports = {
   kickstarterClientEntry: resolveKickstarterPath('src/bootstrap/client/start.js'),
   kickstarterNodeModules: resolveKickstarterPath('node_modules'),
   webpackManifest: resolveAppPath('webpack-manifest.json'),
-  webpackCache: findCacheDir({ name: 'webpack' }),
+  webpackDllVendor: resolveWebpackCachePath('dll/vendor.json'),
+  webpackCacheProd: resolveWebpackCachePath('prod'),
 };

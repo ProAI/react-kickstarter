@@ -1,4 +1,5 @@
 const ReactDOMServer = require('react-dom/server');
+const fs = require('fs');
 const path = require('path');
 const CookieJar = require('../utils/CookieJar');
 const detectDevice = require('../utils/detectDevice');
@@ -71,12 +72,14 @@ module.exports = function createAppOnServer(config) {
       // eslint-disable-next-line
       const renderHtml = require(paths.appHtml);
 
+      const shouldUseDll = config.devBuild.dll && fs.existsSync(paths.webpackDllVendor);
+
       const snippets = generateHtmlSnippets(
         ctx,
         content,
         assets,
         getData ? getData() : {},
-        config.devBuild.dll,
+        shouldUseDll,
       );
 
       const html = renderHtml(ctxServerOnly, snippets, meta);
@@ -106,7 +109,7 @@ module.exports = function createAppOnServer(config) {
     const entry =
       process.env.NODE_ENV === 'development'
         ? paths.appServerEntry
-        : path.join(paths.webpackCache, 'prod', 'server-bundle.js');
+        : path.join(paths.webpackCacheProd, 'server-bundle.js');
 
     // get hydrate function and hydrate
     // eslint-disable-next-line

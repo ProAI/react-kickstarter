@@ -2,27 +2,31 @@ const webpack = require('webpack');
 const deepmerge = require('deepmerge');
 const path = require('path');
 const fs = require('fs');
-const defaultConfig = require('./defaultConfig');
-const mergeWebpackConfig = require('../utils/mergeWebpackConfig');
-const defaultWebpackConfigClient = require('../../config/webpack-prod-client');
+const webpackConfigClient = require('../../config/webpack-prod-client');
 const webpackConfigServer = require('../../config/webpack-prod-server');
 const paths = require('../../config/paths');
+
+const defaultConfig = {
+  only: null,
+  styles: {
+    main: null,
+    desktop: null,
+    mobile: null,
+  },
+};
 
 module.exports = function buildProductionWebpack(customConfig) {
   // merge config
   const config = deepmerge(defaultConfig, customConfig);
 
-  // modify webpack config
-  const webpackConfigClient = mergeWebpackConfig(defaultWebpackConfigClient, config);
-
   const webpackConfigs = [];
 
   if (!config.only || config.only === 'SERVER') {
-    webpackConfigs.push(webpackConfigServer);
+    webpackConfigs.push(webpackConfigServer());
   }
 
   if (!config.only || config.only === 'CLIENT') {
-    webpackConfigs.push(webpackConfigClient);
+    webpackConfigs.push(webpackConfigClient(config));
   }
 
   // webpack compiler

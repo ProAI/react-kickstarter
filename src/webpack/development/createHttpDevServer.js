@@ -2,32 +2,23 @@ const Express = require('express');
 const webpack = require('webpack');
 const webpackDevMiddleware = require('webpack-dev-middleware');
 const webpackHotMiddleware = require('webpack-hot-middleware');
-const mergeWebpackConfig = require('../utils/mergeWebpackConfig');
-const defaultWebpackConfig = require('../../config/webpack-dev');
-const validateDll = require('../utils/validateDll');
-const installDll = require('../utils/installDll');
+const webpackConfig = require('../../config/webpack-dev');
+const validateDll = require('./validateDll');
 
 module.exports = function createHttpDevServer(config) {
   // create server
   const app = new Express();
 
-  // modify webpack config
-  const webpackConfig = mergeWebpackConfig(defaultWebpackConfig, config, true);
-
   // handle dll
-  if (config.devBuild.dll) {
-    if (validateDll()) {
-      installDll(webpackConfig);
-    } else {
-      // eslint-disable-next-line no-console
-      console.warn(
-        '\x1b[33mDevelopment mode is not optimized. Update your webpack dll to optimize it.\x1b[0m',
-      );
-    }
+  if (config.devBuild.dll && !validateDll()) {
+    // eslint-disable-next-line no-console
+    console.warn(
+      '\x1b[33mDevelopment mode is not optimized. Update your webpack dll to optimize it.\x1b[0m',
+    );
   }
 
   // webpack compiler
-  const compiler = webpack(webpackConfig);
+  const compiler = webpack(webpackConfig(config));
 
   // build dev server config
   const devServerOptions = {

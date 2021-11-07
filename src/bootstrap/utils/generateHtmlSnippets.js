@@ -12,7 +12,7 @@ function createScriptTag(src, extra) {
   return `<script src="${src}"${extra ? ` ${extra}` : ''}></script>`;
 }
 
-module.exports = function generateHtmlSnippets(ctx, reactContent, assets, data, useDll) {
+module.exports = function generateHtmlSnippets(ctx, reactContent, assets, data, shouldUseDll) {
   const preloads = [];
 
   // generate styles html
@@ -42,7 +42,7 @@ module.exports = function generateHtmlSnippets(ctx, reactContent, assets, data, 
   scripts.push(`<script>window.__DATA__=${serialize(data)};</script>`);
   scripts.push(`<script>window.__CTX__=${serialize(ctx)};</script>`);
 
-  if (useDll && process.env.NODE_ENV === 'development') {
+  if (shouldUseDll && process.env.NODE_ENV === 'development') {
     preloads.push(createPreloadTag('/dll/dll__vendor.js', 'script'));
     scripts.push(createScriptTag('/dll/dll__vendor.js', 'key="dll__vendor"'));
   }
