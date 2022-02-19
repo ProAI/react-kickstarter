@@ -108,7 +108,7 @@ module.exports = (isDev) => {
       modules: [paths.kickstarterNodeModules, paths.appNodeModules],
     },
     resolve: {
-      modules: [paths.appMain, paths.appResources, paths.appNodeModules],
+      modules: [paths.appMain, paths.appResources, 'node_modules', paths.appNodeModules],
       alias: {
         appClientEntry: paths.appClientEntry,
         'react-native': 'react-native-web',
@@ -116,7 +116,17 @@ module.exports = (isDev) => {
         react: path.join(paths.appNodeModules, 'react'),
         'react-dom': path.join(paths.appNodeModules, 'react-dom'),
       },
-      extensions: ['.json', '.js', '.jsx', '.ts', '.tsx'],
+      extensions: [
+        '.json',
+        '.web.js',
+        '.js',
+        '.web.jsx',
+        '.jsx',
+        '.web.ts',
+        '.ts',
+        '.web.tsx',
+        '.tsx',
+      ],
     },
     // Optimize production build
     optimization: {
