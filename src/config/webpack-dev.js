@@ -9,8 +9,12 @@ const webpackBaseConfig = require('./webpack');
 
 const getEntries = (config, mainEntries) => {
   const entries = {
-    main: [...mainEntries, ...config.styles.main],
+    main: mainEntries,
   };
+
+  if (config.styles.main) {
+    entries.main = [...entries.main, ...config.styles.main];
+  }
 
   if (config.styles.mobile) {
     entries.mobile = config.styles.mobile;
@@ -40,7 +44,7 @@ module.exports = (config) => {
       path: paths.appAssets,
       pathinfo: false,
       filename: 'client-bundle.js',
-      chunkFilename: '[name].chunk.js',
+      chunkFilename: 'client-bundle.[id].js',
       publicPath: `http://${host}:${port}/dist/`,
     },
     plugins: [

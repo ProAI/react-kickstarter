@@ -9,8 +9,12 @@ const webpackBaseConfig = require('./webpack');
 
 const getEntries = (config, mainEntries) => {
   const entries = {
-    main: [...mainEntries, ...config.styles.main],
+    main: mainEntries,
   };
+
+  if (config.styles.main) {
+    entries.main = [...entries.main, ...config.styles.main];
+  }
 
   if (config.styles.mobile) {
     entries.mobile = config.styles.mobile;
