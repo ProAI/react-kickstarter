@@ -6,7 +6,7 @@ const webpackBaseConfig = require('./webpack');
 
 module.exports = () => {
   return {
-    ...webpackBaseConfig(false),
+    ...webpackBaseConfig(false, false),
     mode: 'production',
     target: 'node',
     devtool: 'source-map',
@@ -34,12 +34,9 @@ module.exports = () => {
         maxChunks: 1,
       }),
 
-      // define process.env constants
-      new webpack.EnvironmentPlugin({
-        NODE_ENV: 'production',
-        APP_MODE: 'production',
-        APP_ENV: 'server',
-        APP_PLATFORM: 'web',
+      // define constants
+      new webpack.DefinePlugin({
+        __DEV__: false,
       }),
     ],
   };

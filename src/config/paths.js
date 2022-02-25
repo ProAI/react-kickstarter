@@ -24,6 +24,7 @@ module.exports = {
   appNodeModules: resolveAppPath('node_modules'),
   appPublic: resolveAppPath('public'),
   appAssets: resolveAppPath('public/dist'),
+  appBabelConfig: resolveAppPath('babel.config.js'),
   kickstarterRoot: resolveKickstarterPath('.'), // not in use yet
   kickstarterConfig: resolveKickstarterPath('src/config'),
   kickstarterClientEntry: resolveKickstarterPath('src/bootstrap/client/start.js'),

@@ -2,9 +2,9 @@ const webpack = require('webpack');
 const deepmerge = require('deepmerge');
 const path = require('path');
 const fs = require('fs');
-const webpackConfigClient = require('../../config/webpack-prod-client');
-const webpackConfigServer = require('../../config/webpack-prod-server');
-const paths = require('../../config/paths');
+const webpackConfigClient = require('../config/webpack-prod-client');
+const webpackConfigServer = require('../config/webpack-prod-server');
+const paths = require('../config/paths');
 
 const defaultConfig = {
   only: null,

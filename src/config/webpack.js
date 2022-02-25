@@ -13,7 +13,7 @@ const includePaths = [
 
 // Parts of this config are forked from the great create-react-app package
 // ref: https://github.com/facebook/create-react-app/blob/main/packages/react-scripts/config/webpack.config.js
-module.exports = (isDev) => {
+module.exports = (isDev, isClient) => {
   if (!fs.existsSync(paths.appBabelConfig)) {
     throw new Error('Babel config file "babel.config.js" not found.');
   }
@@ -38,7 +38,9 @@ module.exports = (isDev) => {
             {
               loader: 'babel-loader',
               options: {
-                plugins: [isDev && require.resolve('react-refresh/babel')].filter(Boolean),
+                plugins: [isDev && isClient && require.resolve('react-refresh/babel')].filter(
+                  Boolean,
+                ),
                 cacheDirectory: isDev,
               },
             },

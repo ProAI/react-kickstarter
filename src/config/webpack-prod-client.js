@@ -29,7 +29,7 @@ const getEntries = (config, mainEntries) => {
 
 module.exports = (config) => {
   return {
-    ...webpackBaseConfig(false),
+    ...webpackBaseConfig(false, true),
     mode: 'production',
     devtool: 'source-map',
     entry: getEntries(config, [paths.kickstarterClientEntry]),
@@ -51,12 +51,9 @@ module.exports = (config) => {
       // polyfill node modules
       new NodePolyfillPlugin(),
 
-      // define process.env constants
-      new webpack.EnvironmentPlugin({
-        NODE_ENV: 'production',
-        APP_MODE: 'production',
-        APP_ENV: 'client',
-        APP_PLATFORM: 'web',
+      // define constants
+      new webpack.DefinePlugin({
+        __DEV__: false,
       }),
 
       new WebpackManifestPlugin({

@@ -1,6 +1,6 @@
 const runServer = require('./bootstrap/server/run');
-const watchDevelopmentWebpack = require('./webpack/development/watch');
-const buildProductionWebpack = require('./webpack/production/build');
+const watchDevelopmentWebpack = require('./webpack/watchDevelopmentWebpack');
+const buildProductionWebpack = require('./webpack/buildProductionWebpack');
 
 module.exports = {
   runServer,

@@ -31,7 +31,7 @@ module.exports = (config) => {
   const { host, port } = config.devServer;
 
   return {
-    ...webpackBaseConfig(true),
+    ...webpackBaseConfig(true, true),
     mode: 'development',
     devtool: 'eval-cheap-module-source-map',
     entry: getEntries(config, [
@@ -56,18 +56,15 @@ module.exports = (config) => {
         overlay: false,
       }),
 
-      // ignore webpack stats
-      new webpack.IgnorePlugin({ resourceRegExp: /webpack-stats\.json$/ }),
+      // ignore paths from watching
+      new webpack.WatchIgnorePlugin(config.ignore),
 
       // polyfill node modules
       new NodePolyfillPlugin(),
 
-      // define process.env constants
-      new webpack.EnvironmentPlugin({
-        NODE_ENV: 'development',
-        APP_MODE: 'development',
-        APP_ENV: 'client',
-        APP_PLATFORM: 'web',
+      // define constants
+      new webpack.DefinePlugin({
+        __DEV__: true,
       }),
 
       new WebpackManifestPlugin({

@@ -53,16 +53,6 @@ module.exports = function createAppOnServer(config) {
       },
     };
 
-    // Do not cache webpack-manifest.json and all files in /app folder in development
-    // See https://github.com/ProAI/react-kickstarter/issues/4
-    if (process.env.NODE_ENV === 'development') {
-      delete require.cache[paths.webpackManifest];
-
-      Object.keys(require.cache).forEach((id) => {
-        if (/[/\\]app[/\\]/.test(id)) delete require.cache[id];
-      });
-    }
-
     // define render, redirect and error function for hydrate function
     const render = (component, getData, meta) => {
       // eslint-disable-next-line
@@ -97,10 +87,8 @@ module.exports = function createAppOnServer(config) {
       return;
     }
 
-    const entry =
-      process.env.NODE_ENV === 'development'
-        ? paths.appServerEntry
-        : path.join(paths.webpackCache, 'prod', 'server-bundle.js');
+    const entryFolder = process.env.NODE_ENV === 'development' ? 'dev' : 'prod';
+    const entry = path.join(paths.webpackCache, entryFolder, 'server-bundle.js');
 
     // get hydrate function and hydrate
     // eslint-disable-next-line
