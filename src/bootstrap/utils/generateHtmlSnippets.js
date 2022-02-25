@@ -13,7 +13,7 @@ module.exports = function generateHtmlSnippets(ctx, reactContent, assets, data) 
   const preloads = [];
 
   // generate content html
-  const content = `<div id="content">${reactContent}</div>`;
+  const content = `<div id="content" style="display:flex; flex-direction: column">${reactContent}</div>`;
 
   // generate javascript html
   scripts.push(`<script>window.__DATA__=${serialize(data)};</script>`);
