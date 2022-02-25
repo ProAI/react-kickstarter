@@ -1,16 +1,12 @@
 const cookie = require('cookie');
 
-const getFromDocument = () => document.cookie || '';
+const getFromDocument = () => (document && document.cookie) || '';
 
 class CookieJar {
   constructor(req, res) {
     this.server = !!(req && res);
 
-    if (this.server) {
-      this.cookies = cookie.parse(req.headers.cookie || '');
-    } else {
-      this.cookies = cookie.parse(getFromDocument());
-    }
+    this.cookies = cookie.parse(this.server ? req.headers.cookie : getFromDocument());
 
     this.res = res;
   }
