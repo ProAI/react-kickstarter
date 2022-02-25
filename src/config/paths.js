@@ -17,7 +17,6 @@ function resolveKickstarterPath(relativePath) {
 module.exports = {
   appRoot: resolveAppPath('.'),
   appMain: resolveAppPath('app'),
-  appResources: resolveAppPath('resources'),
   appClientEntry: resolveAppPath('app/client.js'),
   appServerEntry: resolveAppPath('app/server.js'),
   appHtml: resolveAppPath('app/html.js'),

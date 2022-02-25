@@ -26,9 +26,6 @@ module.exports = () => {
       'react-dom': 'commonjs2 react-dom',
     },
     plugins: [
-      // ignore style files
-      new webpack.IgnorePlugin({ resourceRegExp: /\.(scss)$/ }),
-
       // disable code splitting for server code
       new webpack.optimize.LimitChunkCountPlugin({
         maxChunks: 1,

@@ -1,15 +1,9 @@
 const path = require('path');
 const fs = require('fs');
 const TerserPlugin = require('terser-webpack-plugin');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const paths = require('./paths');
 
-const includePaths = [
-  paths.appMain,
-  paths.appResources,
-  path.join(paths.appNodeModules, 'react-kickstarter/src'),
-];
+const includePaths = [paths.appMain, path.join(paths.appNodeModules, 'react-kickstarter/src')];
 
 // Parts of this config are forked from the great create-react-app package
 // ref: https://github.com/facebook/create-react-app/blob/main/packages/react-scripts/config/webpack.config.js
@@ -46,63 +40,6 @@ module.exports = (isDev, isClient) => {
             },
           ],
         },
-        // Process sass files
-        {
-          test: /\.scss$/,
-          include: includePaths,
-          use: [
-            {
-              loader: isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
-            },
-            {
-              loader: 'css-loader',
-              options: {
-                importLoaders: 3,
-                sourceMap: isDev,
-              },
-            },
-            {
-              loader: 'postcss-loader',
-              options: {
-                postcssOptions: {
-                  plugins: [
-                    'postcss-flexbugs-fixes',
-                    [
-                      'postcss-preset-env',
-                      {
-                        autoprefixer: {
-                          flexbox: 'no-2009',
-                        },
-                        stage: 3,
-                      },
-                    ],
-                    'postcss-normalize',
-                  ],
-                },
-                sourceMap: isDev,
-              },
-            },
-            {
-              loader: 'sass-loader',
-              options: {
-                sourceMap: isDev,
-              },
-            },
-          ],
-        },
-        // Process font files
-        {
-          test: /\.woff2?(\?v=\d+\.\d+\.\d+)?$/,
-          type: 'asset/inline',
-        },
-        {
-          test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-          type: 'asset/inline',
-        },
-        {
-          test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-          type: 'asset/resource',
-        },
       ],
     },
     // Resolve node modules from node_modules app and react-kickstarter directory
@@ -110,7 +47,7 @@ module.exports = (isDev, isClient) => {
       modules: [paths.kickstarterNodeModules, paths.appNodeModules],
     },
     resolve: {
-      modules: [paths.appMain, paths.appResources, 'node_modules', paths.appNodeModules],
+      modules: [paths.appMain, 'node_modules', paths.appNodeModules],
       alias: {
         appClientEntry: paths.appClientEntry,
         'react-native': 'react-native-web',
@@ -174,8 +111,6 @@ module.exports = (isDev, isClient) => {
             },
           },
         }),
-        // This is only used in production mode
-        new CssMinimizerPlugin(),
       ],
     },
   };

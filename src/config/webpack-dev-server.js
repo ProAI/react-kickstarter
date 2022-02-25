@@ -37,9 +37,6 @@ module.exports = (config) => {
       // ignore paths from watching
       new webpack.WatchIgnorePlugin(config.ignore),
 
-      // ignore style files
-      new webpack.IgnorePlugin({ resourceRegExp: /\.(scss)$/ }),
-
       // define constants
       new webpack.DefinePlugin({
         __DEV__: true,

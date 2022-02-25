@@ -7,26 +7,6 @@ const path = require('path');
 const paths = require('./paths');
 const webpackBaseConfig = require('./webpack');
 
-const getEntries = (config, mainEntries) => {
-  const entries = {
-    main: mainEntries,
-  };
-
-  if (config.styles.main) {
-    entries.main = [...entries.main, ...config.styles.main];
-  }
-
-  if (config.styles.mobile) {
-    entries.mobile = config.styles.mobile;
-  }
-
-  if (config.styles.desktop) {
-    entries.desktop = config.styles.desktop;
-  }
-
-  return entries;
-};
-
 module.exports = (config) => {
   const { host, port } = config.devServer;
 
@@ -34,12 +14,12 @@ module.exports = (config) => {
     ...webpackBaseConfig(true, true),
     mode: 'development',
     devtool: 'eval-cheap-module-source-map',
-    entry: getEntries(config, [
+    entry: [
       `${require.resolve(
         'webpack-hot-middleware/client',
       )}?path=http://${host}:${port}/__webpack_hmr`,
       paths.kickstarterClientEntry,
-    ]),
+    ],
     output: {
       path: paths.appAssets,
       pathinfo: false,

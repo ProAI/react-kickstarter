@@ -8,11 +8,6 @@ const paths = require('../config/paths');
 
 const defaultConfig = {
   only: null,
-  styles: {
-    main: null,
-    desktop: null,
-    mobile: null,
-  },
 };
 
 module.exports = function buildProductionWebpack(customConfig) {
