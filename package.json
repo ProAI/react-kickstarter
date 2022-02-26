@@ -47,7 +47,7 @@
     "browserslist": "4.19.3",
     "clean-webpack-plugin": "4.0.0",
     "compression": "1.7.4",
-    "cookie": "0.4.2",
+    "cookie-parser": "1.4.6",
     "cross-spawn": "7.0.3",
     "deepmerge": "4.2.2",
     "device-detector-js": "3.0.1",

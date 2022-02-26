@@ -8,7 +8,7 @@ function createScriptTag(src, extra) {
   return `<script src="${src}"${extra ? ` ${extra}` : ''}></script>`;
 }
 
-module.exports = function generateHtmlSnippets(ctx, reactContent, assets, data) {
+module.exports = function generateHtmlSnippets(ctx, reactContent, assets, data = {}) {
   const scripts = [];
   const preloads = [];
 

@@ -1,6 +1,7 @@
 const Express = require('express');
 const http = require('http');
 const compression = require('compression');
+const cookieParser = require('cookie-parser');
 const createProxy = require('./utils/createProxy');
 const createReactAppOnServer = require('./createReactAppOnServer');
 const paths = require('../../config/paths');
@@ -20,6 +21,9 @@ module.exports = function createHttpServer(config) {
 
   // static directory middleware
   app.use(Express.static(paths.appPublic));
+
+  // parse cookies
+  app.use(cookieParser());
 
   // initialize app middleware
   app.use(createReactAppOnServer(config));

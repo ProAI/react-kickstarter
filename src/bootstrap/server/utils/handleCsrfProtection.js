@@ -2,7 +2,7 @@ const randomString = require('randomstring');
 
 const TOKEN_LENGTH = 32;
 
-module.exports = function handleCsrfProtection(cookies, config) {
+module.exports = function handleCsrfProtection(req, res, config) {
   const { protection, cookieName, headerName } = config;
 
   if (!protection) {
@@ -11,7 +11,7 @@ module.exports = function handleCsrfProtection(cookies, config) {
     };
   }
 
-  const cookie = cookies.get(cookieName);
+  const cookie = req.cookies[cookieName];
 
   if (cookie && cookie.length === TOKEN_LENGTH) {
     return {
@@ -23,7 +23,7 @@ module.exports = function handleCsrfProtection(cookies, config) {
 
   const token = randomString.generate(TOKEN_LENGTH);
 
-  cookies.set(cookieName, token, { httpOnly: true });
+  res.cookie(cookieName, token, { httpOnly: true });
 
   return {
     headers: {

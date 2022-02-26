@@ -9,7 +9,7 @@ const parseCookie = (cookie, locales) => {
   return index === -1 ? null : locales[index];
 };
 
-module.exports = function detectLocale(req, cookies, config) {
+module.exports = function detectLocale(req, config) {
   if (!config.localeDetection) {
     return [config.defaultLocale, null];
   }
@@ -20,7 +20,7 @@ module.exports = function detectLocale(req, cookies, config) {
     return [localeFromUrl, 'url'];
   }
 
-  const localeFromCookie = parseCookie(cookies.get(config.localeCookieName), config.locales);
+  const localeFromCookie = parseCookie(req.cookies[config.localeCookieName], config.locales);
 
   if (localeFromCookie) {
     return [localeFromCookie, 'cookie'];
