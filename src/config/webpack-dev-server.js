@@ -1,5 +1,6 @@
 // Webpack config for creating the production bundle.
 const webpack = require('webpack');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const path = require('path');
 const paths = require('./paths');
 const webpackBaseConfig = require('./webpack');
@@ -31,6 +32,9 @@ module.exports = (config) => {
       'react-dom': 'commonjs2 react-dom',
     },
     plugins: [
+      // clean old dist files
+      new CleanWebpackPlugin(),
+
       // hot reload
       new webpack.HotModuleReplacementPlugin(),
 

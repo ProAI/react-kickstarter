@@ -26,6 +26,8 @@ module.exports = () => {
       'react-dom': 'commonjs2 react-dom',
     },
     plugins: [
+      // no need to clean old files here as the filename is always the same.
+
       // disable code splitting for server code
       new webpack.optimize.LimitChunkCountPlugin({
         maxChunks: 1,

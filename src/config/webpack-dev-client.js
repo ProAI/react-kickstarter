@@ -28,6 +28,8 @@ module.exports = (config) => {
       publicPath: `http://${host}:${port}/dist/`,
     },
     plugins: [
+      // no need to clean old files here as webpack dev server does not write to disk.
+
       // hot reload
       new webpack.HotModuleReplacementPlugin(),
 
