@@ -1,7 +1,7 @@
 const Express = require('express');
 const http = require('http');
 const compression = require('compression');
-const createProxy = require('../utils/createProxy');
+const createProxy = require('./utils/createProxy');
 const createReactAppOnServer = require('./createReactAppOnServer');
 const paths = require('../../config/paths');
 

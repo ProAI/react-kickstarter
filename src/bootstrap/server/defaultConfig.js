@@ -3,14 +3,14 @@ module.exports = {
   port: 8080,
   proxies: [],
   ssr: true,
-  network: {
-    csrfProtection: true,
-    csrfHeaderName: 'X-Csrf-Token',
-    csrfCookieName: 'csrf',
+  csrf: {
+    protection: true,
+    headerName: 'X-Csrf-Token',
+    cookieName: 'csrf',
   },
-  media: {
-    deviceDetection: true,
-    deviceCookieName: 'view',
+  device: {
+    detection: true,
+    cookieName: 'view',
   },
   intl: {
     localeDetection: true,

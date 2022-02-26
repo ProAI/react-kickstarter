@@ -1,12 +1,14 @@
 const DeviceDetector = require('device-detector-js');
 
-module.exports = function detectDevice(req, cookies, config) {
+module.exports = function detectDevice(source, cookies, config) {
+  const { detection, cookieName } = config;
+
   // we don't want to detect the device
-  if (!config.deviceDetection) {
+  if (!detection) {
     return null;
   }
 
-  const cookie = cookies.get(config.deviceCookieName);
+  const cookie = cookies.get(cookieName);
 
   // device is set by cookie
   if (cookie === 'mobile' || cookie === 'desktop') {
@@ -15,7 +17,7 @@ module.exports = function detectDevice(req, cookies, config) {
 
   // detect device from user agent
   const deviceDetector = new DeviceDetector();
-  const device = deviceDetector.parse(req.headers['user-agent']);
+  const device = deviceDetector.parse(source);
 
   if (device.device && device.device.type === 'smartphone') {
     // phone
