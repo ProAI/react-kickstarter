@@ -13,6 +13,7 @@ module.exports = {
   rules: {
     // eslint
     'arrow-body-style': 'off',
+    'no-underscore-dangle': ['error', { allow: ['__typename'] }], // allow for graphql
 
     // flowtype
     'flowtype/space-after-type-colon': 'off', // conflict with prettier
