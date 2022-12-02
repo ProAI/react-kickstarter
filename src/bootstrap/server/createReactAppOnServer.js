@@ -2,7 +2,6 @@ const ReactDOMServer = require('react-dom/server');
 const path = require('path');
 const detectDevice = require('./utils/detectDevice');
 const detectLocale = require('./utils/detectLocale');
-const handleCsrfProtection = require('./utils/handleCsrfProtection');
 const getRealPath = require('./utils/getRealPath');
 const generateHtmlSnippets = require('./utils/generateHtmlSnippets');
 const paths = require('../../config/paths');
@@ -13,14 +12,12 @@ module.exports = function createAppOnServer(config) {
 
     const [locale, localeSource] = detectLocale(req, config.intl);
     const device = detectDevice(req, config.device);
-    const csrf = handleCsrfProtection(req, res, config.csrf);
     const [basename, realPath] = getRealPath(url, locale, localeSource);
 
     const ctx = {
       basename,
       path: realPath,
       ssr: config.ssr,
-      csrf,
       device,
       intl: {
         locale,
