@@ -50,6 +50,9 @@ module.exports = (isDev, isClient) => {
       modules: [paths.appMain, 'node_modules', paths.appNodeModules],
       alias: {
         appClientEntry: paths.appClientEntry,
+        // Add alias for AssetRegistry for Expo SDK 48 compatibility
+        'react-native/Libraries/Image/AssetRegistry$':
+          'react-native-web/dist/modules/AssetRegistry',
         'react-native': 'react-native-web',
         // Add react and react-dom aliases, so that it's always the same instance
         react: path.join(paths.appNodeModules, 'react'),
