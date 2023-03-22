@@ -16,12 +16,12 @@ module.exports = function buildProductionWebpack(customConfig) {
 
   const webpackConfigs = [];
 
-  if (!config.only || config.only === 'SERVER') {
-    webpackConfigs.push(webpackConfigServer());
-  }
-
   if (!config.only || config.only === 'CLIENT') {
     webpackConfigs.push(webpackConfigClient(config));
+  }
+
+  if (!config.only || config.only === 'SERVER') {
+    webpackConfigs.push(webpackConfigServer());
   }
 
   // webpack compiler
@@ -34,15 +34,19 @@ module.exports = function buildProductionWebpack(customConfig) {
       return;
     }
 
-    // save stats to file
-    fs.writeFile(
-      path.join(paths.appRoot, 'webpack-stats.json'),
-      JSON.stringify(stats.toJson()),
-      (fileErr) => {
-        // eslint-disable-next-line no-console
-        if (fileErr) console.log(fileErr);
-      },
-    );
+    // save client stats to file
+    if (!config.only || config.only === 'CLIENT') {
+      const json = stats.toJson().children[0];
+
+      fs.writeFile(
+        path.join(paths.appRoot, 'webpack-stats.json'),
+        JSON.stringify(json),
+        (fileErr) => {
+          // eslint-disable-next-line no-console
+          if (fileErr) console.log(fileErr);
+        },
+      );
+    }
 
     // console log stats
     // eslint-disable-next-line no-console
