@@ -40,6 +40,11 @@ module.exports = (isDev, isClient) => {
             },
           ],
         },
+        // Load CSS files.
+        {
+          test: /\.css$/,
+          use: ['style-loader', 'css-loader'],
+        },
       ],
     },
     // Resolve node modules from node_modules app and react-kickstarter directory
