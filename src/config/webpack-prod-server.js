@@ -24,6 +24,8 @@ module.exports = () => {
     externals: {
       react: 'commonjs2 react',
       'react-dom': 'commonjs2 react-dom',
+      // Workaround for https://github.com/react-pdf-viewer/react-pdf-viewer/issues/1203
+      canvas: 'canvas',
     },
     plugins: [
       // no need to clean old files here as the filename is always the same.
