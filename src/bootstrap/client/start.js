@@ -3,7 +3,7 @@ import 'react-app-polyfill/ie9';
 import 'react-app-polyfill/stable';
 
 // import react-dom
-import ReactDOM from 'react-dom';
+import ReactDOMClient from 'react-dom/client';
 
 /* eslint-disable no-underscore-dangle */
 const data = window.__DATA__;
@@ -19,9 +19,10 @@ const render = (component) => {
   const element = component;
 
   if (ssr) {
-    ReactDOM.hydrate(element, root);
+    ReactDOMClient.hydrateRoot(element, root);
   } else {
-    ReactDOM.render(element, root);
+    const reactRoot = ReactDOMClient.createRoot(root);
+    reactRoot.render(element);
   }
 };
 
