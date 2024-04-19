@@ -5,11 +5,6 @@ import 'react-app-polyfill/stable';
 // import react-dom
 import ReactDOMClient from 'react-dom/client';
 
-/* eslint-disable no-underscore-dangle */
-const data = window.__DATA__;
-const ctx = window.__CTX__;
-/* eslint-enable */
-
 const root = document.getElementById('content');
 
 const ssr = root && root.firstChild;
@@ -30,7 +25,7 @@ const render = (component) => {
 // eslint-disable-next-line import/no-unresolved
 const hydrate = require('appClientEntry').default;
 
-hydrate(ctx, { render, root }, data);
+hydrate({ render, root, ssr });
 
 if (process.env.APP_MODE === 'development' && !ssr) {
   // eslint-disable-next-line no-console

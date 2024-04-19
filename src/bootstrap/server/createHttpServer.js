@@ -2,7 +2,7 @@ const Express = require('express');
 const http = require('http');
 const compression = require('compression');
 const cookieParser = require('cookie-parser');
-const createProxy = require('./utils/createProxy');
+const createProxy = require('./createProxy');
 const createReactAppOnServer = require('./createReactAppOnServer');
 const paths = require('../../config/paths');
 
@@ -26,7 +26,7 @@ module.exports = function createHttpServer(config) {
   app.use(cookieParser());
 
   // initialize app middleware
-  app.use(createReactAppOnServer(config));
+  app.use(createReactAppOnServer());
 
   // start server
   if (config.port && config.host) {

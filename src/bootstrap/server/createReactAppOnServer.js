@@ -1,65 +1,91 @@
 const ReactDOMServer = require('react-dom/server');
 const path = require('path');
-const detectDevice = require('./utils/detectDevice');
-const detectLocale = require('./utils/detectLocale');
-const getRealPath = require('./utils/getRealPath');
-const generateHtmlSnippets = require('./utils/generateHtmlSnippets');
+const createHtml = require('./createHtml');
 const paths = require('../../config/paths');
 
-module.exports = function createAppOnServer(config) {
+module.exports = function createAppOnServer() {
   return (req, res) => {
-    const { url } = req;
-
-    const [locale, localeSource] = detectLocale(req, config.intl);
-    const device = detectDevice(req, config.device);
-    const [basename, realPath] = getRealPath(url, locale, localeSource);
-
-    const ctx = {
-      basename,
-      path: realPath,
-      ssr: config.ssr,
-      device,
-      intl: {
-        locale,
-        localeSource,
-        defaultLocale: config.intl.defaultLocale,
-        locales: config.intl.locales,
-      },
-    };
-
     // define render, redirect and error function for hydrate function
-    const render = (component, data, meta) => {
+    const render = (component, config) => {
       // eslint-disable-next-line
       const assets = require(paths.webpackManifest);
-      const content = component ? ReactDOMServer.renderToString(component) : '';
+
       // eslint-disable-next-line
-      const renderHtml = require(paths.appHtml);
+      const getHtmlTemplate = require(paths.appHtml);
 
-      const snippets = generateHtmlSnippets(ctx, content, assets, data);
+      const html = createHtml();
+      const process = getHtmlTemplate(html, config.htmlData);
 
-      const html = renderHtml(ctx, snippets, meta);
+      if (!config.ssr) {
+        process({
+          onWrite(buffer) {
+            res.write(buffer);
+          },
+          onContent() {},
+        });
 
-      res.status(200).send(html);
-    };
-
-    const redirect = (location) => {
-      res.redirect(location);
-    };
-
-    const error = (status, message) => {
-      if (message) {
-        res.status(status).send(message);
-      } else {
-        res.status(status).end();
+        res.end();
       }
-    };
 
-    // Render page on client if server side rendering is disabled.
-    // Initial state should be empty in this case.
-    if (!config.ssr) {
-      render();
-      return;
-    }
+      const stream = ReactDOMServer.renderToPipeableStream(component, {
+        bootstrapScripts: [assets['main.js']],
+        onShellReady() {
+          if (!config.stream) {
+            return;
+          }
+
+          res.statusCode = 200;
+          res.setHeader('content-type', 'text/html');
+
+          process({
+            onWrite(buffer) {
+              res.write(buffer);
+            },
+            onContent() {
+              stream.pipe(res);
+            },
+          });
+        },
+        onAllReady() {
+          if (config.stream) {
+            return;
+          }
+
+          res.statusCode = 200;
+          res.setHeader('content-type', 'text/html');
+
+          process({
+            onWrite(buffer) {
+              res.write(buffer);
+            },
+            onContent() {
+              stream.pipe(res);
+            },
+          });
+        },
+        onShellError(err) {
+          res.statusCode = 500;
+          res.setHeader('content-type', 'text/html');
+
+          process({
+            onWrite(buffer) {
+              res.write(buffer);
+            },
+            onContent() {
+              if (config.onError) {
+                config.onError(err);
+              } else {
+                res.send('<h1>Something went wrong</h1>');
+              }
+            },
+          });
+        },
+        onError(err) {
+          // eslint-disable-next-line no-console
+          console.error(err);
+        },
+      });
+    };
 
     const entryFolder = process.env.NODE_ENV === 'development' ? 'dev' : 'prod';
     const entry = path.join(paths.webpackCache, entryFolder, 'server-bundle.js');
@@ -68,6 +94,6 @@ module.exports = function createAppOnServer(config) {
     // eslint-disable-next-line
     const hydrate = require(entry).default;
 
-    hydrate(ctx, { error, redirect, render, req, res });
+    hydrate({ render, req, res });
   };
 };
