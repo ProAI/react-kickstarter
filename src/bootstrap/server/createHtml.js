@@ -1,25 +1,31 @@
-const CONTENT = Symbol('REACT_TRANSPORTER_CONTENT');
+const ROOT = Symbol('REACT_TRANSPORTER_ROOT');
+const SCRIPTS = Symbol('REACT_TRANSPORTER_SCRIPTS');
 
-module.exports = function createHtml() {
+module.exports = function createHtml(assets) {
   function html(strings, ...values) {
-    return ({ onWrite, onContent }) => {
+    return ({ onWrite, onRoot }) => {
       let buffer = '';
 
       for (let i = 0; i < strings.length; i += 1) {
         const string = strings[i];
         const value = values[i] || '';
 
+        buffer += string;
+
         switch (value) {
-          case CONTENT: {
-            buffer += '<div id="content" style="display:flex; flex-direction: column">';
+          case ROOT: {
+            buffer += '<div id="root">';
             onWrite(buffer);
-            onContent();
+            onRoot();
             buffer = '</div>';
             break;
           }
+          case SCRIPTS: {
+            buffer += `<script src="${assets['main.js']}" async=""></script>`;
+            break;
+          }
           default: {
-            const valueToAppend = typeof value === 'function' ? value() : value;
-            buffer += string + valueToAppend;
+            buffer += typeof value === 'function' ? value() : value;
           }
         }
       }
@@ -28,7 +34,8 @@ module.exports = function createHtml() {
     };
   }
 
-  html.content = CONTENT;
+  html.root = ROOT;
+  html.scripts = SCRIPTS;
 
   return html;
 };

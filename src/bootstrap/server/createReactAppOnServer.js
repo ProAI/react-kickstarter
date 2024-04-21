@@ -13,72 +13,66 @@ module.exports = function createAppOnServer() {
       // eslint-disable-next-line
       const getHtmlTemplate = require(paths.appHtml);
 
-      const html = createHtml();
+      const html = createHtml(assets);
       const process = getHtmlTemplate(html, config.htmlData);
+
+      res.statusCode = 200;
+      res.setHeader('content-type', 'text/html');
 
       if (!config.ssr) {
         process({
           onWrite(buffer) {
             res.write(buffer);
           },
-          onContent() {},
+          onRoot() {},
         });
 
         res.end();
       }
 
+      let hasShellError = false;
+
       const stream = ReactDOMServer.renderToPipeableStream(component, {
-        bootstrapScripts: [assets['main.js']],
         onShellReady() {
           if (!config.stream) {
             return;
           }
 
-          res.statusCode = 200;
-          res.setHeader('content-type', 'text/html');
-
           process({
             onWrite(buffer) {
               res.write(buffer);
             },
-            onContent() {
+            onRoot() {
               stream.pipe(res);
             },
           });
         },
         onAllReady() {
-          if (config.stream) {
+          if (config.stream || hasShellError) {
             return;
           }
-
-          res.statusCode = 200;
-          res.setHeader('content-type', 'text/html');
 
           process({
             onWrite(buffer) {
               res.write(buffer);
             },
-            onContent() {
+            onRoot() {
               stream.pipe(res);
             },
           });
         },
-        onShellError(err) {
-          res.statusCode = 500;
-          res.setHeader('content-type', 'text/html');
+        onShellError() {
+          hasShellError = true;
 
+          // Do not server side render page after error and try again on client.
           process({
             onWrite(buffer) {
               res.write(buffer);
             },
-            onContent() {
-              if (config.onError) {
-                config.onError(err);
-              } else {
-                res.send('<h1>Something went wrong</h1>');
-              }
-            },
+            onRoot() {},
           });
+
+          res.end();
         },
         onError(err) {
           // eslint-disable-next-line no-console
