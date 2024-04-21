@@ -5,7 +5,7 @@ import 'react-app-polyfill/stable';
 // import react-dom
 import ReactDOMClient from 'react-dom/client';
 
-const root = document.getElementById('content');
+const root = document.getElementById('root');
 
 const ssr = root && root.firstChild;
 
