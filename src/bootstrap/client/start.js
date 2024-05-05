@@ -14,7 +14,7 @@ const render = (component) => {
   const element = component;
 
   if (ssr) {
-    ReactDOMClient.hydrateRoot(element, root);
+    ReactDOMClient.hydrateRoot(root, element);
   } else {
     const reactRoot = ReactDOMClient.createRoot(root);
     reactRoot.render(element);
