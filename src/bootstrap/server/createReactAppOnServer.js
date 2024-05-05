@@ -6,7 +6,7 @@ const paths = require('../../config/paths');
 module.exports = function createAppOnServer() {
   return (req, res) => {
     // define render, redirect and error function for hydrate function
-    const render = (component, config) => {
+    const render = (element, config) => {
       // eslint-disable-next-line
       const assets = require(paths.webpackManifest);
 
@@ -28,11 +28,12 @@ module.exports = function createAppOnServer() {
         });
 
         res.end();
+        return;
       }
 
       let hasShellError = false;
 
-      const stream = ReactDOMServer.renderToPipeableStream(component, {
+      const stream = ReactDOMServer.renderToPipeableStream(element, {
         onShellReady() {
           if (!config.stream) {
             return;
